@@ -11,7 +11,7 @@ export function useContent() {
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await fetch('/content.json')
+        const res = await fetch(`${import.meta.env.BASE_URL}content.json`)
         if (!res.ok) throw new Error('missing')
         setContent(await res.json())
       } catch {
