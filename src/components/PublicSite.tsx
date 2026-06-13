@@ -214,9 +214,15 @@ function ContactForm() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
+    if (!key) {
+      // Fallback: open mailto pre-filled
+      const body = encodeURIComponent(`Name: ${form.name}\nTelefon: ${form.phone}\n\n${form.message}`)
+      window.location.href = `mailto:graz@bikelyshop.at?subject=Kontaktanfrage von ${encodeURIComponent(form.name)}&body=${body}`
+      return
+    }
     setStatus('sending')
     try {
-      const key = import.meta.env.VITE_WEB3FORMS_KEY as string
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
