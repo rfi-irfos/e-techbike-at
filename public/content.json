@@ -10,21 +10,36 @@
     "logo": "uploads/etb-logo.jpg",
     "brand": "e-techbike.at",
     "links": [
-      { "label": "Kategorien", "href": "#categories" },
-      { "label": "Produkte", "href": "#products" },
-      { "label": "Standort", "href": "#location" },
-      { "label": "Förderungen", "href": "#location" },
-      { "label": "Neuigkeiten", "href": "#news" }
+      {
+        "label": "Sortiment",
+        "href": "#products"
+      },
+      {
+        "label": "Förderungen",
+        "href": "#foerderung"
+      },
+      {
+        "label": "Wie kaufen?",
+        "href": "#wie-kaufen"
+      },
+      {
+        "label": "Akku-Pflege",
+        "href": "#akku-pflege"
+      },
+      {
+        "label": "Standort",
+        "href": "#location"
+      }
     ],
-    "phone": "+43 664 7372 6965",
-    "ctaLabel": "Beratung anfragen",
+    "phone": "+43 664 73726965",
+    "ctaLabel": "Kontakt",
     "ctaHref": "#location"
   },
   "hero": {
     "tag": "Direktimporteur · Graz · Österreich",
-    "headline": "Elektromobilität.<br><span>Jetzt.</span>",
+    "headline": "Elektro&shy;mobilität.<br><span>Jetzt.</span>",
     "subheadline": "Premium E-Bikes, E-Scooter und E-Motorräder — direkt vom Hersteller, mit voller Garantie und persönlicher Beratung in Graz.",
-    "ctaLabel": "Shop entdecken",
+    "ctaLabel": "Sortiment entdecken",
     "ctaHref": "#products",
     "ctaSecLabel": "Beratung anfragen",
     "ctaSecHref": "#location",
@@ -35,63 +50,2962 @@
   },
   "trust": {
     "items": [
-      { "id": "t1", "icon": "delivery", "bold": "5–7 Tage", "text": "Versand österreichweit" },
-      { "id": "t2", "icon": "shield", "bold": "2 Jahre", "text": "Herstellergarantie" },
-      { "id": "t3", "icon": "tag", "bold": "Direktimport", "text": "kein Aufschlag" },
-      { "id": "t4", "icon": "location", "bold": "Beratung", "text": "in Graz" }
+      {
+        "id": "t1",
+        "icon": "delivery",
+        "bold": "5–7 Tage",
+        "text": "Versand österreichweit"
+      },
+      {
+        "id": "t2",
+        "icon": "shield",
+        "bold": "2 Jahre",
+        "text": "Herstellergarantie"
+      },
+      {
+        "id": "t3",
+        "icon": "tag",
+        "bold": "Direktimport",
+        "text": "kein Aufschlag"
+      },
+      {
+        "id": "t4",
+        "icon": "location",
+        "bold": "Beratung",
+        "text": "in Graz"
+      }
     ]
   },
   "categories": {
     "eyebrow": "Sortiment",
     "title": "Für jeden das richtige Fahrzeug",
     "items": [
-      { "id": "c1", "name": "E-Bikes", "sub": "City · Faltrad · Mountain", "image": "uploads/etb-rks-faltbike.jpg" },
-      { "id": "c2", "name": "E-Mopeds", "sub": "25 km/h · 45 km/h", "image": "uploads/etb-tailg-runner.png" },
-      { "id": "c3", "name": "E-Scooter", "sub": "Führerscheinfrei", "image": "uploads/etb-escooter.png" },
-      { "id": "c4", "name": "Seniorenmobile", "sub": "Komfort & Sicherheit", "image": "uploads/etb-kuba-grape.png" },
-      { "id": "c5", "name": "Batterien & Akkus", "sub": "Lithium · Bleigel", "image": "uploads/etb-akku-48v.jpg" },
-      { "id": "c6", "name": "Neue Modelle", "sub": "Jetzt verfügbar", "image": "uploads/etb-ebike2.jpg" }
+      {
+        "id": "cat-scooter25",
+        "name": "E-Scooter 25 km/h",
+        "sub": "Führerscheinfrei ab 16",
+        "image": "uploads/etb-moped-city-silver.jpg"
+      },
+      {
+        "id": "cat-scooter45",
+        "name": "E-Scooter 45 km/h",
+        "sub": "Führerschein AM · L3e",
+        "image": "uploads/etb-tailg-runner-hd.png"
+      },
+      {
+        "id": "cat-emot",
+        "name": "E-Motorrad",
+        "sub": "100 km/h · 6000W",
+        "image": "uploads/etb-moped-white-45.png"
+      },
+      {
+        "id": "cat-bike-falt",
+        "name": "Elektrofahrrad Klappbar",
+        "sub": "Kompakt & alltagstauglich",
+        "image": "uploads/etb-rks-faltbike.jpg"
+      },
+      {
+        "id": "cat-bike-city",
+        "name": "City E-Bikes",
+        "sub": "Komfort für Stadt & Tour",
+        "image": "uploads/etb-rks-mx25-life.jpg"
+      },
+      {
+        "id": "cat-bike-mtn",
+        "name": "Mountain E-Bikes",
+        "sub": "Fat Tire · Gelände · Power",
+        "image": "uploads/etb-ape-ryder-tan.jpg"
+      },
+      {
+        "id": "cat-kab",
+        "name": "Kabinenroller",
+        "sub": "Überdacht · wetterfest",
+        "image": "uploads/etb-kabinenmobil-x3.png"
+      },
+      {
+        "id": "cat-senior",
+        "name": "E-Seniorenmobil",
+        "sub": "Stabil & komfortabel",
+        "image": "uploads/etb-dreirad-3q.png"
+      },
+      {
+        "id": "cat-transport",
+        "name": "E-Transporter",
+        "sub": "Cargo · Lieferung · Nutzfahrzeug",
+        "image": "uploads/etb-eauto-side.jpg"
+      },
+      {
+        "id": "cat-bat",
+        "name": "Akkus",
+        "sub": "Bleigel · Lithium",
+        "image": "uploads/etb-akku-li-48v.jpg",
+        "subcategories": [
+          {
+            "id": "sub-bat-agm",
+            "name": "Bleigel / AGM",
+            "image": "uploads/etb-akku-48v.jpg",
+            "description": "Robust und wartungsarm"
+          },
+          {
+            "id": "sub-bat-li",
+            "name": "Lithium",
+            "image": "uploads/etb-akku-li-48v.jpg",
+            "description": "Leicht, leistungsstark, langlebig"
+          }
+        ]
+      }
     ]
   },
   "products": {
     "title": "Bestseller",
-    "tabs": ["Alle", "E-Bikes", "E-Mopeds", "E-Scooter", "Senioren", "Batterien"],
+    "tabs": [
+      "Alle",
+      "E-Bikes",
+      "E-Mopeds",
+      "E-Scooter",
+      "Senioren",
+      "Batterien"
+    ],
     "items": [
       {
-        "id": "p1", "name": "RKS Falt-E-Bike Pro", "badge": "Bestseller",
-        "category": "E-Bikes", "description": "Kompaktes Falt-E-Bike für Stadt und Alltag.",
-        "price": "ab €899", "image": "uploads/etb-rks-faltbike.jpg",
-        "specs": ["48V", "20Ah", "80 km", "Shimano 7G"]
+        "id": "p1",
+        "name": "Skyjet RV10 Plus Shimano",
+        "badge": "",
+        "category": "Elektrofahrrad Klappbar",
+        "description": "Falt-E-Bike mit 20\" × 4.0\" Fat Tires, HUPO 36V 15Ah Akku und bis 80 km Reichweite. Gepäckträger inklusive.",
+        "price": "€1.190,00",
+        "image": "uploads/etb-rks-faltbike.jpg",
+        "specs": [
+          "250–600W",
+          "36V 15Ah",
+          "bis 80 km",
+          "4.0\" Fat Tire"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250–600W"
+          },
+          {
+            "label": "Akku",
+            "value": "HUPO 36V / 15Ah"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 80 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Rahmen",
+            "value": "20 Zoll Aluminium, faltbar"
+          },
+          {
+            "label": "Reifen",
+            "value": "20 × 4.0"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano 7-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen vorne & hinten"
+          },
+          {
+            "label": "Display",
+            "value": "LCD integriert"
+          },
+          {
+            "label": "Federgabel",
+            "value": "einstellbar"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "Gepäckträger, Licht, Reflektoren, Hupe"
+          }
+        ],
+        "details": "<ul><li>Faltbar für einfachen Transport und Lagerung</li><li>Batterie mit Sicherheitsschloss</li><li>Gepäckträger serienmäßig</li><li>CE-zertifiziert, führerscheinfrei ab 14 Jahren</li><li>Förderfähig: €500 E-Klapprad Förderung</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
       },
       {
-        "id": "p2", "name": "RKS MX25 PRO Faltrad", "badge": "",
-        "category": "E-Bikes", "description": "Führerscheinfreies 25 km/h Faltrad mit 250W Motor.",
-        "price": "ab €799", "image": "uploads/etb-rks-mx25.jpg",
-        "specs": ["25 km/h", "250W", "35–45 km", "führerscheinfrei"]
+        "id": "p2",
+        "name": "MX25 PRO Shimano",
+        "badge": "Aktion",
+        "category": "Elektrofahrrad Klappbar",
+        "description": "Kompaktes Falt-E-Bike im Angebot. 20\" Räder, Shimano 6-Gang, Akku wählbar bis 240 km Reichweite.",
+        "price": "€650,00",
+        "image": "uploads/etb-rks-mx25.jpg",
+        "images": [
+          "uploads/etb-rks-mx25.jpg",
+          "uploads/etb-rks-mx25-life.jpg"
+        ],
+        "specs": [
+          "250–600W",
+          "36V wählbar",
+          "bis 240 km",
+          "Shimano 6G"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250–600W"
+          },
+          {
+            "label": "Akku",
+            "value": "36V 7,8 Ah / 10 Ah / 35 Ah (wählbar)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "30–240 km (je nach Akku)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Rahmen",
+            "value": "20 Zoll, Stahlrahmen faltbar"
+          },
+          {
+            "label": "Reifen",
+            "value": "20 × 1.95 Zoll"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano 6-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse"
+          },
+          {
+            "label": "Display",
+            "value": "LCD"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "Gepäckträger, Licht, Reflektoren, Hupe"
+          }
+        ],
+        "details": "<ul><li>Einlegebatterie mit Sicherheitsverriegelung</li><li>Akku-Variante frei wählbar — von Kurzstrecke bis 240 km</li><li>Aluminium Kotflügel</li><li>CE-zertifiziert, führerscheinfrei ab 14 Jahren</li><li>Förderfähig: €500 E-Klapprad Förderung</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
       },
       {
-        "id": "p3", "name": "TailG E-Moped Runner", "badge": "Beliebt",
-        "category": "E-Mopeds", "description": "Straßenzugelassenes E-Moped mit Topcase inklusive.",
-        "price": "ab €1.290", "image": "uploads/etb-tailg-runner.png",
-        "specs": ["45 km/h", "60 km", "Topcase", "StVO"]
+        "id": "p26",
+        "name": "Skyjet Nitro-16",
+        "badge": "",
+        "category": "Elektrofahrrad Klappbar",
+        "description": "Kompaktes 16\" Falt-E-Bike — das kleinste und leichteste im Sortiment. Ideal für U-Bahn und Büro.",
+        "price": "€590,00",
+        "image": "uploads/etb-rks-mx25.jpg",
+        "specs": [
+          "250–600W",
+          "36V 7,8Ah",
+          "bis 30 km",
+          "16 Zoll"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250–600W"
+          },
+          {
+            "label": "Akku",
+            "value": "36V / 7,8Ah"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 30 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Rahmen",
+            "value": "16 Zoll, Stahlrahmen faltbar"
+          },
+          {
+            "label": "Reifen",
+            "value": "KENDA 16\" × 1.95"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "114 kg"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano 6-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse"
+          },
+          {
+            "label": "Display",
+            "value": "LCD"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "Gepäckträger, Licht, Reflektoren, Hupe"
+          }
+        ],
+        "details": "<ul><li>Kleinstes Faltrad im Sortiment — ideal für Pendler</li><li>Einlegebatterie mit Sicherheitsverriegelung</li><li>KENDA Qualitätsbereifung</li><li>CE-zertifiziert, führerscheinfrei ab 14 Jahren</li><li>Förderfähig: €500 E-Klapprad Förderung</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
       },
       {
-        "id": "p4", "name": "Bikely ZL9 E-Scooter", "badge": "",
-        "category": "E-Scooter", "description": "Kompakter Stadtscooter, führerscheinfrei.",
-        "price": "ab €690", "image": "uploads/etb-bikely-zl9.jpg",
-        "specs": ["25 km/h", "45 km", "kompakt", "führerscheinfrei"]
+        "id": "p27",
+        "name": "RSIII PRO Shimano",
+        "badge": "",
+        "category": "Elektrofahrrad Klappbar",
+        "description": "Falt-E-Bike mit 20\" × 4.0\" Fat Tires und HUPO Akku bis 240 km Reichweite. Shimano MF-TZ500, USB-Port.",
+        "price": "€1.040,00",
+        "image": "uploads/etb-rks-fat-grey.png",
+        "specs": [
+          "250W",
+          "36V 10/35Ah",
+          "bis 240 km",
+          "4.0\" Fat Tire"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250W"
+          },
+          {
+            "label": "Akku",
+            "value": "HUPO 36V 10 Ah / 35 Ah (wählbar)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 240 km (mit 35Ah)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Rahmen",
+            "value": "20 Zoll Aluminium, faltbar"
+          },
+          {
+            "label": "Reifen",
+            "value": "20 × 4.0"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano MF-TZ500 7-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen vorne & hinten"
+          },
+          {
+            "label": "Display",
+            "value": "LCD integriert"
+          },
+          {
+            "label": "Federgabel",
+            "value": "einstellbar"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "Gepäckträger, Licht, Reflektoren, Hupe, USB"
+          }
+        ],
+        "details": "<ul><li>Maximale Reichweite bis 240 km mit 35Ah Akku</li><li>Fat Tire 20\" × 4.0\" für Stadt und Gelände</li><li>USB-Port am Akku zum Laden von Geräten</li><li>Batterie mit Sicherheitsschloss</li><li>CE-zertifiziert, führerscheinfrei</li><li>Förderfähig: €500 E-Klapprad Förderung</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
       },
       {
-        "id": "p5", "name": "Lithium Akku 48V 25Ah", "badge": "",
-        "category": "Batterien", "description": "Hochleistungs-Akku mit BMS-Schutz und 5 Jahren Garantie.",
-        "price": "ab €599", "image": "uploads/etb-akku-48v.jpg",
-        "specs": ["48V", "25Ah", "BMS", "3.000+ Zyklen"]
+        "id": "p28",
+        "name": "RSI-X PRO Shimano",
+        "badge": "",
+        "category": "Elektrofahrrad Klappbar",
+        "description": "Falt-E-Bike mit 20\" × 4.0\" Fat Tires und HUPO Akku bis 240 km. Shimano MF-TZ500, USB-Port.",
+        "price": "€1.040,00",
+        "image": "uploads/etb-rks-fat-black.jpg",
+        "specs": [
+          "250W",
+          "36V 10/35Ah",
+          "bis 240 km",
+          "4.0\" Fat Tire"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250W"
+          },
+          {
+            "label": "Akku",
+            "value": "HUPO 36V 10 Ah / 35 Ah (wählbar)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 240 km (mit 35Ah)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Rahmen",
+            "value": "20 Zoll Aluminium, faltbar"
+          },
+          {
+            "label": "Reifen",
+            "value": "20 × 4.0"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano MF-TZ500 7-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen vorne & hinten"
+          },
+          {
+            "label": "Display",
+            "value": "LCD integriert"
+          },
+          {
+            "label": "Federgabel",
+            "value": "einstellbar"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "Gepäckträger, Licht, Reflektoren, Hupe, USB"
+          }
+        ],
+        "details": "<ul><li>Sportlichere Variante des RSIII PRO</li><li>Fat Tire 20\" × 4.0\" für Stadt und Gelände</li><li>USB-Port am Akku</li><li>Batterie mit Sicherheitsschloss</li><li>CE-zertifiziert, führerscheinfrei</li><li>Förderfähig: €500 E-Klapprad Förderung</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
       },
       {
-        "id": "p6", "name": "KUBA Grape 25 MAX", "badge": "",
-        "category": "Senioren", "description": "Überdachtes 3-rädriges Seniorenmobil mit CE/EEC-Zulassung.",
-        "price": "ab €1.890", "image": "uploads/etb-kuba-grape.png",
-        "specs": ["25 km/h", "3-rädrig", "Überdachung", "CE/EEC"]
+        "id": "p3",
+        "name": "TailG E-Moped Runner",
+        "badge": "Beliebt",
+        "category": "E-Scooter 45 km/h",
+        "description": "Straßenzugelassenes E-Moped mit Topcase inklusive. 45 km/h, volle StVO-Zulassung.",
+        "price": "€2.050,00",
+        "image": "uploads/etb-tailg-runner-hd.png",
+        "specs": [
+          "45 km/h",
+          "60 km",
+          "Topcase",
+          "StVO"
+        ],
+        "specsTable": [
+          {
+            "label": "Nennleistung",
+            "value": "2000W"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Akku",
+            "value": "72V 25Ah Lithium (opt. 2 Batterien +€540)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "60 km (100 km mit 2 Batterien)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "3–6 Stunden"
+          },
+          {
+            "label": "Bremsen",
+            "value": "F: Scheibenbremse · R: Trommelbremse"
+          },
+          {
+            "label": "Reifen",
+            "value": "F: 90/70-12 · R: 90/70-12"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE/EEC · L3e · StVO-konform"
+          },
+          {
+            "label": "Führerschein",
+            "value": "Klasse A1 oder AM"
+          },
+          {
+            "label": "Gesamtmaße",
+            "value": "1850 × 735 × 1110 mm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "71 kg (ohne Batterie)"
+          },
+          {
+            "label": "Radstand",
+            "value": "1330 mm"
+          },
+          {
+            "label": "Sitzhöhe",
+            "value": "730 mm"
+          }
+        ],
+        "details": "<ul><li>Kraftvoller 2000W Motor, beschleunigt auf 45 km/h</li><li>Reichweite bis 100 km mit optionaler 2. Batterie</li><li>Hydraulische Federung, ergonomisches Sitzpolster</li><li>Verlängerter Radstand für Stabilität und agiles Handling</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Vormontierte Lieferung (ca. 90%)</li><li>Förderfähig: bis zu €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit, 5–7 Werktage. Montage und Einweisung in Graz möglich."
+      },
+      {
+        "id": "p4",
+        "name": "Bikely ZL9 E-Moped",
+        "badge": "",
+        "category": "E-Scooter 25 km/h",
+        "description": "Kompaktes E-Moped 25 km/h mit auswechselbarem Akku. Transportbox inklusive, ideal für die Stadt.",
+        "price": "€890,00",
+        "image": "uploads/etb-bikely-zl9.jpg",
+        "specs": [
+          "25 km/h",
+          "bis 180 km",
+          "Transportbox",
+          "führerscheinfrei"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "600W / 48V"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Reichweite",
+            "value": "20Ah: bis 50 km · 25Ah: bis 60 km · 78Ah: bis 180 km"
+          },
+          {
+            "label": "Batterietyp",
+            "value": "Li-Ion, tragbar & austauschbar"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "48V 5A / 8A / 15A"
+          },
+          {
+            "label": "Reifen",
+            "value": "3.00 × 10 Tubeless"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "150 kg"
+          },
+          {
+            "label": "Steigung",
+            "value": "15%"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "2 Spiegel, Transportbox, Hupe, Alarm"
+          },
+          {
+            "label": "Maße",
+            "value": "1680 × 710 × 1050 mm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "55 kg (ohne Akku)"
+          }
+        ],
+        "details": "<ul><li>Auswechselbarer Akku — aufladen am Fahrzeug oder zu Hause</li><li>Transportbox hinten serienmäßig</li><li>Alarmanlage inklusive</li><li>USB-Ladeanschluss</li><li>CE/EEC zertifiziert, auf Radweg zugelassen</li><li>Vormontierte Lieferung (ca. 90%)</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p5",
+        "name": "48V 25Ah Lithium Akku (14s)",
+        "badge": "",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "48V 25Ah Lithium-Ionen-Akku — kompakt, wartungsfrei, kein Memory-Effekt. Ideal für E-Bikes und leichte E-Mopeds.",
+        "price": "€540,00",
+        "image": "uploads/etb-akku-li-48v-box.jpg",
+        "specs": [
+          "48V",
+          "25Ah",
+          "BMS",
+          ">1.200 Zyklen"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "48V"
+          },
+          {
+            "label": "Kapazität",
+            "value": "25Ah"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "32,5 × 14 × 8 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "7 kg"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": ">1.200 Zyklen"
+          }
+        ],
+        "details": "<ul><li>Wartungsfrei, auslaufsicher</li><li>Integrierter BMS-Schutz: Überspannung, Tiefentladung, Kurzschluss</li><li>Kein Memory-Effekt — jederzeit nachladbar</li><li>Geeignet für E-Bikes, E-Scooter, Elektromobile, Reha-Technik</li><li>Hinweis: nicht als Starterbatterie verwenden</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 3–5 Werktage."
+      },
+      {
+        "id": "p6",
+        "name": "Kuba M5 Elektro-Stadtauto",
+        "badge": "",
+        "category": "Kabinenroller",
+        "description": "Kompaktes Elektro-Stadtauto für den Alltag in Graz. Vollwertige Kabine, Fensterheber, MP3-Radio, Rückfahrkamera, Alarmanlage. An jeder Haushaltssteckdose laden.",
+        "price": "€5.490,00",
+        "image": "uploads/etb-kuba-grape-v2.png",
+        "specs": [
+          "3.000W",
+          "72V 58Ah",
+          "bis 70 km",
+          "25–45 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "3.000W konstant / 4.000W max."
+          },
+          {
+            "label": "Akku",
+            "value": "72V / 58Ah Bleigel"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 70 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "60V (Haushaltssteckdose)"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h (opt. 45 km/h)"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "236 kg"
+          },
+          {
+            "label": "Steigung",
+            "value": "20 %"
+          },
+          {
+            "label": "Reifen vorne",
+            "value": "F 130/60-13 Alufelge, Tubeless"
+          },
+          {
+            "label": "Reifen hinten",
+            "value": "R 135/70R12 Alufelge, Tubeless"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen"
+          },
+          {
+            "label": "Rückwärtsgang",
+            "value": "Ja"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "Fensterheber, MP3-Radio, Rückfahrkamera, Alarmanlage, Scheibenwischer, Hupe, Blinkanlage"
+          },
+          {
+            "label": "Montage",
+            "value": "Vormontiert geliefert (ca. 80%)"
+          }
+        ],
+        "details": "<ul><li>Vollwertige Kabine — Schutz vor Wind, Regen und Kälte</li><li>An jeder 230V Haushaltssteckdose laden</li><li>Rückfahrkamera und Alarmanlage serienmäßig</li><li>Fensterheber elektrisch</li><li>MP3-Radio mit Bluetooth</li><li>Scheibenwischer</li><li>25 km/h Version: kein Führerschein (ab 45 km/h: AM/A1)</li><li>EEC-zertifiziert, steuerfrei</li></ul>",
+        "delivery": "Lieferung frei Haus, 10–14 Werktage. Persönliche Einweisung und Probefahrt in Graz."
+      },
+      {
+        "id": "p34",
+        "name": "Futura TWO Kabinenroller",
+        "badge": "Online Only",
+        "category": "Kabinenroller",
+        "description": "Zweisitziger Elektro-Kabinenroller als echte Auto-Alternative. 45 km/h, bis 120 km Reichweite mit 2 Akkus. Steuerfrei, Versicherung ab ~€60/Jahr, ~€1,10 Strom pro 100 km.",
+        "price": "€7.099,00",
+        "image": "https://d2j6dbq0eux0bg.cloudfront.net/images/98192009/products/810761832/5535070268.jpg",
+        "images": [
+          "https://d2j6dbq0eux0bg.cloudfront.net/images/98192009/products/810761832/5535070268.jpg",
+          "https://d2j6dbq0eux0bg.cloudfront.net/images/98192009/products/810761798/5535038613.png"
+        ],
+        "specs": [
+          "45 km/h",
+          "1.500W/2.000W",
+          "bis 120 km",
+          "2 Sitzplätze"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "1.500W konstant / 2.000W max."
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 52Ah Lithium-Ion (herausnehmbar)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 60 km (mit 2 Akkus: bis 120 km)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–5 Stunden (10Ah Schnellladegerät)"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Sitzplätze",
+            "value": "2 (Fahrersitz + 65 cm Rückbank)"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "2,30 × 1,07 × 1,50 m"
+          },
+          {
+            "label": "Gewicht",
+            "value": "200 kg"
+          },
+          {
+            "label": "Zuladung",
+            "value": "250 kg"
+          },
+          {
+            "label": "Reifen",
+            "value": "F 130/60-13 und R 135/70R12 (Alufelgen)"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Hydraulische Scheibenbremsen v+h + Handbremse"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "20 %"
+          },
+          {
+            "label": "Rückwärtsgang",
+            "value": "Ja"
+          },
+          {
+            "label": "Zulassung",
+            "value": "EEC (StVZO)"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "BT-MP3-Radio, Freisprechanlage, Fensterheber, Alarmanlage, Parksensoren, Rückfahrkamera, Scheibenwaschanlage"
+          },
+          {
+            "label": "Versicherung",
+            "value": "ca. €60/Jahr"
+          },
+          {
+            "label": "Stromkosten",
+            "value": "ca. €1,10 pro 100 km"
+          }
+        ],
+        "details": "<ul><li>Echter Auto-Ersatz: Lenkrad, Kabine, 2 Sitze — für Stadtfahrten</li><li>Herausnehmbarer Li-Akku (ca. 12 kg, 2 Tragegriffe) — in der Wohnung laden</li><li>Optionaler zweiter Akku unter der Rückbank → 120 km Reichweite</li><li>Hydraulische Scheibenbremsen vorne und hinten + Handbremse</li><li>Digitaltacho mit Geschwindigkeit und Ladezustandsanzeige</li><li>Steuerfrei, keine Hauptuntersuchung, Versicherung ab ~€60/Jahr</li><li>EEC-Zulassung (StVZO-konform), Führerschein Klasse AM oder A1</li></ul>",
+        "delivery": "Lieferung frei Haus, 10–14 Werktage. Persönliche Einweisung in Graz."
+      },
+      {
+        "id": "p7",
+        "name": "Bleigel Akku 12V 20Ah AGM",
+        "badge": "",
+        "category": "Akkus",
+        "subcategory": "sub-bat-agm",
+        "description": "Zuverlässige AGM-Bleigel-Batterie 12V 20Ah. Wartungsfrei, versiegelt — von E-Scootern bis Seniorenmobilen.",
+        "price": "€75,00",
+        "image": "uploads/etb-akku-48v.jpg",
+        "specs": [
+          "12V",
+          "20Ah",
+          "AGM",
+          "wartungsfrei"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "AGM / Bleigel"
+          },
+          {
+            "label": "Spannung",
+            "value": "12V"
+          },
+          {
+            "label": "Kapazität",
+            "value": "20Ah"
+          },
+          {
+            "label": "Anschluss",
+            "value": "F11 (M6)"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "181 × 76 × 167 mm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "6,9 kg"
+          }
+        ],
+        "details": "<ul><li>VRLA-versiegelt — auslaufsicher, lageunabhängig</li><li>Anwendungen: E-Scooter, Seniorenmobile, Rollstühle, Elektroboote, Solar, Wohnwagen, Windenergie</li><li>Kein Memory-Effekt</li><li>Wartungsfreier Betrieb</li><li>CE-zertifiziert</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 2–4 Werktage."
+      },
+      {
+        "id": "p8",
+        "name": "Bikely E-Moped 45 km/h",
+        "badge": "Neu",
+        "category": "E-Scooter 45 km/h",
+        "description": "3000W und 120 km Reichweite: das Bikely E-Moped fährt weiter als die meisten Stadtautos — Topcase, LED und L3e-Straßenzulassung direkt ab Werk.",
+        "price": "auf Anfrage",
+        "image": "uploads/etb-bikely-moped-45.jpg",
+        "specs": [
+          "45 km/h",
+          "Topcase",
+          "LED",
+          "StVO"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "60V 3000W"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 120 km"
+          },
+          {
+            "label": "Akkukapazität",
+            "value": "72V 20Ah"
+          },
+          {
+            "label": "Batterietyp",
+            "value": "Li-Ion / Bleigel"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–7 Stunden"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "60V / 3A"
+          },
+          {
+            "label": "Reifen",
+            "value": "Vorderrad 17 Zoll · Hinterrad 13 Zoll Tubeless"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen / Trommelbremsen"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "149 kg"
+          },
+          {
+            "label": "Steigung",
+            "value": "20%"
+          },
+          {
+            "label": "Gewicht",
+            "value": "96 kg"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "2 Rückspiegel"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE/EEC · L3e · StVO-konform"
+          },
+          {
+            "label": "Führerschein",
+            "value": "Klasse A1 oder AM"
+          }
+        ],
+        "details": "<ul><li>3000W Motor für kraftvollen Chopper-Antrieb</li><li>Harley-Davidson Chopper-Silhouette im Elektromotorrad</li><li>Bis 120 km Reichweite</li><li>Erhältlich in Schwarz und Rot</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Förderfähig: bis zu €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz möglich."
+      },
+      {
+        "id": "p9",
+        "name": "RKS Fat Fold E-Bike",
+        "badge": "",
+        "category": "Mountain E-Bikes",
+        "description": "Hydraulische Shimano-Scheibenbremsen, 20\" × 4.0\" Ballonreifen und faltbarer Alurahmen — kommt auf Schnee, Sand und Kopfsteinpflaster genauso sicher an wie auf dem Radweg.",
+        "price": "auf Anfrage",
+        "image": "uploads/etb-rks-fat-grey.png",
+        "specs": [
+          "Fat Tire",
+          "faltbar",
+          "250W",
+          "25 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Reifengröße",
+            "value": "20\" × 4.0 Fat Tire"
+          },
+          {
+            "label": "Motor",
+            "value": "250W Heckmotor"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Rahmen",
+            "value": "Aluminium, faltbar"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Hydraulische Scheibenbremsen"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano 7-Gang"
+          }
+        ],
+        "details": "<ul><li>Geländetauglich durch breite 4.0\" Fat Tires</li><li>Faltbar für einfachen Transport</li><li>LED-Beleuchtung vorne und hinten</li><li>Gefederte Vorderradgabel</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 7–10 Werktage."
+      },
+      {
+        "id": "p10",
+        "name": "Retro Fat E-Bike",
+        "badge": "",
+        "category": "Mountain E-Bikes",
+        "description": "750W Mittelmotor, 45 km/h, 4.0\" Fat Tires: sieht aus wie ein Café-Racer aus den 70ern — und klettert jeden Hügel mit 48V/20Ah im Rücken.",
+        "price": "auf Anfrage",
+        "image": "uploads/etb-retro-fatbike.jpg",
+        "specs": [
+          "Fat Tire",
+          "Retro",
+          "750W",
+          "45 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Reifengröße",
+            "value": "20\" × 4.0 Fat Tire"
+          },
+          {
+            "label": "Motor",
+            "value": "750W Mittelmotor"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Akku",
+            "value": "48V / 20Ah"
+          },
+          {
+            "label": "Design",
+            "value": "Retro-Motorrad-Stil"
+          },
+          {
+            "label": "Beleuchtung",
+            "value": "LED Frontscheinwerfer"
+          }
+        ],
+        "details": "<ul><li>Retro-Motorrad-Design mit modernem Antrieb</li><li>Großer LED-Frontscheinwerfer</li><li>Bequemer Doppel-Sattel</li><li>Vollgefedert</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Lieferzeit 7–10 Werktage."
+      },
+      {
+        "id": "p11",
+        "name": "Elektro-Minicar L6e",
+        "badge": "",
+        "category": "E-Seniorenmobil",
+        "description": "Vier Räder, zwei Sitze, vollständige Kabine, 80 km Reichweite — wettergeschützt wie ein Auto, braucht aber nur den AM-Führerschein (L6e).",
+        "price": "auf Anfrage",
+        "image": "uploads/etb-eauto-side.jpg",
+        "specs": [
+          "45 km/h",
+          "4-rädrig",
+          "Kabine",
+          "L6e"
+        ],
+        "specsTable": [
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Antrieb",
+            "value": "4-rädrig, elektrisch"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 80 km"
+          },
+          {
+            "label": "Kabine",
+            "value": "vollständig geschlossen"
+          },
+          {
+            "label": "Zulassung",
+            "value": "L6e / L7e"
+          },
+          {
+            "label": "Sitzplätze",
+            "value": "2"
+          }
+        ],
+        "details": "<ul><li>Vollständig geschlossene Kabine mit Windschutzscheibe</li><li>Heizung erhältlich</li><li>Türen mit Fenster</li><li>Zugelassen für öffentlichen Straßenverkehr</li></ul>",
+        "delivery": "Lieferung und persönliche Einweisung in Graz. Termin nach Vereinbarung."
+      },
+      {
+        "id": "p12",
+        "name": "48V 24Ah Lithium Akku",
+        "badge": "",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "48V 24Ah Lithium-Ionen-Akku mit BMS 100A. Passend für Volta VSX, RKS R8, Lofty-Modelle und TailG Scooter.",
+        "price": "€490,00",
+        "image": "uploads/etb-akku-li-48v-box.jpg",
+        "specs": [
+          "48V",
+          "24Ah",
+          "BMS 100A",
+          "14S 1P"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "48V (14S 1P)"
+          },
+          {
+            "label": "Kapazität",
+            "value": "24Ah"
+          },
+          {
+            "label": "Ladespannung max.",
+            "value": "58,8V"
+          },
+          {
+            "label": "Entladeschutz",
+            "value": "40V"
+          },
+          {
+            "label": "Ladestrom max.",
+            "value": "8A"
+          },
+          {
+            "label": "BMS",
+            "value": "100A"
+          },
+          {
+            "label": "Anschluss",
+            "value": "M23"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "58,8V / 5A"
+          },
+          {
+            "label": "Display",
+            "value": "Ja"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "32,5 × 14 × 8 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "7 kg"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": ">1.200 Zyklen"
+          },
+          {
+            "label": "Passende Modelle",
+            "value": "Volta VSX, RKS R8, Lofty Modelle, TailG Scooter, RKS REE1500"
+          }
+        ],
+        "details": "<ul><li>BMS 100A: Schutz vor Überspannung, Tiefentladung und Kurzschluss</li><li>Integriertes Display für Ladezustandsanzeige</li><li>Kein Memory-Effekt — jederzeit nachladbar</li><li>Kompatibel mit Volta VSX, VPLTA VSM, RKS R8, Lofty COUCH 16, FALCON 11, Maximus, TailG, RKS REE1500</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 3–5 Werktage."
+      },
+      {
+        "id": "p13",
+        "name": "Bikely E-Chopper HL 6.0",
+        "badge": "Neu",
+        "category": "E-Scooter 45 km/h",
+        "description": "Kraftvoller Chopper-style E-Moped mit Harley-Silhouette. 3000W, 45 km/h, Straßenzulassung.",
+        "price": "€2.599,00",
+        "image": "uploads/etb-chopper-black.jpg",
+        "images": [
+          "uploads/etb-chopper-black.jpg",
+          "uploads/etb-chopper-black-side.jpg",
+          "uploads/etb-chopper-red.jpg"
+        ],
+        "specs": [
+          "45 km/h",
+          "2000W",
+          "Chopper-Style",
+          "StVO"
+        ],
+        "specsTable": [
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Motor",
+            "value": "2000W BLDC"
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 20Ah Lithium"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 60 km"
+          },
+          {
+            "label": "Zulassung",
+            "value": "L3e, StVO-konform"
+          },
+          {
+            "label": "Führerschein",
+            "value": "Klasse A1 oder AM"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Hydraulische Scheibenbremsen"
+          },
+          {
+            "label": "Reifen",
+            "value": "140/70-12 vorne und hinten"
+          }
+        ],
+        "details": "<ul><li>Harley-Davidson Chopper-Silhouette im Elektromotorrad</li><li>Vollständige österreichische Straßenzulassung</li><li>EEC-zertifiziert</li><li>LED-Scheinwerfer rundherum</li><li>Alarmanlage inklusive</li><li>Erhältlich in Schwarz und Rot</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung und Probefahrt in Graz."
+      },
+      {
+        "id": "p14",
+        "name": "Ape Ryder BABOON",
+        "badge": "",
+        "category": "City E-Bikes",
+        "description": "Retro Fat-Bike mit 20\" × 4.5\" Kenda-Reifen, TEKTRO Hydraulikbremsen und Dual-Suspension. 48–96 km Reichweite.",
+        "price": "€1.490,00",
+        "image": "uploads/etb-ape-ryder-tan.jpg",
+        "specs": [
+          "4.5\" Fat Tire",
+          "48V 20Ah",
+          "bis 96 km",
+          "TEKTRO Hydraulik"
+        ],
+        "specsTable": [
+          {
+            "label": "Akku",
+            "value": "48V / 20Ah"
+          },
+          {
+            "label": "Geschwindigkeit",
+            "value": "32 km/h (20 mph)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "48–96 km (30–60 Meilen)"
+          },
+          {
+            "label": "Reifen",
+            "value": "20\" × 4.5\" Kenda Fat Tire"
+          },
+          {
+            "label": "Räder",
+            "value": "20\" Aluminium"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano TX50, 7-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "TEKTRO Hydraulisch"
+          },
+          {
+            "label": "Federung",
+            "value": "Doppelte Vorderrad- & einfache Hinterradfederung"
+          },
+          {
+            "label": "Display",
+            "value": "M5, LCD-Mittelanzeige"
+          },
+          {
+            "label": "Rahmen",
+            "value": "Durchstiegrahmen (Straddle Type)"
+          },
+          {
+            "label": "Frontlicht",
+            "value": "48V LED"
+          },
+          {
+            "label": "Rücklicht",
+            "value": "LED-Bremslicht"
+          },
+          {
+            "label": "Maße",
+            "value": "106 × 165 × 104 cm"
+          }
+        ],
+        "details": "<ul><li>All-Terrain Fat-Bike — Stadt, Strand, Trail</li><li>TEKTRO Hydraulikbremsen für maximale Bremsleistung</li><li>Dual-Suspension für komfortables Fahren auf jedem Untergrund</li><li>Pro Wheel Kurbelgarnitur PRO-546PP-3</li><li>CE-zertifiziert, führerscheinfrei</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Lieferzeit 7–10 Werktage."
+      },
+      {
+        "id": "p25",
+        "name": "Ape Ryder GIBBON",
+        "badge": "Premium",
+        "category": "City E-Bikes",
+        "description": "Premium Fat-Bike mit 500W Motor, 48V 20Ah Akku und bis 96 km Reichweite. TEKTRO Hydraulik, Dual-Suspension.",
+        "price": "€1.890,00",
+        "image": "uploads/etb-ape-ryder-black.jpg",
+        "specs": [
+          "500W",
+          "4.5\" Fat Tire",
+          "bis 96 km",
+          "Premium"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "500W"
+          },
+          {
+            "label": "Akku",
+            "value": "48V / 20Ah"
+          },
+          {
+            "label": "Geschwindigkeit",
+            "value": "32 km/h (20 mph)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "48–96 km (30–60 Meilen)"
+          },
+          {
+            "label": "Reifen",
+            "value": "20\" × 4.5\" Kenda Fat Tire"
+          },
+          {
+            "label": "Räder",
+            "value": "20\" Aluminium"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano TX50, 7-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "TEKTRO Hydraulisch"
+          },
+          {
+            "label": "Federung",
+            "value": "Dual Front & Single Back Suspension"
+          },
+          {
+            "label": "Display",
+            "value": "M5, LCD-Mittelanzeige"
+          },
+          {
+            "label": "Rahmen",
+            "value": "Straddle Type"
+          },
+          {
+            "label": "Maße",
+            "value": "106 × 165 × 104 cm"
+          }
+        ],
+        "details": "<ul><li>500W Motor für kraftvolle Fahrunterstützung</li><li>All-Terrain Fat-Bike — Stadt, Strand, Offroad</li><li>TEKTRO Hydraulikbremsen</li><li>Dual-Suspension für maximalen Fahrkomfort</li><li>CE-zertifiziert, führerscheinfrei</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Lieferzeit 7–10 Werktage."
+      },
+      {
+        "id": "p15",
+        "name": "Dreirad E-Mobil",
+        "badge": "",
+        "category": "E-Seniorenmobil",
+        "description": "800W, Rückwärtsgang und barrierefrei niedriger Einstieg: das stabile Dreirad mit integriertem Frontkorb kommt überall hin — und macht aus jedem Einkauf ein Vergnügen.",
+        "price": "auf Anfrage",
+        "image": "uploads/etb-dreirad-3q.png",
+        "images": [
+          "uploads/etb-dreirad-3q.png",
+          "uploads/etb-dreirad-side.png",
+          "uploads/etb-dreirad-front.png"
+        ],
+        "specs": [
+          "3-rädrig",
+          "25 km/h",
+          "Vordersitz",
+          "CE"
+        ],
+        "specsTable": [
+          {
+            "label": "Antrieb",
+            "value": "3-rädrig, elektrisch"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Motor",
+            "value": "800W BLDC"
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 20Ah Lithium"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 50 km"
+          },
+          {
+            "label": "Rückwärtsgang",
+            "value": "Ja"
+          },
+          {
+            "label": "Einstiegshöhe",
+            "value": "niedrig, barrierefrei"
+          },
+          {
+            "label": "Gepäckkorb",
+            "value": "vorne, integriert"
+          }
+        ],
+        "details": "<ul><li>Stabiles 3-Rad-Design für maximale Sicherheit</li><li>Niedriger Einstieg für einfaches Auf- und Absteigen</li><li>Rückwärtsgang für enge Stellen</li><li>Doppel-Sitz mit Rückenlehne</li><li>Frontkorb für Einkäufe</li><li>EEC/CE-zertifiziert</li></ul>",
+        "delivery": "Lieferung frei Haus, 7–14 Werktage. Probefahrt und Einweisung in Graz."
+      },
+      {
+        "id": "p16",
+        "name": "Kabinenmobil X3 Kuber",
+        "badge": "Premium",
+        "category": "Kabinenroller",
+        "description": "Bis 60 km, zwei Sitze, klappbare Windschutzscheibe und Rückwärtsgang: das Kabinenmobil schützt ganzjährig vor Regen und Kälte — für alle, die kein Auto brauchen, aber auch keinen Regen wollen.",
+        "price": "auf Anfrage",
+        "image": "uploads/etb-kabinenmobil-x3.png",
+        "specs": [
+          "Kabine",
+          "3-rädrig",
+          "25 km/h",
+          "wetterfest"
+        ],
+        "specsTable": [
+          {
+            "label": "Antrieb",
+            "value": "3-rädrig, elektrisch"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 60 km"
+          },
+          {
+            "label": "Überdachung",
+            "value": "vollständig, wetterfest"
+          },
+          {
+            "label": "Windschutzscheibe",
+            "value": "Ja, klappbar"
+          },
+          {
+            "label": "Sitzplätze",
+            "value": "2 (Fahrer + Beifahrer)"
+          },
+          {
+            "label": "Rückwärtsgang",
+            "value": "Ja"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE/EEC"
+          }
+        ],
+        "details": "<ul><li>Vollüberdachte Kabine mit Dach und Seitenscheiben</li><li>Klappbare Windschutzscheibe</li><li>Doppelbesetzung möglich</li><li>Rückwärtsgang und niedriger Einstieg</li><li>Ideal für Regen und Kälte</li><li>Ladekontrollanzeige am Armaturenbrett</li></ul>",
+        "delivery": "Lieferung und Einweisung in Graz. Terminvereinbarung erforderlich."
+      },
+      {
+        "id": "p35",
+        "name": "Futura 3.0 Kabinenroller",
+        "badge": "",
+        "category": "Kabinenroller",
+        "description": "Vollüberdachter 2-Sitzer für Stadt und Pendlerweg — der Nachfolger der Futura 2. Kein TÜV, keine Steuer, Versicherung ab ~€50/Jahr. Als 25 oder 45 km/h Version erhältlich.",
+        "price": "€7.099,00",
+        "image": "uploads/etb-kabinenmobil-x3.png",
+        "specs": [
+          "1.500W/2.000W",
+          "60V 58Ah",
+          "bis 60 km",
+          "25/45 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "1.500W konstant / 2.000W max."
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 58Ah Bleigel (herausnehmbar)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 60 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6 Stunden (Haushaltssteckdose)"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h oder 45 km/h (wählbar)"
+          },
+          {
+            "label": "Sitzplätze",
+            "value": "2 (Fahrer + 65 cm Rückbank)"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "2,30 × 1,20 × 1,50 m"
+          },
+          {
+            "label": "Gewicht",
+            "value": "270 kg"
+          },
+          {
+            "label": "Zuladung",
+            "value": "250 kg"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "20 %"
+          },
+          {
+            "label": "Reifen",
+            "value": "F 130/60-13 und R 135/70R12 (Alufelgen)"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Hydraulische Scheibenbremsen v+h + Handbremse"
+          },
+          {
+            "label": "Rückwärtsgang",
+            "value": "Ja"
+          },
+          {
+            "label": "Zulassung",
+            "value": "EEC (StVZO-konform)"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "MP3-Radio, Fensterheber, Alarmanlage, Rückfahrkamera, Scheibenwischer"
+          },
+          {
+            "label": "Versicherung",
+            "value": "ca. €50/Jahr"
+          },
+          {
+            "label": "Stromkosten",
+            "value": "ca. €1,80 pro 100 km"
+          }
+        ],
+        "details": "<ul><li>Vollwertige Kabine — Schutz vor Wind, Regen und Kälte</li><li>25 km/h Version: führerscheinfrei möglich (Klasse AM, je nach Geburtsjahr)</li><li>45 km/h Version: Führerschein Klasse AM oder A1</li><li>Kein TÜV, keine Steuer, keine Helmpflicht</li><li>Haftpflichtversicherung ab ~€50/Jahr — mitgelieferte EEC-Papiere</li><li>Herausnehmbarer Akku — in der Wohnung oder im Fahrzeug laden</li><li>Hydraulische Scheibenbremsen v+h, Handbremse, Digitaltacho</li><li>Rückfahrkamera, Fensterheber, MP3-Radio, Alarmanlage, Scheibenwischer</li><li>Komplett aufgebaut geliefert — Liefertermin nach Absprache</li></ul>",
+        "delivery": "Lieferung frei Haus, vollständig aufgebaut. Lieferzeit 10–14 Werktage. Probefahrt und Einweisung in Graz."
+      },
+      {
+        "id": "p36",
+        "name": "Kabinenroller Cruise Li",
+        "badge": "Bestseller",
+        "category": "Kabinenroller",
+        "description": "Der modernste Kabinenroller im Sortiment — drehbarer Fahrersitz für leichtes Einsteigen, 2.200W, bis 140 km mit 2 Akkus. Ideal auch für Menschen mit eingeschränkter Mobilität.",
+        "price": "€6.099,00",
+        "image": "uploads/etb-kabinenmobil-x3.png",
+        "specs": [
+          "2.200W/3.000W",
+          "60V 60Ah Li",
+          "bis 140 km",
+          "25/45 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "2.200W konstant / 3.000W max."
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 60Ah Lithium (19 kg, herausnehmbar)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 70 km (mit 2 Akkus: bis 140 km)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "5–6 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h oder 45 km/h (wählbar)"
+          },
+          {
+            "label": "Sitzplätze",
+            "value": "2 (drehbarer Fahrersitz + 65 cm Rückbank)"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "2,32 × 1,20 × 1,63 m"
+          },
+          {
+            "label": "Gewicht",
+            "value": "269 kg"
+          },
+          {
+            "label": "Zuladung",
+            "value": "244 kg"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "20 %"
+          },
+          {
+            "label": "Reifen",
+            "value": "F 130/60-13 und R 135/70R12 (Alufelgen)"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Hydraulische Scheibenbremsen v+h + Handbremse"
+          },
+          {
+            "label": "Rückwärtsgang",
+            "value": "Ja"
+          },
+          {
+            "label": "Stauraum",
+            "value": "Unter dem Sitz"
+          },
+          {
+            "label": "Zulassung",
+            "value": "EEC (StVZO-konform)"
+          },
+          {
+            "label": "Lieferumfang",
+            "value": "E-Mobil, COC Dokument, Ladegerät"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "BT-MP3-Radio, Fensterheber, Alarmanlage, Rückfahrkamera, Scheibenwischer"
+          },
+          {
+            "label": "Versicherung",
+            "value": "ca. €50/Jahr"
+          }
+        ],
+        "details": "<ul><li>Drehbarer Fahrersitz — erleichtert das Einsteigen, auch mit Geheinschränkungen</li><li>Alle Steuerungselemente im Lenker integriert — barrierearme Bedienung</li><li>1 Akku: bis 70 km Reichweite — 2 Akkus: bis 140 km</li><li>Herausnehmbarer Li-Akku — in der Wohnung oder im Fahrzeug laden</li><li>Hydraulische Scheibenbremsen v+h + Handbremse, Digitaltacho</li><li>Bluetooth-Radio, Rückfahrkamera, Fensterheber, Alarmanlage, Scheibenwischer</li><li>Kein TÜV, keine Steuer, Versicherung ab ~€50/Jahr (EEC-Papiere inklusive)</li><li>25 km/h oder 45 km/h Version — Führerschein AM oder A1 für 45 km/h</li></ul>",
+        "delivery": "Lieferung frei Haus, vollständig aufgebaut. Lieferzeit 10–14 Werktage. Probefahrt in Graz."
+      },
+      {
+        "id": "p37",
+        "name": "Kabinenroller \"Electron\"",
+        "badge": "",
+        "category": "Kabinenroller",
+        "description": "Vollüberdachter 2-Sitzer mit drehbarem Fahrersitz — einfaches Einsteigen auch mit Geheinschränkungen. 2.200W, wahlweise mit Li- oder Bleigel-Akku. Bis 140 km Reichweite mit 2 Li-Akkus. Kein TÜV, keine Steuer.",
+        "price": "€6.099,00",
+        "image": "uploads/etb-kabinenmobil-x3.png",
+        "specs": [
+          "2.200W/3.000W",
+          "60V Li / Bleigel",
+          "bis 140 km (2 Akkus)",
+          "25/45 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "2.200W konstant / 3.000W max."
+          },
+          {
+            "label": "Akku Li",
+            "value": "60V / 60Ah Lithium — 1×: bis 70 km, 2×: bis 140 km"
+          },
+          {
+            "label": "Akku Bleigel",
+            "value": "60V / 58Ah — bis 60 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "5–6 Stunden (Haushaltssteckdose)"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h oder 45 km/h (wählbar)"
+          },
+          {
+            "label": "Sitzplätze",
+            "value": "2 (drehbarer Fahrersitz + 65 cm Rückbank)"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "2,32 × 1,20 × 1,63 m"
+          },
+          {
+            "label": "Gewicht",
+            "value": "325 kg"
+          },
+          {
+            "label": "Zuladung",
+            "value": "236 kg"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "20 %"
+          },
+          {
+            "label": "Reifen",
+            "value": "F130/60-13 und R135/70R12 (Alufelgen, Tubeless)"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Hydraulische Scheibenbremsen"
+          },
+          {
+            "label": "Rückwärtsgang",
+            "value": "Ja"
+          },
+          {
+            "label": "Zulassung",
+            "value": "EEC (Papiere inklusive)"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "MP3-Radio, Fensterheber, Alarmanlage, Rückfahrkamera, Scheibenwischer, Stauraum unter Sitz"
+          },
+          {
+            "label": "Versicherung",
+            "value": "ca. €50/Jahr"
+          },
+          {
+            "label": "Stromkosten",
+            "value": "ca. €1,80 pro 100 km"
+          }
+        ],
+        "details": "<ul><li>Drehbarer Fahrersitz — leichtes Einsteigen auch mit eingeschränkter Mobilität</li><li>Wählbar: Lithium- oder Bleigel-Akku — bis 70 km (1 Li), bis 140 km (2 Li-Akkus)</li><li>25 km/h oder 45 km/h Version, EEC-Papiere inklusive</li><li>Kein TÜV, keine Steuer, Versicherung ab ~€50/Jahr</li><li>Haushaltssteckdose, Ladezeit 5–6 h</li><li>Hydraulische Scheibenbremsen, Rückfahrkamera, Alarmanlage, Scheibenwischer</li><li>Stabile Breitspur (120 cm) für sichere Straßenlage</li></ul>",
+        "delivery": "Lieferung frei Haus, vollständig aufgebaut. Lieferzeit 10–14 Werktage. Probefahrt in Graz."
+      },
+      {
+        "id": "p38",
+        "name": "TailG Feidu E-Dreirad",
+        "badge": "",
+        "category": "E-Seniorenmobil",
+        "description": "Stabiles 3-Rad Elektromobil für den Alltag — niedrige Einstiegshöhe, sanfte Federung, intuitives Lenker-Handling. 500W, 25 km/h, bis 50 km Reichweite. Keine Anmeldung, kein Parkproblem.",
+        "price": "€2.490,00",
+        "image": "uploads/etb-dreirad-3q.png",
+        "images": [
+          "uploads/etb-dreirad-3q.png",
+          "uploads/etb-dreirad-side.png",
+          "uploads/etb-dreirad-front.png"
+        ],
+        "specs": [
+          "500W",
+          "60V 20Ah",
+          "bis 50 km",
+          "25 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "500W Nennleistung"
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 20Ah"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 50 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Trommel vorne und hinten"
+          },
+          {
+            "label": "Reifen",
+            "value": "3.0-10"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "1.480 × 760 × 1.020 mm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "120 kg"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE — keine Anmeldung erforderlich"
+          }
+        ],
+        "details": "<ul><li>3-Rad-Bauweise für maximale Standsicherheit — kein Balancieren nötig</li><li>Sanfte Federung und ergonomischer Sitz mit Rückenlehne</li><li>25 km/h — keine Anmeldung, kein Parkproblem</li><li>60V 20Ah Akku — in 6–8h an der Haushaltssteckdose</li><li>Kompakte Maße, ideal für Stadtfahrten und Einkäufe</li><li>Lieferung vollständig aufgebaut</li></ul>",
+        "delivery": "Lieferung frei Haus, vollständig aufgebaut. Lieferzeit 2–14 Werktage."
+      },
+      {
+        "id": "p39",
+        "name": "Kuba GRAPE 25 E-Dreirad",
+        "badge": "Bestseller",
+        "category": "E-Seniorenmobil",
+        "description": "Premium E-Dreirad mit Schutzdach — ideal für Senioren und alle, die auf ein stabiles, wetterfestes Elektromobil setzen. 500W, bis 225 km Reichweite (78Ah Akku), Scheibenbremse vorne.",
+        "price": "€1.390,00",
+        "image": "uploads/etb-kuba-grape-v2.png",
+        "images": [
+          "uploads/etb-kuba-grape-v2.png",
+          "uploads/etb-kuba-grape.png"
+        ],
+        "specs": [
+          "500W/1.500W",
+          "60V 40Ah oder 78Ah",
+          "bis 225 km",
+          "25 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "500W konstant / 1.500W max."
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 40Ah (bis 110 km) oder 60V / 78Ah (bis 225 km)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "5–7 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "16°"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse vorne / Trommel hinten"
+          },
+          {
+            "label": "Reifen",
+            "value": "3.00–8\" vorne und hinten"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "1.630 × 730 × 1.600 mm"
+          },
+          {
+            "label": "Maximale Tragfähigkeit",
+            "value": "175 kg"
+          }
+        ],
+        "details": "<ul><li>Robustes Schutzdach — Schutz vor Sonne und Regen</li><li>Scheibenbremse vorne für kurze, sichere Bremswege</li><li>Wahlweise 40Ah (110 km) oder 78Ah (225 km) Akku</li><li>Sitz mit Rückenlehne und großer Beinfreiheit</li><li>25 km/h — keine Anmeldung, kein Parkproblem</li><li>Stabile Dreirad-Bauweise, auch für Menschen mit eingeschränkter Balance</li><li>An der Haushaltssteckdose laden</li></ul>",
+        "delivery": "Lieferung frei Haus, vollständig aufgebaut. Lieferzeit 2–14 Werktage."
+      },
+      {
+        "id": "p40",
+        "name": "VITA CARE 4000",
+        "badge": "",
+        "category": "E-Seniorenmobil",
+        "description": "Vierrädriges Elektromobil mit explosionsgeschützten Duplexreifen, verschlossenem Stauraum und großem Heckkorb. Differentialgetriebe, Vor-/Rückwärtsgang, 25 km/h. Ideal für Einkäufe und kurze Strecken.",
+        "price": "€1.299,00",
+        "image": "uploads/etb-kabinenmobil-x3.png",
+        "specs": [
+          "1.000W",
+          "60V 20Ah Li/Gel",
+          "bis 75 km",
+          "25 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "48V / 1.000W mit Differentialgetriebe"
+          },
+          {
+            "label": "Akku",
+            "value": "60V / 20Ah Lithium-Ionen oder Gel"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 75 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6 Stunden (48V 4A Ladegerät)"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h (Sparmodus: 10 km/h)"
+          },
+          {
+            "label": "Getriebe",
+            "value": "Elektrisch, 3 Gänge, Vor-/Rückwärtsgang"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "14 %"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse vorne / Trommel hinten + Handbremse"
+          },
+          {
+            "label": "Reifen",
+            "value": "3.00-10 tubeless vorne und hinten"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "1,53 × 0,70 × 1,10 m"
+          },
+          {
+            "label": "Gewicht",
+            "value": "114 kg"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE / EEC — keine Anmeldung erforderlich"
+          }
+        ],
+        "details": "<ul><li>Vierrädriges Konzept — maximale Standsicherheit auf jedem Untergrund</li><li>Explosionsgeschützte Duplexreifen — pannensicher</li><li>Verschlossener Stauraum unter dem Sitz + breiter Heckkorb</li><li>Verstellbarer Kunstledersitz mit klappbaren Armlehnen für leichtes Ein-/Aussteigen</li><li>Differentialgetriebe mit 3 elektronischen Gängen — bewältigt Steigungen bis 14 %</li><li>Vor- und Rückwärtsgang, Handbremse fürs Parken an Steigungen</li><li>25 km/h, kein Führerschein (je nach Geburtsjahr), keine Anmeldung nötig</li><li>Typenzulassung (MA46) als optionaler Service erhältlich — bitte anfragen</li></ul>",
+        "delivery": "Lieferung frei Haus. Lieferzeit 8–14 Werktage."
+      },
+      {
+        "id": "p41",
+        "name": "Kuba Optimus Ultra",
+        "badge": "",
+        "category": "E-Seniorenmobil",
+        "description": "Kompaktes 3-Rad Elektromobil mit 72V Antrieb und bis zu 344 kg Gesamtzuladung. Scheibenbremse vorne, 25–45 km/h Version erhältlich, EEC-zugelassen. Perfekt für Pendeln und Einkäufe.",
+        "price": "€1.890,00",
+        "image": "uploads/etb-kuba-grape-v2.png",
+        "specs": [
+          "650W/1.000W",
+          "72V 20Ah",
+          "bis 50 km",
+          "25/45 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "650W konstant / 1.000W max."
+          },
+          {
+            "label": "Akku",
+            "value": "72V / 20Ah (fest verbaut)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "30–50 km"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "35–50 km/h (25 oder 45 km/h Version)"
+          },
+          {
+            "label": "Drehmoment",
+            "value": "176 Nm"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "12°"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse vorne / Trommel hinten"
+          },
+          {
+            "label": "Vorderreifen",
+            "value": "3.00–10 schlauchlos"
+          },
+          {
+            "label": "Hinterreifen",
+            "value": "3.00–8 schlauchlos"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "2.200 × 860 × 1.100 mm"
+          },
+          {
+            "label": "Zuladung",
+            "value": "344 kg (Gesamtzuladung inkl. Fahrer)"
+          },
+          {
+            "label": "Zulassung",
+            "value": "EEC / StVZO-konform"
+          }
+        ],
+        "details": "<ul><li>72V Antrieb mit 176 Nm — bewältigt Steigungen bis 12°</li><li>Scheibenbremse vorne für kurze, sichere Bremswege</li><li>25 oder 45 km/h Version — EEC-Papiere inklusive</li><li>344 kg Gesamtzuladung — auch mit Gepäck oder Begleitperson</li><li>Schlauchlose Reifen v+h — pannensicher</li><li>Kein TÜV, keine Steuer (bei 25 km/h Version)</li></ul>",
+        "delivery": "Lieferung frei Haus. Lieferzeit 2–14 Werktage. Probefahrt in Graz möglich."
+      },
+      {
+        "id": "p42",
+        "name": "Kuba E-KAMYONET Kleintransporter",
+        "badge": "Neu",
+        "category": "E-Transporter",
+        "description": "676 kg Nutzlast, Vollkabine, EU-Typgenehmigung — das meistunterschätzte Fahrzeug im Sortiment. 1.000W/3.000W, 72V 58Ah, bis 80 km. Perfekt für Gemeinden, Lieferdienste und Gewerbebetriebe.",
+        "price": "€3.490,00",
+        "image": "uploads/etb-kabinenmobil-x3.png",
+        "specs": [
+          "1.000W/3.000W",
+          "72V 58Ah",
+          "60–80 km",
+          "25/45 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "1.000W Dauer / 3.000W max."
+          },
+          {
+            "label": "Akku",
+            "value": "72V / 58Ah"
+          },
+          {
+            "label": "Reichweite",
+            "value": "60–80 km (je nach Beladung)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden (110V/220V Haushaltssteckdose)"
+          },
+          {
+            "label": "Energieverbrauch",
+            "value": "65 Wh/km"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 oder 45 km/h (wählbar)"
+          },
+          {
+            "label": "Drehmoment",
+            "value": "25,4 Nm"
+          },
+          {
+            "label": "Steigfähigkeit",
+            "value": "18°"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse vorne und hinten"
+          },
+          {
+            "label": "Reifen",
+            "value": "V: 3.75-12 66J / H: 4.00-12 72J"
+          },
+          {
+            "label": "Fahrzeuglänge",
+            "value": "3.100 mm"
+          },
+          {
+            "label": "Breite",
+            "value": "1.100 mm"
+          },
+          {
+            "label": "Höhe",
+            "value": "1.700 mm"
+          },
+          {
+            "label": "Radstand",
+            "value": "2.040 mm"
+          },
+          {
+            "label": "Ladefläche",
+            "value": "1.410 × 920 × 300 mm"
+          },
+          {
+            "label": "Eigengewicht",
+            "value": "270 kg"
+          },
+          {
+            "label": "Nutzlast",
+            "value": "676 kg"
+          },
+          {
+            "label": "Zulassung",
+            "value": "EU-Typgenehmigung — sofort einsatzbereit in Österreich"
+          }
+        ],
+        "details": "<ul><li>676 kg Nutzlast — mehr als die meisten Kleintransporter im Segment</li><li>Vollständige Fahrerkabine — auch bei Regen und Kälte einsatzbereit</li><li>EU-Typgenehmigung: keine Sonderzulassung nötig, sofort auf österreichischen Straßen legal</li><li>25 oder 45 km/h Version — EEC-Papiere inklusive</li><li>18° Steigfähigkeit — auch auf Rampen und in hügeligem Gelände</li><li>65 Wh/km Verbrauch — extrem niedrige Betriebskosten</li><li>Ideal für: Gemeinden, Hausmeisterdienste, Gartenbetriebe, Lieferdienste, Gastronomie</li><li>Scheibenbremsen vorne und hinten, robuste 12\"-Reifen</li></ul>",
+        "delivery": "Lieferung frei Haus. Lieferzeit auf Anfrage. Für gewerbliche Anfragen bitte direkt kontaktieren."
+      },
+      {
+        "id": "p43",
+        "name": "Bikely Tuk Mini Elektrotransporter",
+        "badge": "",
+        "category": "E-Transporter",
+        "description": "Kompakter elektrischer Lastentransporter für enge Gassen und Innenhöfe. 72V, 25 km/h, bis 210 km Reichweite (Li-Akku). LCD-Display, Scheibenbremse vorne. Ideal für Gastronomie, Lieferdienste und Gewerbe.",
+        "price": "€1.599,00",
+        "image": "uploads/etb-kabinenmobil-x3.png",
+        "specs": [
+          "250W (gedrosselt)",
+          "72V Blei/Li",
+          "bis 210 km",
+          "25 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250W (gedrosselt)"
+          },
+          {
+            "label": "Akku",
+            "value": "72V Bleisäure oder Lithium (wählbar)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 210 km (je nach Akku und Bedingungen)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h (gedrosselt)"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse vorne / Trommel hinten"
+          },
+          {
+            "label": "Reifen",
+            "value": "300-12 vorne und hinten"
+          },
+          {
+            "label": "Display",
+            "value": "LCD (Geschwindigkeit, Akkustand)"
+          },
+          {
+            "label": "Abmessungen (L×B×H)",
+            "value": "2.470 × 910 × 1.135 mm (Fahrzeug)"
+          },
+          {
+            "label": "Gesamtmaße mit Ladebereich",
+            "value": "3.140 × 1.180 × 1.400 mm"
+          },
+          {
+            "label": "Eigengewicht",
+            "value": "108 kg (ohne Akku) / 208 kg (gesamt)"
+          }
+        ],
+        "details": "<ul><li>Extrem kompakt und wendig — kommt durch Gassen und Innenhöfe wo kein Auto hinkommt</li><li>72V System mit Blei- oder Lithium-Akku — bis 210 km Reichweite</li><li>LCD-Display: Geschwindigkeit, Akkustand und Fahrdaten auf einen Blick</li><li>Scheibenbremse vorne, Trommel hinten — sicheres Abbremsen im Stadtverkehr</li><li>25 km/h: keine Anmeldung, kein Parkproblem in vielen Bereichen</li><li>Niedrige Betriebskosten, wartungsarm, 100% elektrisch</li><li>Ideal für: Gastronomie, Lieferdienste, Service- und Wartungsbetriebe</li></ul>",
+        "delivery": "Lieferung frei Haus. Lieferzeit auf Anfrage."
+      },
+      {
+        "id": "p17",
+        "name": "RKS XR-6 Shimano",
+        "badge": "",
+        "category": "Mountain E-Bikes",
+        "description": "Sportliches 27.5\" Mountain E-Bike mit 4.0\" Fat Tires, Shimano 7-Gang und LCD-Display.",
+        "price": "€890,00",
+        "image": "uploads/etb-rks-xr-fat.png",
+        "specs": [
+          "27.5\" Rahmen",
+          "4.0\" Reifen",
+          "Shimano 7G",
+          "25 km/h"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250–600W"
+          },
+          {
+            "label": "Akku",
+            "value": "48V / 10Ah"
+          },
+          {
+            "label": "Reichweite",
+            "value": "35–45 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Rahmen",
+            "value": "27.5 Zoll Aluminium"
+          },
+          {
+            "label": "Reifen",
+            "value": "26 × 4.0"
+          },
+          {
+            "label": "Felge",
+            "value": "26 Zoll Magnesium"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano 7-Gang"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen vorne & hinten"
+          },
+          {
+            "label": "Display",
+            "value": "Integriertes LCD"
+          },
+          {
+            "label": "Gewicht",
+            "value": "32 kg"
+          }
+        ],
+        "details": "<ul><li>Ergonomischer Sattel und Griffe</li><li>Einstellbare Federgabel</li><li>Licht, Reflektoren, Hupe, USB-Port serienmäßig</li><li>Batterie mit Sicherheitsschloss</li><li>CE-zertifiziert, führerscheinfrei ab 14 Jahren</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p18",
+        "name": "60V 78Ah Lithium Akku",
+        "badge": "",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "Maximale Kapazität in der 60V-Klasse: 78Ah — 4.680 Wh für Heavy-Duty E-Mopeds und maximale Reichweite.",
+        "price": "€1.190,00",
+        "image": "uploads/etb-akku-li-60v-78ah.jpg",
+        "specs": [
+          "60V",
+          "78Ah",
+          "4.680Wh",
+          ">1.200 Zyklen"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "60V"
+          },
+          {
+            "label": "Kapazität",
+            "value": "78Ah / 4.680Wh"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "33 × 15,5 × 18 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "15 kg"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": ">1.200 Zyklen"
+          }
+        ],
+        "details": "<ul><li>Höchste Kapazität in der 60V-Klasse</li><li>Ideal für Langstrecke und Heavy-Duty-Anwendungen</li><li>Wartungsfrei, kein Memory-Effekt</li><li>Geeignet für 45 km/h E-Mopeds und Citycoco-Klasse</li></ul>",
+        "delivery": "Kostenloser Versand. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p29",
+        "name": "48V 78Ah Lithium Akku",
+        "badge": "",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "48V 78Ah Lithium-Ionen-Akku mit 3.744 Wh — genug Power für lange Tage. Wartungsfrei, >1.200 Ladezyklen.",
+        "price": "€990,00",
+        "image": "uploads/etb-akku-li-48v-box.jpg",
+        "specs": [
+          "48V",
+          "78Ah",
+          "3.744Wh",
+          ">1.200 Zyklen"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "48V"
+          },
+          {
+            "label": "Kapazität",
+            "value": "78Ah / 3.744Wh"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "36 × 28 × 25 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "17 kg"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": ">1.200 Zyklen"
+          }
+        ],
+        "details": "<ul><li>Maximale Energie in der 48V-Klasse</li><li>Wartungsfrei, kein Memory-Effekt</li><li>Integrierter BMS-Schutz</li><li>Geeignet für E-Bikes, E-Mopeds, Elektromobile</li></ul>",
+        "delivery": "Kostenloser Versand. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p30",
+        "name": "60V 40Ah (17s) Lithium Akku",
+        "badge": "",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "60V 40Ah (17S) Lithium-Ionen-Akku — kompakter Kraftblock für die 45-km/h-Klasse. Über 1.200 Zyklen Lebensdauer.",
+        "price": "€840,00",
+        "image": "uploads/etb-akku-li-60v-scooter.jpg",
+        "specs": [
+          "60V",
+          "40Ah",
+          "2.400Wh",
+          "17S"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "60V (17S)"
+          },
+          {
+            "label": "Kapazität",
+            "value": "40Ah / 2.400Wh"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "33 × 15,5 × 18 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "15 kg"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": ">1.200 Zyklen"
+          }
+        ],
+        "details": "<ul><li>Ideal für 45 km/h E-Mopeds und Scooter</li><li>17S Lithium-Zellen-Verbund</li><li>Wartungsfrei, kein Memory-Effekt</li><li>Integrierter BMS-Schutz</li></ul>",
+        "delivery": "Kostenloser Versand. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p31",
+        "name": "72V 78Ah Lithium Akku",
+        "badge": "Profi",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "Hochspannungs-Akku 72V 78Ah mit BMS 100A für Heavy-Duty-Fahrzeuge. Lebensdauer bis 1.200 Zyklen. Passend für Falcon SW.",
+        "price": "€1.490,00",
+        "image": "uploads/etb-akku-li-60v-78ah.jpg",
+        "specs": [
+          "72V",
+          "78Ah",
+          "BMS 100A",
+          ">1.200 Zyklen"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "72V"
+          },
+          {
+            "label": "Ladespannung max.",
+            "value": "84V"
+          },
+          {
+            "label": "Entladeschutz",
+            "value": "60V"
+          },
+          {
+            "label": "Ladestrom max.",
+            "value": "8A"
+          },
+          {
+            "label": "BMS",
+            "value": "100A"
+          },
+          {
+            "label": "Kapazität",
+            "value": "78Ah"
+          },
+          {
+            "label": "Anschluss",
+            "value": "M23"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "84V / 5A"
+          },
+          {
+            "label": "Display",
+            "value": "Ja"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "32,5 × 14 × 8 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "7 kg"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": ">1.200 Zyklen"
+          },
+          {
+            "label": "Passende Modelle",
+            "value": "Falcon SW"
+          }
+        ],
+        "details": "<ul><li>BMS 100A: Schutz vor Überspannung, Tiefentladung, Kurzschluss</li><li>Integriertes Display für Ladezustandsanzeige</li><li>Kein Memory-Effekt</li><li>Passend für Falcon SW und Heavy-Duty-Fahrzeuge</li></ul>",
+        "delivery": "Kostenloser Versand. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p32",
+        "name": "60V 20Ah Lithium Akku",
+        "badge": "",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "60V 20Ah Lithium-Ionen-Akku mit BMS 40A. Passend für Lofty COUCH 16, FALCON 11 und MAXIMUS 14.",
+        "price": "€560,00",
+        "image": "uploads/etb-akku-li-60v-scooter.jpg",
+        "specs": [
+          "60V",
+          "20Ah",
+          "BMS 40A",
+          "17S 1P"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "60V (17S 1P)"
+          },
+          {
+            "label": "Ladespannung max.",
+            "value": "71,4V"
+          },
+          {
+            "label": "Entladeschutz",
+            "value": "40V"
+          },
+          {
+            "label": "Ladestrom max.",
+            "value": "8A"
+          },
+          {
+            "label": "BMS",
+            "value": "40A"
+          },
+          {
+            "label": "Kapazität",
+            "value": "20Ah"
+          },
+          {
+            "label": "Anschluss",
+            "value": "C13"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "71,4V / 5A"
+          },
+          {
+            "label": "Display",
+            "value": "Ja"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "32 × 8 × 16 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "9 kg"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": ">1.200 Zyklen"
+          },
+          {
+            "label": "Passende Modelle",
+            "value": "Lofty COUCH 16, FALCON 11, MAXIMUS 14"
+          }
+        ],
+        "details": "<ul><li>BMS 40A schützt vor Überspannung und Tiefentladung</li><li>Integriertes Display für Ladezustandsanzeige</li><li>Kein Memory-Effekt</li><li>Original-Ersatzakku für Lofty-Modelle</li></ul>",
+        "delivery": "Kostenloser Versand. Lieferzeit 3–5 Werktage."
+      },
+      {
+        "id": "p33",
+        "name": "48V 78Ah Lithium Akku T-Förmig",
+        "badge": "Top",
+        "category": "Akkus",
+        "subcategory": "sub-bat-li",
+        "description": "48V 78Ah T-förmiger LiFePO4-Akku mit BMS 100A und bis zu 10.000 Zyklen Lebensdauer. Passend für Volta VSX, FALCON 11, RKS REE1500.",
+        "price": "€1.190,00",
+        "image": "uploads/etb-akku-li-48v.jpg",
+        "specs": [
+          "48V",
+          "78Ah",
+          "BMS 100A",
+          "bis 10.000 Zyklen"
+        ],
+        "specsTable": [
+          {
+            "label": "Typ",
+            "value": "LiFePO4 / Lithium-Ion"
+          },
+          {
+            "label": "Nennspannung",
+            "value": "58,4V"
+          },
+          {
+            "label": "Ladespannung max.",
+            "value": "58,4V"
+          },
+          {
+            "label": "Entladeschutz",
+            "value": "40V"
+          },
+          {
+            "label": "Ladestrom max.",
+            "value": "8A"
+          },
+          {
+            "label": "BMS",
+            "value": "100A"
+          },
+          {
+            "label": "Kapazität",
+            "value": "78Ah"
+          },
+          {
+            "label": "Anschluss",
+            "value": "C13"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "58,4V / 8A"
+          },
+          {
+            "label": "Display",
+            "value": "Ja"
+          },
+          {
+            "label": "Maße (L×B×H)",
+            "value": "36 × 23 × 17,5 cm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "29 kg"
+          },
+          {
+            "label": "Lebensdauer",
+            "value": "3.000–10.000 Zyklen"
+          },
+          {
+            "label": "Passende Modelle",
+            "value": "Volta VSX, Lofty COUCH 16, FALCON 11, RKS REE1500, EG1"
+          }
+        ],
+        "details": "<ul><li>LiFePO4-Technologie: extrem lange Lebensdauer bis 10.000 Zyklen</li><li>BMS 100A mit Vollschutz</li><li>T-förmiges Gehäuse für optimale Montage</li><li>Integriertes Display</li><li>Passend für Volta VSX, Lofty COUCH 16, FALCON 11, RKS REE1500, EG1</li></ul>",
+        "delivery": "Kostenloser Versand. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p23",
+        "name": "FALCON 3400 E-Moped",
+        "badge": "",
+        "category": "E-Scooter 45 km/h",
+        "description": "3000W, 236 kg Zuladung, nur €1,00 pro 100 km: der FALCON 3400 ist der stärkste 45-km/h-Scooter im Sortiment — Alarmanlage und L3e-Zulassung inbegriffen.",
+        "price": "€1.690,00",
+        "image": "uploads/etb-moped-city.jpg",
+        "specs": [
+          "45 km/h",
+          "CE/EEC",
+          "Straßenzulassung"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "72V 3000W"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 60 km"
+          },
+          {
+            "label": "Akkukapazität",
+            "value": "72V 20Ah"
+          },
+          {
+            "label": "Batterietyp",
+            "value": "Li-Ion / Bleigel"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–7 Stunden"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "72V / 3A"
+          },
+          {
+            "label": "Reifen",
+            "value": "12 Zoll Tubeless (vorne & hinten)"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "236 kg"
+          },
+          {
+            "label": "Steigung",
+            "value": "20%"
+          },
+          {
+            "label": "Gewicht",
+            "value": "95 kg"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "2 Rückspiegel, Alarmanlage"
+          },
+          {
+            "label": "Betriebskosten",
+            "value": "ca. €1,00 / 100 km"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE/EEC · L3e · StVO-konform"
+          },
+          {
+            "label": "Führerschein",
+            "value": "Klasse A1 oder AM"
+          }
+        ],
+        "details": "<ul><li>Kraftvoller 3000W / 72V Motor</li><li>Sportliches Design mit maximaler Zuladung (236 kg)</li><li>Alarmanlage serienmäßig</li><li>Extrem günstige Betriebskosten: ca. €1,00 / 100 km</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Vormontierte Lieferung (ca. 90%)</li><li>Förderfähig: bis zu €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p24",
+        "name": "Bikely E-Chopper Blake",
+        "badge": "Premium",
+        "category": "E-Scooter 45 km/h",
+        "description": "Premium Chopper E-Moped mit 3000W und bis 120 km Reichweite. Das Flaggschiff der Bikely Chopper-Linie.",
+        "price": "€2.999,00",
+        "image": "uploads/etb-chopper-black-side.jpg",
+        "images": [
+          "uploads/etb-chopper-black-side.jpg",
+          "uploads/etb-chopper-black.jpg"
+        ],
+        "specs": [
+          "45 km/h",
+          "3000W",
+          "bis 120 km",
+          "Premium"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "60V 3000W"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "45 km/h"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 120 km"
+          },
+          {
+            "label": "Akkukapazität",
+            "value": "72V 20Ah"
+          },
+          {
+            "label": "Batterietyp",
+            "value": "Li-Ion / Bleigel"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–7 Stunden"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "60V / 3A"
+          },
+          {
+            "label": "Reifen",
+            "value": "Vorderrad 17 Zoll · Hinterrad 13 Zoll Tubeless"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen / Trommelbremsen"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "149 kg"
+          },
+          {
+            "label": "Steigung",
+            "value": "20%"
+          },
+          {
+            "label": "Gewicht",
+            "value": "96 kg"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE/EEC · L3e · StVO-konform"
+          },
+          {
+            "label": "Führerschein",
+            "value": "Klasse A1 oder AM"
+          }
+        ],
+        "details": "<ul><li>Premium-Variante der Bikely Chopper-Linie</li><li>3000W Motor für kraftvollen Antrieb</li><li>Bis 120 km Reichweite</li><li>Chopper-Design mit breiten Reifen</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Förderfähig: bis zu €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz möglich."
+      },
+      {
+        "id": "p19",
+        "name": "KUBA GREE08 E-Scooter",
+        "badge": "",
+        "category": "E-Scooter 25 km/h",
+        "description": "Kompaktes Stadt-Elektromoped mit auswechselbarem Akku und großer Reichweite. 25–45 km/h, CE/EEC.",
+        "price": "€749,00",
+        "image": "uploads/etb-moped-city-silver.jpg",
+        "specs": [
+          "25–45 km/h",
+          "bis 240 km",
+          "600W",
+          "CE/EEC"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "600W / 72–60V"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25–45 km/h"
+          },
+          {
+            "label": "Reichweite",
+            "value": "max. bis 240 km"
+          },
+          {
+            "label": "Akkukapazität",
+            "value": "20–78Ah Li-Ion (tragbar)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Reifen",
+            "value": "3.0 × 10 Tubeless"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse vorne, Trommelbremse hinten"
+          },
+          {
+            "label": "Lichttechnik",
+            "value": "Stand-, Abblend-, Fernlicht + LED Rücklicht"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "213 kg"
+          },
+          {
+            "label": "Steigung",
+            "value": "22%"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "2 Spiegel, Hupe, USB-Port, Alarm"
+          },
+          {
+            "label": "Maße",
+            "value": "1710 × 730 × 1155 mm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "70 kg"
+          }
+        ],
+        "details": "<ul><li>CE/EEC zertifiziert, auf Radweg zugelassen</li><li>Auswechselbarer Akku — laden am Fahrzeug oder zu Hause</li><li>Stahlfelgen für langlebigen Betrieb</li><li>Diebstahlalarmanlage inklusive</li><li>Förderfähig: €600 E-Mobilitätsbonus (L1e, eRide 2025)</li><li>Vormontierte Lieferung (ca. 90%)</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p20",
+        "name": "KUBA BLUES E-Moped",
+        "badge": "",
+        "category": "E-Scooter 25 km/h",
+        "description": "Kraftvolles 1200W E-Moped mit 25 km/h Zulassung. Wählbarer Akku: 40Ah oder 78Ah Reichweite.",
+        "price": "€990,00",
+        "image": "uploads/etb-moped-city-silver-front.jpg",
+        "specs": [
+          "25 km/h",
+          "1200W",
+          "bis 225 km",
+          "CE/EEC"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "1200W"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h (gedrosselt)"
+          },
+          {
+            "label": "Reichweite",
+            "value": "60V 40Ah: bis 110 km · 60V 78Ah: bis 225 km"
+          },
+          {
+            "label": "Batterietyp",
+            "value": "Li-Ion (wählbar: 40Ah oder 78Ah)"
+          },
+          {
+            "label": "Ladegerät",
+            "value": "60V (abhängig vom Akkutyp)"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "6–8 Stunden"
+          },
+          {
+            "label": "Reifen",
+            "value": "3.50–10 Tubeless"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremse / Trommelbremse"
+          },
+          {
+            "label": "Max. Zuladung",
+            "value": "225 kg"
+          },
+          {
+            "label": "Steigung",
+            "value": "20%"
+          },
+          {
+            "label": "Ausstattung",
+            "value": "2 Spiegel, Hupe, USB-Port"
+          },
+          {
+            "label": "Maße",
+            "value": "1220–1650 × 660 mm"
+          },
+          {
+            "label": "Gewicht",
+            "value": "90 kg"
+          }
+        ],
+        "details": "<ul><li>CE/EEC zertifiziert, auf Radweg zugelassen</li><li>Führerscheinfrei (L1e) mit 25 km/h Drosselung</li><li>Akku-Variante wählbar für maximale Reichweite</li><li>Auswechselbarer Akku — laden am Fahrzeug oder zu Hause</li><li>Sofort abholbar in Graz</li><li>Förderfähig: €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit oder sofortige Abholung in Graz. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p21",
+        "name": "RKS CD35 DUAL SUSPENSION",
+        "badge": "",
+        "category": "Mountain E-Bikes",
+        "description": "Doppelte Federung, 27.5\" Aluminiumrahmen, Shimano-Schaltung — €790 und schluckt Wurzeln wie ein Bike für das Doppelte. Hydraulische Bremsen optional für €160 dazu.",
+        "price": "€790,00",
+        "image": "uploads/etb-rks-xr-fat.png",
+        "specs": [
+          "Dual Suspension",
+          "250W",
+          "25 km/h",
+          "27.5 Zoll"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "250–600W"
+          },
+          {
+            "label": "Akku",
+            "value": "36V / 10Ah"
+          },
+          {
+            "label": "Reichweite",
+            "value": "bis 45 km"
+          },
+          {
+            "label": "Ladezeit",
+            "value": "4–6 Stunden"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "25 km/h"
+          },
+          {
+            "label": "Rahmen",
+            "value": "27.5 Zoll Aluminium"
+          },
+          {
+            "label": "Reifen",
+            "value": "27.5 × 1.95"
+          },
+          {
+            "label": "Felge",
+            "value": "27.5 Zoll"
+          },
+          {
+            "label": "Schaltung",
+            "value": "Shimano SL-TX50LN"
+          },
+          {
+            "label": "Bremsen",
+            "value": "Scheibenbremsen (opt. Hydraulik +€160)"
+          },
+          {
+            "label": "Display",
+            "value": "LCD integriert"
+          },
+          {
+            "label": "Gewicht",
+            "value": "22 kg"
+          }
+        ],
+        "details": "<ul><li>Dual Suspension: doppelte Vorderrad- & Hinterradfederung</li><li>Batterie mit Sicherheitsschloss</li><li>Option: mit Hydraulikbremse (+€160) wählbar</li><li>Licht, Reflektoren, Hupe serienmäßig</li><li>CE-zertifiziert, führerscheinfrei ab 14 Jahren</li></ul>",
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
+      },
+      {
+        "id": "p22",
+        "name": "E-Motorrad \"Mars\" 100 km/h",
+        "badge": "Highlight",
+        "category": "E-Motorrad",
+        "description": "Vollwertiges E-Motorrad mit 6000W und 100 km/h. CE/EEC Straßenzulassung, Ratenzahlung möglich.",
+        "price": "€3.999,00",
+        "image": "uploads/etb-moped-white-45.png",
+        "specs": [
+          "100 km/h",
+          "6000W",
+          "CE/EEC",
+          "Straßenzulassung"
+        ],
+        "specsTable": [
+          {
+            "label": "Motor",
+            "value": "6000W"
+          },
+          {
+            "label": "Höchstgeschwindigkeit",
+            "value": "100 km/h"
+          },
+          {
+            "label": "Zulassung",
+            "value": "CE/EEC, Straßenzulassung"
+          },
+          {
+            "label": "Führerschein",
+            "value": "Klasse A / A2"
+          },
+          {
+            "label": "Lieferzeit",
+            "value": "4–14 Werktage"
+          },
+          {
+            "label": "Ratenzahlung",
+            "value": "möglich"
+          }
+        ],
+        "details": "<ul><li>Vollwertiges Elektromotorrad mit 100 km/h Topspeed</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Ratenzahlung auf Anfrage möglich</li><li>Lieferzeit 8–14 Werktage (Online Only)</li><li>Förderfähig: bis zu €1.800 E-Mobilitätsbonus (L3e, eRide 2025)</li></ul>",
+        "delivery": "Lieferung frei Haus österreichweit. Lieferzeit 8–14 Werktage. Probefahrt in Graz nach Vereinbarung."
       }
     ]
   },
@@ -99,12 +3013,36 @@
     "eyebrow": "Warum e-techbike.at?",
     "title": "Was uns unterscheidet",
     "items": [
-      { "id": "u1", "title": "Direktimport-Preise", "description": "Kein Zwischenhändler. Wir importieren direkt vom Hersteller und geben die volle Ersparnis weiter." },
-      { "id": "u2", "title": "2 Jahre Garantie", "description": "Herstellergarantie auf alle Fahrzeuge und Akkus. Reparatur und Ersatzteile direkt bei uns." },
-      { "id": "u3", "title": "Persönliche Beratung", "description": "Testfahrten und Beratung vor Ort in Graz. Terminvereinbarung per Anruf oder E-Mail." },
-      { "id": "u4", "title": "Schnelle Lieferung", "description": "Österreichweiter Versand in 5–7 Werktagen. Vollversichert und mit Sendungsverfolgung." },
-      { "id": "u5", "title": "Förderungsberatung", "description": "Bis zu €3.000 staatliche Förderung. Wir begleiten Sie kostenlos durch die Beantragung." },
-      { "id": "u6", "title": "Werkstatt & Service", "description": "Vollständige Werkstatt in Graz. Wartung, Zubehör und Ersatzteile immer verfügbar." }
+      {
+        "id": "u1",
+        "title": "Fabrikpreis",
+        "description": "Du zahlst Herstellerpreis — kein Händleraufschlag, kein Zwischenhändler."
+      },
+      {
+        "id": "u2",
+        "title": "2 Jahre Garantie",
+        "description": "Geht was kaputt? Wir regeln es. 2 Jahre auf alle Fahrzeuge und Akkus."
+      },
+      {
+        "id": "u3",
+        "title": "Probefahrt Graz",
+        "description": "Einfach vorbeikommen und abfahren. Kein Termin, kein Druck."
+      },
+      {
+        "id": "u4",
+        "title": "Österreichweit",
+        "description": "Dein Fahrzeug kommt zu dir. Vollversichert in 5–7 Werktagen."
+      },
+      {
+        "id": "u5",
+        "title": "Bis €3.000 Förderung",
+        "description": "Wir beantragen die staatliche Förderung für dich — kostenlos."
+      },
+      {
+        "id": "u6",
+        "title": "Werkstatt Graz",
+        "description": "Service, Reparatur, Ersatzteile direkt vor Ort. Für alle Marken."
+      }
     ]
   },
   "news": {
@@ -112,39 +3050,41 @@
     "title": "Aktuell bei e-techbike.at",
     "items": [
       {
-        "id": "n1", "date": "2024-06-01",
-        "title": "Neue RKS E-Bike Modelle 2024 eingetroffen",
-        "body": "Wir freuen uns, die neueste Kollektion der RKS E-Bikes in unserem Showroom in Graz vorstellen zu können. Jetzt Probefahrt vereinbaren!",
-        "image": ""
+        "id": "n1",
+        "date": "2026-05-01",
+        "title": "Bis zu €1.800 E-Mobilitätsförderung — jetzt sichern!",
+        "body": "Der Staat fördert E-Motorräder mit bis zu €1.800, E-Mopeds mit €1.200 und E-Klappräder mit €500. Gültig bis 31.03.2026 oder solange das Förderbudget reicht. Wir helfen bei der Antragstellung."
       },
       {
-        "id": "n2", "date": "2024-05-15",
-        "title": "Bis zu €3.000 E-Bike Förderung — wir helfen!",
-        "body": "Der Bund fördert die Anschaffung von E-Bikes und E-Rollern mit bis zu €3.000. Unser Team unterstützt Sie kostenlos bei der Antragstellung.",
-        "image": ""
+        "id": "n2",
+        "date": "2026-04-15",
+        "title": "Neue RKS E-Bike Modelle 2026 eingetroffen",
+        "body": "Die neueste RKS-Kollektion ist da! Klappräder, City-Bikes und Fat Bikes — jetzt im Showroom in Graz vorbeikommen und Probefahrt vereinbaren."
       },
       {
-        "id": "n3", "date": "2024-04-20",
-        "title": "Neue Werkstatt für alle Marken geöffnet",
-        "body": "Unsere Werkstatt in der Ghegagasse 29 ist nun für alle E-Bike und E-Scooter Marken geöffnet. Wartung, Ersatzteile und Zubehör direkt vor Ort.",
-        "image": ""
+        "id": "n3",
+        "date": "2026-03-20",
+        "title": "Werkstatt für alle E-Bike Marken geöffnet",
+        "body": "Werkstatt in der Buchkogelgasse 9 ist für alle E-Bike und E-Scooter Marken geöffnet. Wartung, Ersatzteile und Zubehör direkt vor Ort."
       }
     ]
   },
   "contact": {
     "title": "Besuchen Sie uns in Graz.",
-    "subtitle": "Persönliche Beratung, Testfahrten und direkte Abholung. Wir freuen uns auf Ihren Besuch.",
-    "email": "graz@bikelyshop.at",
-    "phone": "+43 664 7372 6965",
-    "address": "Ghegagasse 29, 8020 Graz, Österreich",
+    "subtitle": "Persönliche Beratung, Testfahrten und direkte Abholung. Kein Termin nötig.",
+    "email": "e-techbike@a1.net",
+    "phone": "+43 664 73726965",
+    "address": "Buchkogelgasse 9, 8020 Graz",
     "whatsapp": "+436647372965",
-    "mapSrc": "https://maps.google.com/maps?q=Ghegagasse+29,+8020+Graz,+Austria&output=embed&z=16",
+    "facebook": "https://www.facebook.com/etechbike/",
+    "instagram": "",
+    "mapSrc": "https://maps.google.com/maps?q=Buchkogelgasse+9,+8020+Graz,+Austria&output=embed&z=16",
     "formEnabled": true
   },
   "whatsapp": {
     "enabled": true,
     "number": "+436647372965",
-    "message": "Hallo! Ich interessiere mich für Ihre E-Bikes und möchte eine Beratung."
+    "message": "Hallo! Ich interessiere mich für Ihre E-Bikes und möchte eine Beratung anfragen."
   },
   "footer": {
     "brand": "e-techbike.at",
@@ -152,39 +3092,86 @@
     "description": "Österreichs Direktimporteur für Premium-Elektromobilität. Beratung, faire Preise, voller Service in Graz.",
     "cols": [
       {
-        "title": "Shop",
+        "title": "Sortiment",
         "links": [
-          { "label": "E-Bikes", "href": "#products" },
-          { "label": "E-Scooter", "href": "#products" },
-          { "label": "E-Motorräder", "href": "#products" },
-          { "label": "Kabinenroller", "href": "#products" },
-          { "label": "Batterien", "href": "#products" }
+          {
+            "label": "E-Bikes",
+            "href": "#products"
+          },
+          {
+            "label": "E-Mopeds",
+            "href": "#products"
+          },
+          {
+            "label": "E-Scooter",
+            "href": "#products"
+          },
+          {
+            "label": "Seniorenmobile",
+            "href": "#products"
+          },
+          {
+            "label": "Batterien & Akkus",
+            "href": "#products"
+          }
         ]
       },
       {
         "title": "Service",
         "links": [
-          { "label": "Über uns", "href": "#location" },
-          { "label": "Förderungen", "href": "#location" },
-          { "label": "Wie kaufen?", "href": "#location" },
-          { "label": "Akku-Pflege", "href": "#location" },
-          { "label": "Wartung", "href": "#location" }
+          {
+            "label": "Über uns",
+            "href": "#uber-uns"
+          },
+          {
+            "label": "Wie kaufen?",
+            "href": "#wie-kaufen"
+          },
+          {
+            "label": "Förderungen",
+            "href": "#foerderung"
+          },
+          {
+            "label": "Akku-Pflege",
+            "href": "#akku-pflege"
+          },
+          {
+            "label": "Kontakt",
+            "href": "#location"
+          }
         ]
       },
       {
         "title": "Rechtliches",
         "links": [
-          { "label": "AGB", "href": "/agb" },
-          { "label": "Datenschutz", "href": "/datenschutz" },
-          { "label": "Impressum", "href": "/impressum" },
-          { "label": "Kontakt", "href": "#location" }
+          {
+            "label": "AGB",
+            "href": "/agb"
+          },
+          {
+            "label": "Datenschutz",
+            "href": "/datenschutz"
+          },
+          {
+            "label": "Impressum",
+            "href": "/impressum"
+          }
         ]
       }
     ],
     "links": [
-      { "label": "AGB", "href": "/agb" },
-      { "label": "Datenschutz", "href": "/datenschutz" },
-      { "label": "Impressum", "href": "/impressum" }
+      {
+        "label": "AGB",
+        "href": "/agb"
+      },
+      {
+        "label": "Datenschutz",
+        "href": "/datenschutz"
+      },
+      {
+        "label": "Impressum",
+        "href": "/impressum"
+      }
     ],
     "copyright": "© 2026 e-techbike.at — made with love by RFI-IRFOS"
   }
