@@ -360,8 +360,23 @@ function ProductModal({ product, contact, onClose }: {
     return () => { document.body.style.overflow = ''; document.removeEventListener('keydown', onKey) }
   }, [onClose, allImages.length])
 
+  const specsSummary = product.specs?.join(' · ') ?? ''
+  const emailBody = [
+    'Guten Tag,',
+    '',
+    'ich interessiere mich für folgendes Fahrzeug:',
+    '',
+    `Modell: ${product.name}`,
+    `Preis: ${product.price}`,
+    specsSummary ? `Eckdaten: ${specsSummary}` : '',
+    '',
+    'Können Sie mir bitte weitere Informationen geben und einen Termin für eine Probefahrt vereinbaren?',
+    '',
+    'Mit freundlichen Grüßen',
+  ].filter((l, i, arr) => !(l === '' && arr[i - 1] === '')).join('\n')
+
   const waHref = contact.whatsapp
-    ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hallo! Ich interessiere mich für "${product.name}" und möchte eine Beratung anfragen.`)}`
+    ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hallo! Ich interessiere mich für "${product.name}"${product.price !== 'auf Anfrage' ? ` (${product.price})` : ''}${specsSummary ? ` — ${specsSummary}` : ''}. Können Sie mich bitte beraten?`)}`
     : undefined
 
   return (
@@ -443,7 +458,7 @@ function ProductModal({ product, contact, onClose }: {
                   <span>Anrufen</span>
                 </a>
               )}
-              <a href={`mailto:${contact.email}?subject=${encodeURIComponent(`Anfrage: ${product.name}`)}`} className="prod-modal-cta prod-modal-cta-mail">
+              <a href={`mailto:${contact.email}?subject=${encodeURIComponent(`Anfrage: ${product.name}`)}&body=${encodeURIComponent(emailBody)}`} className="prod-modal-cta prod-modal-cta-mail">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 <span>E-Mail</span>
               </a>
