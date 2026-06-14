@@ -791,9 +791,12 @@ button { cursor: pointer; font-family: inherit; }
   padding: 13px 10px; border-radius: 8px; transition: background .15s;
 }
 .site-mobile-links a:hover { background: var(--surface-sunken); color: var(--primary); }
+/* Drawer top-right: theme toggle + close side by side */
+.site-mobile-drawer-top-right { display: flex; align-items: center; gap: 8px; }
+.site-mobile-drawer-top-right .theme-toggle { flex-shrink: 0; }
 /* Contact block */
 .site-mobile-divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
-.site-mobile-contact { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.site-mobile-contact { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
 .site-mobile-addr {
   display: flex; align-items: center; gap: 7px;
   font-size: 12px; color: var(--text-soft);
