@@ -445,6 +445,8 @@ function CategoryBrowser({ categories, products, contact }: {
   const [activeCatId, setActiveCatId] = useState<string | null>(null)
   const [activeSubId, setActiveSubId] = useState<string | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null)
+  const touchStartX = useRef<number>(0)
+  const touchStartY = useRef<number>(0)
 
   const activeCat = categories.items.find(c => c.id === activeCatId)
   const subcats = activeCat?.subcategories ?? []
@@ -487,8 +489,25 @@ function CategoryBrowser({ categories, products, contact }: {
     }
   }
 
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (level === 'categories') return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    const dy = e.changedTouches[0].clientY - touchStartY.current
+    if (dx > 60 && Math.abs(dy) < Math.abs(dx)) goBack()
+  }
+
   return (
-    <section className="site-section site-browser" id="products">
+    <section
+      className="site-section site-browser"
+      id="products"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {categories.eyebrow && level === 'categories' && <div className="site-eyebrow">{categories.eyebrow}</div>}
       <div className="site-browser-header">
         {level !== 'categories' && (
