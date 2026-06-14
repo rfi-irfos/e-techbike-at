@@ -4,9 +4,18 @@ import { useAuth } from './hooks/useAuth'
 import { PublicSite } from './components/PublicSite'
 import { AdminPanel } from './components/AdminPanel'
 import { LoginPage } from './components/LoginPage'
+import { StaticPage } from './components/StaticPage'
 
 // Hash-based admin route — works on any static host (GitHub Pages, etc.)
 const isAdmin = window.location.hash === '#admin' || window.location.hash.startsWith('#admin/')
+const staticPageId = (() => {
+  const h = window.location.hash
+  if (h === '#uber-uns') return 'uber-uns'
+  if (h === '#wie-kaufen') return 'wie-kaufen'
+  if (h === '#foerderung') return 'foerderung'
+  if (h === '#akku-pflege') return 'akku-pflege'
+  return null
+})()
 
 export default function App() {
   const { content, loading, saving, save, uploadImage } = useContent()
@@ -34,6 +43,18 @@ export default function App() {
         onSave={save}
         onUpload={uploadImage}
         onLogout={logout}
+      />
+    )
+  }
+
+  if (staticPageId) {
+    return (
+      <StaticPage
+        pageId={staticPageId}
+        brand={content.nav?.brand}
+        phone={content.contact?.phone}
+        email={content.contact?.email}
+        address={content.contact?.address}
       />
     )
   }
