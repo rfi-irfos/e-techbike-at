@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import type { SiteContent, SectionId, CanvasPos } from '../types/content'
+import { useTheme, type Theme } from '../hooks/useTheme'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
 
@@ -278,6 +279,50 @@ function WhatsAppButton({ number, message }: { number: string; message: string }
   )
 }
 
+// ── Theme toggle (light / dark / high-contrast) ───────────────────────────────
+
+function IconSun() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+}
+function IconMoon() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+}
+function IconContrast() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18z" fill="currentColor"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+}
+function IconMenu() {
+  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+}
+function IconClose() {
+  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+}
+
+const THEME_OPTS: { id: Theme; label: string; icon: React.ReactNode }[] = [
+  { id: 'light', label: 'Helles Design', icon: <IconSun /> },
+  { id: 'dark', label: 'Dunkles Design', icon: <IconMoon /> },
+  { id: 'hc', label: 'Hoher Kontrast', icon: <IconContrast /> },
+]
+
+function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
+  return (
+    <div className="theme-toggle" role="group" aria-label="Farbschema wählen">
+      {THEME_OPTS.map(o => (
+        <button
+          key={o.id}
+          type="button"
+          className={`theme-toggle-btn ${theme === o.id ? 'active' : ''}`}
+          aria-pressed={theme === o.id}
+          aria-label={o.label}
+          title={o.label}
+          onClick={() => setTheme(o.id)}
+        >
+          {o.icon}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 // ── Public Site ───────────────────────────────────────────────────────────────
 
 interface Props {
@@ -299,6 +344,8 @@ export function PublicSite({
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
   const [activeTab, setActiveTab] = useState('Alle')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const { theme, setTheme } = useTheme()
   const [heroBgPos, setHeroBgPos] = useState({ x: hero.bgX ?? 50, y: hero.bgY ?? 50 })
   const [heroHeight, setHeroHeight] = useState(hero.minHeight ?? 680)
   const heroDragRef  = useRef<{ startX: number; startY: number; startBgX: number; startBgY: number } | null>(null)
@@ -551,7 +598,7 @@ export function PublicSite({
 
   return (
     <Ctx.Provider value={ctx}>
-      <div style={vars} className="site">
+      <div style={vars} className="site" data-theme={theme}>
         {editMode && <FormatToolbar anchorEl={focusedEl} />}
 
         {/* ── NAV ──────────────────────────────────────────────────────── */}
@@ -567,18 +614,57 @@ export function PublicSite({
               ))}
             </nav>
             <div className="site-nav-right">
-              {nav.phone && (
-                <a href={`tel:${nav.phone}`} className="site-nav-phone">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.1-.45c.908.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <E field="nav.phone" value={nav.phone} as="span" />
-                </a>
-              )}
-              {nav.ctaLabel && (
-                <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
-              )}
+              <div className="site-nav-desktop">
+                <ThemeToggle theme={theme} setTheme={setTheme} />
+                {nav.phone && (
+                  <a href={`tel:${nav.phone}`} className="site-nav-phone">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.1-.45c.908.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <E field="nav.phone" value={nav.phone} as="span" />
+                  </a>
+                )}
+                {nav.ctaLabel && (
+                  <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
+                )}
+              </div>
+              <button className="site-nav-burger" aria-label="Menü öffnen" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}>
+                <IconMenu />
+              </button>
             </div>
           </div>
         </header>
+
+        {/* ── MOBILE DRAWER (hamburger menu) ───────────────────────────── */}
+        <div className={`site-mobile-scrim ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(false)} />
+        <aside className={`site-mobile-drawer ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
+          <div className="site-mobile-drawer-top">
+            <span className="site-mobile-drawer-brand">{nav.brand}</span>
+            <button className="site-mobile-close" aria-label="Menü schließen" onClick={() => setMenuOpen(false)}>
+              <IconClose />
+            </button>
+          </div>
+          <nav className="site-mobile-links">
+            {nav.links.map((l, i) => (
+              <a key={i} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</a>
+            ))}
+          </nav>
+          <div className="site-mobile-actions">
+            <div>
+              <div className="site-mobile-theme-label">Farbschema</div>
+              <div className="site-mobile-theme-row">
+                <ThemeToggle theme={theme} setTheme={setTheme} />
+              </div>
+            </div>
+            {nav.phone && (
+              <a href={`tel:${nav.phone}`} className="site-mobile-phone" onClick={() => setMenuOpen(false)}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.1-.45c.908.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                {nav.phone}
+              </a>
+            )}
+            {nav.ctaLabel && (
+              <a href={nav.ctaHref ?? '#'} className="site-mobile-cta" onClick={() => setMenuOpen(false)}>{nav.ctaLabel}</a>
+            )}
+          </div>
+        </aside>
 
         {/* ── HERO ─────────────────────────────────────────────────────── */}
         <section

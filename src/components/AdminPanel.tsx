@@ -13,6 +13,29 @@ interface Props {
 }
 
 type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style'
+type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
+
+// ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
+
+function IconEdit() {
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+}
+function IconDesktop() {
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+}
+function IconTablet() {
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+}
+function IconMobile() {
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+}
+
+const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = [
+  { id: 'edit', label: 'Bearbeiten', icon: <IconEdit /> },
+  { id: 'desktop', label: 'Web', icon: <IconDesktop /> },
+  { id: 'tablet', label: 'Tablet', icon: <IconTablet /> },
+  { id: 'mobile', label: 'Mobil', icon: <IconMobile /> },
+]
 
 export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
@@ -22,6 +45,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [uploading, setUploading] = useState(false)
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
+  const [device, setDevice] = useState<DeviceView>('edit')
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
@@ -147,8 +171,20 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           <span className="builder-brand-dot" />
           <strong>{draft.nav?.brand || 'Meine Website'}</strong>
         </div>
-        <div className="builder-topbar-hint">
-          Canvas — jedes Element frei ziehbar &nbsp;·&nbsp; Ctrl+S zum Speichern
+        <div className="builder-device-switch" role="group" aria-label="Ansicht wählen">
+          {DEVICE_OPTS.map(d => (
+            <button
+              key={d.id}
+              type="button"
+              className={`builder-device-btn ${device === d.id ? 'active' : ''}`}
+              aria-pressed={device === d.id}
+              title={d.id === 'edit' ? 'Canvas bearbeiten' : `${d.label}-Vorschau`}
+              onClick={() => setDevice(d.id)}
+            >
+              {d.icon}
+              {d.label}
+            </button>
+          ))}
         </div>
         <div className="builder-topbar-right">
           <span className="builder-user">{user.name || user.email}</span>
@@ -166,18 +202,31 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
       {/* ── BODY ────────────────────────────────────────────────────────── */}
       <div className="builder-body">
 
-        {/* LEFT: Always-on canvas */}
-        <div className="builder-canvas-pane" ref={previewRef}>
-          <PublicSite
-            content={draft}
-            editMode={false}
-            rearrangeMode={true}
-            initPositions={initPositions}
-            onTextChange={(field, value) => update(field, value)}
-            onImageClick={handleImageClick}
-            onUpdate={(field, value) => update(field, value)}
-          />
-        </div>
+        {/* LEFT: Canvas editor OR device preview */}
+        {device === 'edit' ? (
+          <div className="builder-canvas-pane" ref={previewRef}>
+            <PublicSite
+              content={draft}
+              editMode={false}
+              rearrangeMode={true}
+              initPositions={initPositions}
+              onTextChange={(field, value) => update(field, value)}
+              onImageClick={handleImageClick}
+              onUpdate={(field, value) => update(field, value)}
+            />
+          </div>
+        ) : (
+          <div className="builder-device-stage">
+            <div className="device-frame-wrap">
+              <div className={`device-frame device-${device}`}>
+                <PublicSite content={draft} />
+              </div>
+              <div className="device-frame-label">
+                {device === 'desktop' ? 'Web · 1280 px' : device === 'tablet' ? 'Tablet · 834 px' : 'Mobil · 390 px'}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* RIGHT: Panel */}
         <aside className="builder-panel">
