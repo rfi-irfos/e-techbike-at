@@ -97,6 +97,8 @@ export interface SiteContent {
     phone: string
     address: string
     whatsapp?: string
+    facebook?: string
+    instagram?: string
     mapSrc?: string
     formEnabled?: boolean
   }

@@ -791,44 +791,29 @@ button { cursor: pointer; font-family: inherit; }
   padding: 13px 10px; border-radius: 8px; transition: background .15s;
 }
 .site-mobile-links a:hover { background: var(--surface-sunken); color: var(--primary); }
-.site-mobile-actions { display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
-.site-mobile-phone {
-  display: flex; align-items: center; gap: 8px; justify-content: center;
-  font-size: 15px; font-weight: 700; color: var(--text);
-  padding: 13px; border: 1.5px solid var(--border); border-radius: 9px;
+/* Contact block */
+.site-mobile-divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
+.site-mobile-contact { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.site-mobile-addr {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; color: var(--text-soft);
 }
-.site-mobile-phone svg { color: var(--primary); }
-.site-mobile-cta {
-  display: flex; align-items: center; justify-content: center;
-  background: var(--primary); color: var(--on-primary);
-  font-size: 15px; font-weight: 700; padding: 14px; border-radius: 9px;
-}
-.site-mobile-info-card {
-  background: var(--surface-sunken); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
-  display: flex; flex-direction: column; gap: 10px;
-}
-.site-mobile-info-row {
-  display: flex; align-items: flex-start; gap: 8px;
-  font-size: 13px; color: var(--text-soft);
-}
-.site-mobile-info-row svg { color: var(--primary); flex-shrink: 0; margin-top: 1px; }
-.site-mobile-info-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.site-mobile-info-call, .site-mobile-info-wa {
+.site-mobile-addr svg { color: var(--primary); flex-shrink: 0; }
+.site-mobile-cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.site-mobile-btn-call, .site-mobile-btn-wa {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 10px 6px; border-radius: 9px; font-size: 13px; font-weight: 700;
-  transition: opacity .2s;
+  padding: 11px 6px; border-radius: 10px; font-size: 13px; font-weight: 700;
+  transition: opacity .2s; text-decoration: none;
 }
-.site-mobile-info-call:hover, .site-mobile-info-wa:hover { opacity: .85; }
-.site-mobile-info-call { background: var(--primary); color: #fff; }
-.site-mobile-info-wa { background: #25D366; color: #fff; }
-.site-mobile-theme-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--text-soft); margin-bottom: 8px;
+.site-mobile-btn-call { background: var(--primary); color: #fff; }
+.site-mobile-btn-wa { background: #25D366; color: #fff; }
+.site-mobile-btn-call:hover, .site-mobile-btn-wa:hover { opacity: .88; }
+/* Bottom row: social icons left, theme toggle right */
+.site-mobile-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border);
 }
-.site-mobile-theme-row { display: flex; }
-.site-mobile-theme-row .theme-toggle { flex: 1; justify-content: space-between; }
-.site-mobile-theme-row .theme-toggle-btn { flex: 1; }
+.site-mobile-bottom .site-social-row { margin-top: 0; }
 
 /* ══════════════════════════════════════════════════════════════════════════════
    RESPONSIVE — the live site reflows to a mobile-app-grade layout by viewport.
@@ -1184,6 +1169,19 @@ button { cursor: pointer; font-family: inherit; }
 .prod-accordion-html ul { padding-left: 20px; margin: 0; }
 .prod-accordion-html li { font-size: 13px; color: var(--text-soft); line-height: 1.8; }
 .prod-accordion-text { font-size: 13px; color: var(--text-soft); line-height: 1.7; margin: 0; }
+
+/* Social icons */
+.site-social-row { display: flex; gap: 10px; align-items: center; margin-top: 14px; }
+.site-social-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--surface-sunken); border: 1.5px solid var(--border);
+  color: var(--text-soft); transition: border-color .18s, color .18s, background .18s;
+  flex-shrink: 0; text-decoration: none;
+}
+.site-social-icon svg { width: 18px; height: 18px; }
+.site-social-icon:hover { border-color: var(--primary); color: var(--primary); background: var(--surface); }
+.site-social-wa:hover { border-color: #25D366; color: #25D366; }
 
 /* Modal CTAs */
 .prod-modal-ctas { display: flex; gap: 8px; margin-top: auto; padding-top: 20px; }
