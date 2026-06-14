@@ -1,15 +1,28 @@
 export interface NavLink { label: string; href: string }
 export interface FeatureItem { id: string; title: string; description: string }
 
+export interface SubCategoryItem {
+  id: string
+  name: string
+  image: string
+  description?: string
+}
+
 export interface ProductItem {
   id: string
   name: string
   description: string
   price: string
+  regularPrice?: string
   image: string
+  images?: string[]
   badge?: string
   category: string
+  subcategory?: string
   specs?: string[]
+  specsTable?: { label: string; value: string }[]
+  details?: string
+  delivery?: string
 }
 
 export interface CategoryItem {
@@ -18,6 +31,7 @@ export interface CategoryItem {
   sub: string
   image: string
   href?: string
+  subcategories?: SubCategoryItem[]
 }
 
 export interface NewsItem {

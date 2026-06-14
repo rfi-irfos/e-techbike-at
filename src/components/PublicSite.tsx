@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import type { SiteContent, SectionId, CanvasPos } from '../types/content'
+import type { SiteContent, SectionId, CanvasPos, ProductItem } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
@@ -323,6 +323,302 @@ function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) =
   )
 }
 
+// ── Accordion ────────────────────────────────────────────────────────────────
+
+function Accordion({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className={`prod-accordion ${open ? 'open' : ''}`}>
+      <button className="prod-accordion-head" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        <span>{title}</span>
+        <svg className="prod-accordion-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      {open && <div className="prod-accordion-body">{children}</div>}
+    </div>
+  )
+}
+
+// ── Product Modal ─────────────────────────────────────────────────────────────
+
+function ProductModal({ product, contact, onClose }: {
+  product: ProductItem
+  contact: SiteContent['contact']
+  onClose: () => void
+}) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = ''; document.removeEventListener('keydown', onKey) }
+  }, [onClose])
+
+  const waHref = contact.whatsapp
+    ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hallo! Ich interessiere mich für "${product.name}" und möchte eine Beratung anfragen.`)}`
+    : undefined
+
+  return (
+    <>
+      <div className="prod-modal-backdrop" onClick={onClose} />
+      <div className="prod-modal" role="dialog" aria-modal="true" aria-label={product.name}>
+        <button className="prod-modal-close" onClick={onClose} aria-label="Schließen"><IconClose /></button>
+        <div className="prod-modal-inner">
+          <div className="prod-modal-left">
+            <div className="prod-modal-img-wrap">
+              {product.badge && <span className="prod-modal-badge">{product.badge}</span>}
+              <img src={product.image} alt={product.name} className="prod-modal-img" />
+            </div>
+          </div>
+          <div className="prod-modal-right">
+            <div className="prod-modal-cat">{product.category}</div>
+            <h2 className="prod-modal-name">{product.name}</h2>
+            <div className="prod-modal-price-row">
+              <span className="prod-modal-price">{product.price}</span>
+              {product.regularPrice && <span className="prod-modal-price-old">{product.regularPrice}</span>}
+            </div>
+            {product.regularPrice && <div className="prod-modal-price-note">inkl. MwSt., zzgl. Versand</div>}
+            <p className="prod-modal-desc">{product.description}</p>
+
+            {(product.specsTable?.length ?? 0) > 0 && (
+              <div className="prod-modal-specs-wrap">
+                <Accordion title="Produktinformationen" defaultOpen={true}>
+                  <table className="prod-modal-specs-table">
+                    <tbody>
+                      {product.specsTable!.map((row, i) => (
+                        <tr key={i}>
+                          <td className="prod-specs-label">{row.label}</td>
+                          <td className="prod-specs-value">{row.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </Accordion>
+              </div>
+            )}
+
+            {product.details && (
+              <Accordion title="Produktdetails">
+                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: product.details }} />
+              </Accordion>
+            )}
+
+            {product.delivery && (
+              <Accordion title="Lieferung">
+                <p className="prod-accordion-text">{product.delivery}</p>
+              </Accordion>
+            )}
+
+            <div className="prod-modal-ctas">
+              {waHref && (
+                <a href={waHref} target="_blank" rel="noopener noreferrer" className="prod-modal-cta-wa">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.118 1.533 5.851L0 24l6.335-1.513A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.843 0-3.57-.49-5.062-1.346L2.5 21.5l.854-3.375A9.944 9.944 0 0 1 2 12c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                  Per WhatsApp anfragen
+                </a>
+              )}
+              <a href={`mailto:${contact.email}?subject=${encodeURIComponent(`Anfrage: ${product.name}`)}`} className="prod-modal-cta-mail">
+                Per E-Mail anfragen
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ── Category Browser (3-level drill-down) ────────────────────────────────────
+
+type BrowserLevel = 'categories' | 'subcategories' | 'products'
+
+function IconChevron() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+}
+function IconBack() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+}
+
+function CategoryBrowser({ categories, products, contact }: {
+  categories: SiteContent['categories']
+  products: SiteContent['products']
+  contact: SiteContent['contact']
+}) {
+  const [level, setLevel] = useState<BrowserLevel>('categories')
+  const [activeCatId, setActiveCatId] = useState<string | null>(null)
+  const [activeSubId, setActiveSubId] = useState<string | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null)
+
+  const activeCat = categories.items.find(c => c.id === activeCatId)
+  const subcats = activeCat?.subcategories ?? []
+
+  const visibleProducts = products.items.filter(p => {
+    if (!activeCat) return false
+    if (p.category !== activeCat.name) return false
+    if (activeSubId && p.subcategory !== activeSubId) return false
+    return true
+  })
+
+  const activeSub = subcats.find(s => s.id === activeSubId)
+
+  function drillCat(catId: string) {
+    const cat = categories.items.find(c => c.id === catId)
+    setActiveCatId(catId)
+    setActiveSubId(null)
+    if (cat?.subcategories?.length) {
+      setLevel('subcategories')
+    } else {
+      setLevel('products')
+    }
+    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function drillSub(subId: string) {
+    setActiveSubId(subId)
+    setLevel('products')
+    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function goBack() {
+    if (level === 'products' && subcats.length > 0) {
+      setActiveSubId(null)
+      setLevel('subcategories')
+    } else {
+      setActiveCatId(null)
+      setActiveSubId(null)
+      setLevel('categories')
+    }
+  }
+
+  return (
+    <section className="site-section site-browser" id="products">
+      {categories.eyebrow && level === 'categories' && <div className="site-eyebrow">{categories.eyebrow}</div>}
+      <div className="site-browser-header">
+        {level !== 'categories' && (
+          <button className="site-browser-back" onClick={goBack}>
+            <IconBack />
+            Zurück
+          </button>
+        )}
+        <h2 className="site-browser-title">
+          {level === 'categories' && categories.title}
+          {level === 'subcategories' && activeCat?.name}
+          {level === 'products' && (activeSub?.name ?? activeCat?.name)}
+        </h2>
+        {level !== 'categories' && (
+          <nav className="site-browser-breadcrumb" aria-label="Breadcrumb">
+            <button onClick={() => { setActiveCatId(null); setActiveSubId(null); setLevel('categories') }}>Sortiment</button>
+            {activeCat && (
+              <>
+                <IconChevron />
+                {level === 'products' && subcats.length > 0
+                  ? <button onClick={() => { setActiveSubId(null); setLevel('subcategories') }}>{activeCat.name}</button>
+                  : <span>{activeCat.name}</span>
+                }
+              </>
+            )}
+            {activeSub && (
+              <>
+                <IconChevron />
+                <span>{activeSub.name}</span>
+              </>
+            )}
+          </nav>
+        )}
+      </div>
+
+      {/* Level 1: Main categories */}
+      {level === 'categories' && (
+        <div className="site-browser-cat-grid">
+          {categories.items.map(c => (
+            <button key={c.id} className="site-browser-cat-tile" onClick={() => drillCat(c.id)}>
+              <div className="site-browser-cat-img-wrap">
+                {c.image
+                  ? <img src={c.image} alt={c.name} className="site-browser-cat-img" />
+                  : <div className="site-browser-cat-img-ph" />
+                }
+                <div className="site-browser-cat-overlay">
+                  <span className="site-browser-cat-name">{c.name}</span>
+                  <span className="site-browser-cat-sub">{c.sub}</span>
+                  {(c.subcategories?.length ?? 0) === 0 && (
+                    <span className="site-browser-cat-count">
+                      {products.items.filter(p => p.category === c.name).length} Artikel
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="site-browser-cat-foot">
+                <span className="site-browser-cat-foot-name">{c.name}</span>
+                <span className="site-browser-cat-foot-arrow"><IconChevron /></span>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Level 2: Subcategories */}
+      {level === 'subcategories' && (
+        <div className="site-browser-subcat-grid">
+          {subcats.map(sc => {
+            const count = products.items.filter(p => p.subcategory === sc.id).length
+            return (
+              <button key={sc.id} className="site-browser-subcat-tile" onClick={() => drillSub(sc.id)}>
+                <div className="site-browser-subcat-img-wrap">
+                  {sc.image
+                    ? <img src={sc.image} alt={sc.name} className="site-browser-subcat-img" />
+                    : <div className="site-browser-subcat-img-ph" />
+                  }
+                </div>
+                <div className="site-browser-subcat-body">
+                  <span className="site-browser-subcat-name">{sc.name}</span>
+                  {sc.description && <span className="site-browser-subcat-desc">{sc.description}</span>}
+                  {count > 0 && <span className="site-browser-subcat-count">{count} Artikel</span>}
+                </div>
+                <IconChevron />
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Level 3: Product list */}
+      {level === 'products' && (
+        visibleProducts.length === 0
+          ? <p className="site-browser-empty">Keine Produkte in dieser Kategorie. Bitte kontaktieren Sie uns für eine persönliche Beratung.</p>
+          : (
+            <div className="site-browser-prodlist">
+              {visibleProducts.map(p => (
+                <button key={p.id} className="site-browser-prodcard" onClick={() => setSelectedProduct(p)}>
+                  <div className="site-browser-prodcard-img-wrap">
+                    {p.badge && <span className="site-browser-prodcard-badge">{p.badge}</span>}
+                    {p.image
+                      ? <img src={p.image} alt={p.name} className="site-browser-prodcard-img" />
+                      : <div className="site-browser-prodcard-img-ph" />
+                    }
+                  </div>
+                  <div className="site-browser-prodcard-body">
+                    <span className="site-browser-prodcard-name">{p.name}</span>
+                    {(p.specs?.length ?? 0) > 0 && (
+                      <div className="site-browser-prodcard-specs">
+                        {p.specs!.slice(0, 3).map((s, i) => <span key={i} className="site-spec">{s}</span>)}
+                      </div>
+                    )}
+                    <div className="site-browser-prodcard-price-row">
+                      <span className="site-browser-prodcard-price">{p.price}</span>
+                      {p.regularPrice && <span className="site-browser-prodcard-price-old">{p.regularPrice}</span>}
+                    </div>
+                    <span className="site-browser-prodcard-cta">Details &amp; Anfrage</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )
+      )}
+
+      {selectedProduct && (
+        <ProductModal product={selectedProduct} contact={contact} onClose={() => setSelectedProduct(null)} />
+      )}
+    </section>
+  )
+}
+
 // ── Public Site ───────────────────────────────────────────────────────────────
 
 interface Props {
@@ -343,7 +639,6 @@ export function PublicSite({
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer } = content
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
-  const [activeTab, setActiveTab] = useState('Alle')
   const [menuOpen, setMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const [heroBgPos, setHeroBgPos] = useState({ x: hero.bgX ?? 50, y: hero.bgY ?? 50 })
@@ -587,10 +882,6 @@ export function PublicSite({
 
   // ── Normal / Edit render ─────────────────────────────────────────────────────
 
-  const filteredProducts = activeTab === 'Alle'
-    ? (products?.items ?? [])
-    : (products?.items ?? []).filter(p => p.category === activeTab)
-
   const heroStyle: React.CSSProperties = {
     minHeight: heroHeight,
     ...(hero.image ? { backgroundImage: `url(${hero.image})`, backgroundPosition: `${heroBgPos.x}% ${heroBgPos.y}%` } : {}),
@@ -717,44 +1008,19 @@ export function PublicSite({
           </div>
         )}
 
-        {/* ── CATEGORIES ───────────────────────────────────────────────── */}
-        {(categories?.items?.length ?? 0) > 0 && (
-          <section className="site-section site-categories" id="categories">
-            {categories.eyebrow && <div className="site-eyebrow">{categories.eyebrow}</div>}
-            <E field="categories.title" value={categories.title} as="h2" className="site-section-title" />
-            <div className="site-cat-grid">
-              {categories.items.map((c, i) => (
-                <div key={c.id} className="site-cat-card">
-                  <EImg field={`categories.items.${i}.image`} src={c.image} alt={c.name} className="site-cat-img" />
-                  <div className="site-cat-overlay">
-                    <E field={`categories.items.${i}.name`} value={c.name} as="div" className="site-cat-name" />
-                    <E field={`categories.items.${i}.sub`} value={c.sub} as="div" className="site-cat-sub" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+        {/* ── CATEGORY BROWSER (3-level: cat → subcat → products → modal) ── */}
+        {!editMode && (categories?.items?.length ?? 0) > 0 && (
+          <CategoryBrowser categories={categories} products={products} contact={contact} />
         )}
 
-        {/* ── PRODUCTS ─────────────────────────────────────────────────── */}
-        {(products?.items?.length ?? 0) > 0 && (
+        {/* Edit mode: keep flat product grid for admin editing */}
+        {editMode && (products?.items?.length ?? 0) > 0 && (
           <section className="site-section site-products" id="products">
             <div className="site-products-top">
               <E field="products.title" value={products.title} as="h2" className="site-products-h2" />
-              {!editMode && (products?.tabs?.length ?? 0) > 1 && (
-                <div className="site-tabs">
-                  {products.tabs.map(tab => (
-                    <button
-                      key={tab}
-                      className={`site-tab-btn ${activeTab === tab ? 'active' : ''}`}
-                      onClick={() => setActiveTab(tab)}
-                    >{tab}</button>
-                  ))}
-                </div>
-              )}
             </div>
             <div className="site-product-grid">
-              {(editMode ? products.items : filteredProducts).map((p, i) => (
+              {products.items.map((p, i) => (
                 <div key={p.id} className="site-pcard">
                   <div className="site-pcard-img">
                     {p.badge && <div className="site-pcard-badge">{p.badge}</div>}
@@ -763,15 +1029,9 @@ export function PublicSite({
                   <div className="site-pcard-body">
                     <div className="site-pcard-brand">{p.category}</div>
                     <E field={`products.items.${i}.name`} value={p.name} as="div" className="site-pcard-name" />
-                    {(p.specs?.length ?? 0) > 0 && (
-                      <div className="site-pcard-specs">
-                        {p.specs!.map((s, si) => <span key={si} className="site-spec">{s}</span>)}
-                      </div>
-                    )}
                     <E field={`products.items.${i}.description`} value={p.description} as="div" className="site-pcard-desc" />
                     <div className="site-pcard-foot">
                       <E field={`products.items.${i}.price`} value={p.price} as="div" className="site-pcard-price" />
-                      <a href={`mailto:${contact?.email ?? ''}`} className="site-pcard-cta">Anfragen</a>
                     </div>
                   </div>
                 </div>
