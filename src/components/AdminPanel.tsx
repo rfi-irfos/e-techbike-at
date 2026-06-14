@@ -15,6 +15,7 @@ interface Props {
 type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
+
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
 
 function IconEdit() {
@@ -48,13 +49,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [device, setDevice] = useState<DeviceView>('edit')
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
-
-  // ── Init positions snapshot for canvas ────────────────────────────────────
-
-  const [initPositions] = useState<Record<string, { x: number; y: number }>>(() => {
-    if (!previewRef.current) return {}
-    return {}
-  })
+  const panelBodyRef = useRef<HTMLDivElement>(null)
 
   // ── State helpers ─────────────────────────────────────────────────────────
 
@@ -207,12 +202,18 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           <div className="builder-canvas-pane" ref={previewRef}>
             <PublicSite
               content={draft}
-              editMode={false}
-              rearrangeMode={true}
-              initPositions={initPositions}
+              editMode={true}
               onTextChange={(field, value) => update(field, value)}
               onImageClick={handleImageClick}
               onUpdate={(field, value) => update(field, value)}
+              selectedProductId={editingProduct ?? undefined}
+              onProductClick={(id) => {
+                setEditingProduct(id)
+                setActiveTab('products')
+                setTimeout(() => {
+                  panelBodyRef.current?.querySelector('[data-prod-selected]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                }, 60)
+              }}
             />
           </div>
         ) : (
@@ -240,7 +241,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           </div>
 
           {/* Panel content */}
-          <div className="builder-panel-body">
+          <div className="builder-panel-body" ref={panelBodyRef}>
 
             {/* ── PRODUCTS TAB ──────────────────────────────────────────── */}
             {activeTab === 'products' && (
@@ -303,7 +304,12 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                   <>
                     <div className="panel-product-list">
                       {(draft.products?.items ?? []).map(p => (
-                        <div key={p.id} className="panel-product-row" onClick={() => setEditingProduct(p.id)}>
+                        <div
+                          key={p.id}
+                          className={`panel-product-row${editingProduct === p.id ? ' panel-product-row--active' : ''}`}
+                          data-prod-selected={editingProduct === p.id ? true : undefined}
+                          onClick={() => setEditingProduct(p.id)}
+                        >
                           <div className="panel-product-thumb">
                             {p.image ? <img src={p.image} alt={p.name} /> : <div className="panel-product-thumb-empty" />}
                           </div>

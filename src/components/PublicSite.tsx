@@ -705,11 +705,13 @@ interface Props {
   onImageClick?: (field: string) => void
   onUpdate?: (field: string, value: unknown) => void
   onSectionReorder?: (order: SectionId[]) => void
+  onProductClick?: (id: string) => void
+  selectedProductId?: string
 }
 
 export function PublicSite({
   content, editMode = false, rearrangeMode = false, initPositions = {},
-  onTextChange, onImageClick, onUpdate,
+  onTextChange, onImageClick, onUpdate, onProductClick, selectedProductId,
 }: Props) {
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer } = content
 
@@ -1119,7 +1121,11 @@ export function PublicSite({
             </div>
             <div className="site-product-grid">
               {products.items.map((p, i) => (
-                <div key={p.id} className="site-pcard">
+                <div
+                  key={p.id}
+                  className={`site-pcard${selectedProductId === p.id ? ' site-pcard--selected' : ''}${onProductClick ? ' site-pcard--admin' : ''}`}
+                  onClick={onProductClick ? (e) => { e.stopPropagation(); onProductClick(p.id) } : undefined}
+                >
                   <div className="site-pcard-img">
                     {p.badge && <div className="site-pcard-badge">{p.badge}</div>}
                     <EImg field={`products.items.${i}.image`} src={p.image} alt={p.name} className="site-pcard-photo" />
