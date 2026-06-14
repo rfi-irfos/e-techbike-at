@@ -345,12 +345,20 @@ function ProductModal({ product, contact, onClose }: {
   contact: SiteContent['contact']
   onClose: () => void
 }) {
+  const allImages = product.images?.length ? product.images : [product.image]
+  const [imgIdx, setImgIdx] = useState(0)
+
+  useEffect(() => { setImgIdx(0) }, [product.id])
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowRight') setImgIdx(i => (i + 1) % allImages.length)
+      if (e.key === 'ArrowLeft') setImgIdx(i => (i - 1 + allImages.length) % allImages.length)
+    }
     document.addEventListener('keydown', onKey)
     return () => { document.body.style.overflow = ''; document.removeEventListener('keydown', onKey) }
-  }, [onClose])
+  }, [onClose, allImages.length])
 
   const waHref = contact.whatsapp
     ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hallo! Ich interessiere mich für "${product.name}" und möchte eine Beratung anfragen.`)}`
@@ -365,8 +373,23 @@ function ProductModal({ product, contact, onClose }: {
           <div className="prod-modal-left">
             <div className="prod-modal-img-wrap">
               {product.badge && <span className="prod-modal-badge">{product.badge}</span>}
-              <img src={product.image} alt={product.name} className="prod-modal-img" />
+              <img src={allImages[imgIdx]} alt={product.name} className="prod-modal-img" />
+              {allImages.length > 1 && (
+                <>
+                  <button className="prod-modal-arrow prod-modal-arrow-l" onClick={() => setImgIdx(i => (i - 1 + allImages.length) % allImages.length)} aria-label="Vorheriges Bild">‹</button>
+                  <button className="prod-modal-arrow prod-modal-arrow-r" onClick={() => setImgIdx(i => (i + 1) % allImages.length)} aria-label="Nächstes Bild">›</button>
+                </>
+              )}
             </div>
+            {allImages.length > 1 && (
+              <div className="prod-modal-thumbs">
+                {allImages.map((src, i) => (
+                  <button key={i} className={`prod-modal-thumb${i === imgIdx ? ' active' : ''}`} onClick={() => setImgIdx(i)}>
+                    <img src={src} alt={`${product.name} ${i + 1}`} />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="prod-modal-right">
             <div className="prod-modal-cat">{product.category}</div>
