@@ -706,12 +706,15 @@ interface Props {
   onUpdate?: (field: string, value: unknown) => void
   onSectionReorder?: (order: SectionId[]) => void
   onProductClick?: (id: string) => void
+  onProductDblClick?: (id: string) => void
+  onSectionClick?: (tab: string) => void
   selectedProductId?: string
 }
 
 export function PublicSite({
   content, editMode = false, rearrangeMode = false, initPositions = {},
-  onTextChange, onImageClick, onUpdate, onProductClick, selectedProductId,
+  onTextChange, onImageClick, onUpdate, onProductClick, onProductDblClick, onSectionClick: _onSectionClick,
+  selectedProductId,
 }: Props) {
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer } = content
 
@@ -1125,6 +1128,7 @@ export function PublicSite({
                   key={p.id}
                   className={`site-pcard${selectedProductId === p.id ? ' site-pcard--selected' : ''}${onProductClick ? ' site-pcard--admin' : ''}`}
                   onClick={onProductClick ? (e) => { e.stopPropagation(); onProductClick(p.id) } : undefined}
+                  onDoubleClick={onProductDblClick ? (e) => { e.stopPropagation(); onProductDblClick(p.id) } : undefined}
                 >
                   <div className="site-pcard-img">
                     {p.badge && <div className="site-pcard-badge">{p.badge}</div>}

@@ -47,6 +47,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
   const [device, setDevice] = useState<DeviceView>('edit')
+  const [productModal, setProductModal] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const panelBodyRef = useRef<HTMLDivElement>(null)
@@ -214,6 +215,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                   panelBodyRef.current?.querySelector('[data-prod-selected]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
                 }, 60)
               }}
+              onProductDblClick={(id: string) => {
+                setEditingProduct(id)
+                setProductModal(id)
+              }}
+              onSectionClick={(tab: string) => setActiveTab(tab as PanelTab)}
             />
           </div>
         ) : (
@@ -522,6 +528,24 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           </div>
         </aside>
       </div>
+
+      {/* ── PRODUCT EDIT MODAL ──────────────────────────────────────────── */}
+      {productModal && (() => {
+        const mp = draft.products?.items?.find(p => p.id === productModal)
+        if (!mp) return null
+        return (
+          <ProductEditModal
+            product={mp}
+            draft={draft}
+            saving={saving}
+            onUpdate={updateProduct}
+            onDelete={(id) => { deleteProduct(id); setProductModal(null) }}
+            onUpload={uploadProductImage}
+            onClose={() => setProductModal(null)}
+            onPublish={handleSave}
+          />
+        )
+      })()}
     </div>
   )
 }
@@ -563,6 +587,171 @@ function UploadRow({ src, onUpload, uploading }: { src: string; onUpload: () => 
       <button className="panel-upload-btn" onClick={onUpload} disabled={uploading}>
         {uploading ? 'Hochladen…' : src ? 'Ändern' : 'Hochladen'}
       </button>
+    </div>
+  )
+}
+
+// ── Product Edit Modal ─────────────────────────────────────────────────────────
+
+function ProductEditModal({
+  product, draft, saving, onUpdate, onDelete, onUpload, onClose, onPublish,
+}: {
+  product: ProductItem
+  draft: SiteContent
+  saving: boolean
+  onUpdate: (id: string, field: keyof ProductItem, value: unknown) => void
+  onDelete: (id: string) => void
+  onUpload: (id: string) => void
+  onClose: () => void
+  onPublish: () => Promise<void>
+}) {
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [publishing, setPublishing] = useState(false)
+  const [specsInput, setSpecsInput] = useState('')
+
+  const categories = draft.categories?.items?.map(c => c.name) ?? []
+  const u = (field: keyof ProductItem, val: unknown) => onUpdate(product.id, field, val)
+
+  const addSpec = () => {
+    const val = specsInput.trim()
+    if (!val) return
+    u('specs', [...(product.specs ?? []), val])
+    setSpecsInput('')
+  }
+
+  const removeSpec = (i: number) => {
+    u('specs', (product.specs ?? []).filter((_, idx) => idx !== i))
+  }
+
+  const handlePublish = async () => {
+    setPublishing(true)
+    await onPublish()
+    setPublishing(false)
+    onClose()
+  }
+
+  return (
+    <div className="pem-overlay" onClick={onClose}>
+      <div className="pem" onClick={e => e.stopPropagation()}>
+
+        {/* Header */}
+        <div className="pem-header">
+          <span className="pem-title">Produkt bearbeiten</span>
+          <button className="pem-close" onClick={onClose} title="Schliessen">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="pem-body">
+
+          {/* Image */}
+          <div className="pem-img-area">
+            {product.image
+              ? <img src={product.image} alt={product.name} className="pem-img" />
+              : <div className="pem-img-placeholder">Kein Bild</div>
+            }
+            <button className="pem-img-btn" onClick={() => onUpload(product.id)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Bild tauschen
+            </button>
+          </div>
+
+          {/* Fields */}
+          <div className="pem-fields">
+            <div className="pem-field">
+              <label>Name</label>
+              <input value={product.name} onChange={e => u('name', e.target.value)} />
+            </div>
+
+            <div className="pem-row">
+              <div className="pem-field">
+                <label>Preis</label>
+                <input value={product.price} onChange={e => u('price', e.target.value)} placeholder="z.B. 1.299 €" />
+              </div>
+              <div className="pem-field">
+                <label>Streichpreis</label>
+                <input value={product.regularPrice ?? ''} onChange={e => u('regularPrice', e.target.value)} placeholder="optional" />
+              </div>
+              <div className="pem-field">
+                <label>Badge</label>
+                <input value={product.badge ?? ''} onChange={e => u('badge', e.target.value)} placeholder="z.B. NEU" />
+              </div>
+            </div>
+
+            <div className="pem-field">
+              <label>Kategorie</label>
+              <select value={product.category} onChange={e => u('category', e.target.value)}>
+                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                {!categories.includes(product.category) && (
+                  <option value={product.category}>{product.category}</option>
+                )}
+              </select>
+            </div>
+
+            <div className="pem-field">
+              <label>Beschreibung</label>
+              <textarea rows={3} value={product.description} onChange={e => u('description', e.target.value)} />
+            </div>
+
+            <div className="pem-field">
+              <label>Details (HTML erlaubt)</label>
+              <textarea rows={3} value={product.details ?? ''} onChange={e => u('details', e.target.value)} placeholder="Optionale Detailinfos…" />
+            </div>
+
+            <div className="pem-field">
+              <label>Lieferung</label>
+              <textarea rows={2} value={product.delivery ?? ''} onChange={e => u('delivery', e.target.value)} placeholder="Lieferinfos…" />
+            </div>
+
+            <div className="pem-field">
+              <label>Specs (Tags)</label>
+              <div className="pem-tags">
+                {(product.specs ?? []).map((s, i) => (
+                  <span key={i} className="pem-tag">
+                    {s}
+                    <button onClick={() => removeSpec(i)} title="Entfernen">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="pem-tag-input-row">
+                <input
+                  value={specsInput}
+                  onChange={e => setSpecsInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSpec() } }}
+                  placeholder="Spec eingeben + Enter"
+                />
+                <button className="pem-tag-add" onClick={addSpec}>+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="pem-footer">
+          {confirmDelete ? (
+            <div className="pem-delete-confirm">
+              <span>Wirklich löschen?</span>
+              <button className="pem-btn-danger" onClick={() => onDelete(product.id)}>Ja, löschen</button>
+              <button className="pem-btn-ghost" onClick={() => setConfirmDelete(false)}>Abbrechen</button>
+            </div>
+          ) : (
+            <button className="pem-btn-danger" onClick={() => setConfirmDelete(true)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Löschen
+            </button>
+          )}
+          <div className="pem-footer-right">
+            <button className="pem-btn-ghost" onClick={onClose}>Schliessen</button>
+            <button className="pem-btn-primary" onClick={handlePublish} disabled={saving || publishing}>
+              {publishing ? 'Veröffentlichen…' : 'Speichern & Veröffentlichen'}
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }
