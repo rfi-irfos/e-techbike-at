@@ -424,6 +424,7 @@ button { cursor: pointer; font-family: inherit; }
   transition: transform .2s, box-shadow .2s;
 }
 .site-whatsapp-btn:hover { transform: scale(1.1); box-shadow: 0 8px 32px rgba(37,211,102,.6); }
+.site-whatsapp-btn--hidden { opacity: 0; pointer-events: none; transform: scale(0.8); }
 
 /* ══════════════════════════════════════════════════════════════════════════════
    INLINE EDIT LAYER
