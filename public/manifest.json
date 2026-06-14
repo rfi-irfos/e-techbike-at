@@ -1,0 +1,17 @@
+{
+  "name": "e-techbike.at",
+  "short_name": "e-techbike",
+  "description": "E-Scooter, E-Bikes & E-Mopeds — Direktimporteur Graz",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0099CC",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
