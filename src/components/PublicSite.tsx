@@ -713,7 +713,7 @@ interface Props {
 
 export function PublicSite({
   content, editMode = false, rearrangeMode = false, initPositions = {},
-  onTextChange, onImageClick, onUpdate, onProductClick, onProductDblClick, onSectionClick: _onSectionClick,
+  onTextChange, onImageClick, onUpdate, onProductClick, onProductDblClick, onSectionClick,
   selectedProductId,
 }: Props) {
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer } = content
@@ -1098,7 +1098,9 @@ export function PublicSite({
 
         {/* ── TRUST STRIP ──────────────────────────────────────────────── */}
         {(trust?.items?.length ?? 0) > 0 && (
-          <div className="site-trust" id="trust">
+          <div className={`site-trust${editMode ? ' site-edit-section' : ''}`} id="trust"
+            onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('trust') } : undefined}>
+            {editMode && <div className="site-edit-section-badge">Vertrauensleiste</div>}
             {trust.items.map((t) => (
               <div key={t.id} className="site-trust-item">
                 <TrustIcon icon={t.icon} />
@@ -1114,6 +1116,18 @@ export function PublicSite({
         {/* ── CATEGORY BROWSER (3-level: cat → subcat → products → modal) ── */}
         {!editMode && (categories?.items?.length ?? 0) > 0 && (
           <CategoryBrowser categories={categories} products={products} contact={contact} />
+        )}
+        {editMode && (categories?.items?.length ?? 0) > 0 && (
+          <div className="site-edit-section site-edit-section--cats"
+            onClick={e => { e.stopPropagation(); onSectionClick?.('categories') }}>
+            <div className="site-edit-section-badge">Kategorien</div>
+            <div className="site-edit-section-preview">
+              {categories.items.slice(0, 4).map(c => (
+                <div key={c.id} className="site-edit-cat-chip">{c.name}</div>
+              ))}
+              {categories.items.length > 4 && <div className="site-edit-cat-chip site-edit-cat-chip--more">+{categories.items.length - 4}</div>}
+            </div>
+          </div>
         )}
 
         {/* Edit mode: keep flat product grid for admin editing */}
@@ -1150,7 +1164,9 @@ export function PublicSite({
 
         {/* ── USP ──────────────────────────────────────────────────────── */}
         {(usp?.items?.length ?? 0) > 0 && (
-          <section className="site-section site-section-alt site-usp" id="usp">
+          <section className={`site-section site-section-alt site-usp${editMode ? ' site-edit-section' : ''}`} id="usp"
+            onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('usp') } : undefined}>
+            {editMode && <div className="site-edit-section-badge">USPs</div>}
             {usp.eyebrow && <div className="site-eyebrow">{usp.eyebrow}</div>}
             <E field="usp.title" value={usp.title} as="h2" className="site-section-title" />
             <div className="site-usp-grid">
@@ -1167,7 +1183,9 @@ export function PublicSite({
 
         {/* ── NEWS ─────────────────────────────────────────────────────── */}
         {(news?.items?.length ?? 0) > 0 && (
-          <section className="site-section site-news" id="news">
+          <section className={`site-section site-news${editMode ? ' site-edit-section' : ''}`} id="news"
+            onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('news') } : undefined}>
+            {editMode && <div className="site-edit-section-badge">Aktuelles</div>}
             {news.eyebrow && <div className="site-eyebrow">{news.eyebrow}</div>}
             <E field="news.title" value={news.title} as="h2" className="site-section-title" />
             <div className="site-news-grid">
@@ -1186,7 +1204,9 @@ export function PublicSite({
         )}
 
         {/* ── LOCATION ─────────────────────────────────────────────────── */}
-        <section className="site-location" id="location">
+        <section className={`site-location${editMode ? ' site-edit-section' : ''}`} id="location"
+          onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('contact') } : undefined}>
+          {editMode && <div className="site-edit-section-badge">Kontakt</div>}
           {contact?.mapSrc && (
             <div className="site-map">
               <iframe src={contact.mapSrc} allowFullScreen loading="lazy" title="Standort" />

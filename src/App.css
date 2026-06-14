@@ -1452,3 +1452,42 @@ button { cursor: pointer; font-family: inherit; }
   .pem-img-placeholder { width: 120px; height: 120px; }
   .pem-row { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Section edit overlay badges ─────────────────────────────────────────── */
+.site-edit-section {
+  position: relative; cursor: pointer;
+  outline: 2px dashed transparent; outline-offset: 0;
+  transition: outline-color .15s;
+}
+.site-edit-section:hover { outline-color: rgba(0,153,204,.35); }
+.site-edit-section-badge {
+  position: absolute; top: 8px; right: 12px; z-index: 100;
+  background: rgba(0,153,204,.9); color: #fff;
+  font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px; pointer-events: none;
+  opacity: 0; transition: opacity .15s;
+}
+.site-edit-section:hover .site-edit-section-badge { opacity: 1; }
+.site-edit-section--cats {
+  padding: 18px 24px; background: #f8f9fa; border-radius: 8px; margin: 12px 0;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 60px;
+}
+.site-edit-cat-chip {
+  background: #fff; border: 1px solid #dde; border-radius: 20px;
+  padding: 4px 14px; font-size: 13px; color: #444;
+}
+.site-edit-cat-chip--more { background: #EEF8FF; border-color: #C8E6F7; color: #0077AA; font-weight: 600; }
+
+/* ── Panel inline list (trust, usp, nav) ─────────────────────────────────── */
+.panel-inline-list { display: flex; flex-direction: column; gap: 12px; padding: 4px 0; }
+.panel-inline-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 12px;
+}
+.panel-inline-item--compact { padding: 10px 12px; }
+.panel-inline-item-fields { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.panel-inline-delete {
+  background: none; border: none; cursor: pointer; color: #ccc; padding: 2px;
+  margin-top: 2px; line-height: 1; border-radius: 4px; flex-shrink: 0;
+}
+.panel-inline-delete:hover { color: #e33; background: #fff0f0; }

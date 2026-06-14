@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import type { SiteContent, ProductItem, NewsItem } from '../types/content'
+import type { SiteContent, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 
@@ -12,7 +12,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style'
+type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 
@@ -46,6 +46,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [uploading, setUploading] = useState(false)
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
+  const [editingCategory, setEditingCategory] = useState<string | null>(null)
   const [device, setDevice] = useState<DeviceView>('edit')
   const [productModal, setProductModal] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -129,6 +130,9 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
       if (uploadTarget.startsWith('product:')) {
         const pid = uploadTarget.replace('product:', '')
         updateProduct(pid, 'image', url)
+      } else if (uploadTarget.startsWith('category:')) {
+        const cid = uploadTarget.replace('category:', '')
+        updateCategory(cid, 'image', url)
       } else if (uploadTarget.startsWith('news:')) {
         const nid = uploadTarget.replace('news:', '')
         updateNews(nid, 'image', url)
@@ -146,16 +150,81 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     fileRef.current?.click()
   }
 
+  // ── Category helpers ──────────────────────────────────────────────────────
+
+  const addCategory = () => {
+    const id = `c${Date.now()}`
+    const newCat: CategoryItem = { id, name: 'Neue Kategorie', sub: '', image: '' }
+    update('categories.items', [...(draft.categories?.items ?? []), newCat])
+    setEditingCategory(id)
+  }
+  const deleteCategory = (id: string) => {
+    update('categories.items', draft.categories.items.filter(c => c.id !== id))
+    if (editingCategory === id) setEditingCategory(null)
+  }
+  const updateCategory = (id: string, field: keyof CategoryItem, value: unknown) => {
+    update('categories.items', draft.categories.items.map(c => c.id === id ? { ...c, [field]: value } : c))
+  }
+  const uploadCategoryImage = async (id: string) => {
+    setUploadTarget(`category:${id}`)
+    fileRef.current?.click()
+  }
+
+  // ── Trust helpers ─────────────────────────────────────────────────────────
+
+  const addTrustItem = () => {
+    const id = `tr${Date.now()}`
+    const newItem: TrustItem = { id, icon: 'shield', bold: 'Vorteil', text: 'Kurzbeschreibung' }
+    update('trust.items', [...(draft.trust?.items ?? []), newItem])
+  }
+  const deleteTrustItem = (id: string) => {
+    update('trust.items', draft.trust.items.filter(t => t.id !== id))
+  }
+  const updateTrustItem = (id: string, field: keyof TrustItem, value: string) => {
+    update('trust.items', draft.trust.items.map(t => t.id === id ? { ...t, [field]: value } : t))
+  }
+
+  // ── USP helpers ───────────────────────────────────────────────────────────
+
+  const addUspItem = () => {
+    const id = `u${Date.now()}`
+    const newItem: FeatureItem = { id, title: 'Vorteil', description: 'Beschreibung' }
+    update('usp.items', [...(draft.usp?.items ?? []), newItem])
+  }
+  const deleteUspItem = (id: string) => {
+    update('usp.items', draft.usp.items.filter(u => u.id !== id))
+  }
+  const updateUspItem = (id: string, field: keyof FeatureItem, value: string) => {
+    update('usp.items', draft.usp.items.map(u => u.id === id ? { ...u, [field]: value } : u))
+  }
+
+  // ── Nav link helpers ──────────────────────────────────────────────────────
+
+  const addNavLink = () => {
+    update('nav.links', [...(draft.nav?.links ?? []), { label: 'Link', href: '#' }])
+  }
+  const deleteNavLink = (i: number) => {
+    update('nav.links', draft.nav.links.filter((_, idx) => idx !== i))
+  }
+  const updateNavLink = (i: number, field: 'label' | 'href', value: string) => {
+    update('nav.links', draft.nav.links.map((l, idx) => idx === i ? { ...l, [field]: value } : l))
+  }
+
   const tabs: Array<{ id: PanelTab; label: string }> = [
-    { id: 'products', label: 'Produkte' },
-    { id: 'hero',     label: 'Hero' },
-    { id: 'news',     label: 'Neuigkeiten' },
-    { id: 'contact',  label: 'Kontakt' },
-    { id: 'style',    label: 'Stil' },
+    { id: 'products',   label: 'Produkte' },
+    { id: 'categories', label: 'Kategorien' },
+    { id: 'hero',       label: 'Hero' },
+    { id: 'trust',      label: 'Vorteile' },
+    { id: 'usp',        label: 'USPs' },
+    { id: 'news',       label: 'Aktuelles' },
+    { id: 'contact',    label: 'Kontakt' },
+    { id: 'nav',        label: 'Navigation' },
+    { id: 'style',      label: 'Stil' },
   ]
 
   const editingProd = editingProduct ? draft.products?.items?.find(p => p.id === editingProduct) : null
   const editingNewsItem = editingNews ? draft.news?.items?.find(n => n.id === editingNews) : null
+  const editingCat = editingCategory ? draft.categories?.items?.find(c => c.id === editingCategory) : null
 
   return (
     <div className="builder">
@@ -472,6 +541,186 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                       <input type="checkbox" checked={draft.contact?.formEnabled ?? false} onChange={e => update('contact.formEnabled', e.target.checked)} />
                       Kontaktformular anzeigen
                     </label>
+                  </Field>
+                </PanelSection>
+              </>
+            )}
+
+            {/* ── CATEGORIES TAB ────────────────────────────────────────── */}
+            {activeTab === 'categories' && (
+              <div className="panel-products">
+                {editingCat ? (
+                  <div className="panel-product-form">
+                    <button className="panel-back-btn" onClick={() => setEditingCategory(null)}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                      Zur Liste
+                    </button>
+                    <div className="panel-product-img-area" onClick={() => uploadCategoryImage(editingCat.id)}>
+                      {editingCat.image
+                        ? <img src={editingCat.image} alt={editingCat.name} />
+                        : <div className="panel-product-img-empty">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <span>Kategoriebild hochladen</span>
+                          </div>
+                      }
+                      <div className="panel-product-img-overlay">Bild ändern</div>
+                    </div>
+                    <Field label="Name">
+                      <input value={editingCat.name} onChange={e => updateCategory(editingCat.id, 'name', e.target.value)} />
+                    </Field>
+                    <Field label="Untertitel">
+                      <input value={editingCat.sub ?? ''} onChange={e => updateCategory(editingCat.id, 'sub', e.target.value)} placeholder="z.B. 12 Modelle" />
+                    </Field>
+                    <Field label="Link (optional)">
+                      <input value={editingCat.href ?? ''} onChange={e => updateCategory(editingCat.id, 'href', e.target.value)} placeholder="#ebikes" />
+                    </Field>
+                    <button className="panel-delete-btn" onClick={() => deleteCategory(editingCat.id)}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                      Kategorie löschen
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="panel-product-list">
+                      {(draft.categories?.items ?? []).map(c => (
+                        <div key={c.id} className="panel-product-row" onClick={() => setEditingCategory(c.id)}>
+                          <div className="panel-product-thumb">
+                            {c.image ? <img src={c.image} alt={c.name} /> : <div className="panel-product-thumb-empty" />}
+                          </div>
+                          <div className="panel-product-info">
+                            <div className="panel-product-name">{c.name}</div>
+                            <div className="panel-product-meta">{c.sub}</div>
+                          </div>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        </div>
+                      ))}
+                    </div>
+                    <button className="panel-add-big-btn" onClick={addCategory}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      Kategorie hinzufügen
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* ── TRUST TAB ─────────────────────────────────────────────── */}
+            {activeTab === 'trust' && (
+              <div className="panel-products">
+                <div className="panel-inline-list">
+                  {(draft.trust?.items ?? []).map(t => (
+                    <div key={t.id} className="panel-inline-item">
+                      <div className="panel-inline-item-fields">
+                        <Field label="Fett">
+                          <input value={t.bold} onChange={e => updateTrustItem(t.id, 'bold', e.target.value)} placeholder="Direktimporteur" />
+                        </Field>
+                        <Field label="Text">
+                          <input value={t.text} onChange={e => updateTrustItem(t.id, 'text', e.target.value)} placeholder="seit 2019" />
+                        </Field>
+                        <Field label="Icon">
+                          <select value={t.icon} onChange={e => updateTrustItem(t.id, 'icon', e.target.value)}>
+                            {['shield', 'truck', 'star', 'check', 'phone', 'heart', 'bolt', 'tag'].map(ic => (
+                              <option key={ic} value={ic}>{ic}</option>
+                            ))}
+                          </select>
+                        </Field>
+                      </div>
+                      <button className="panel-inline-delete" onClick={() => deleteTrustItem(t.id)} title="Entfernen">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button className="panel-add-big-btn" onClick={addTrustItem}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Vorteil hinzufügen
+                </button>
+              </div>
+            )}
+
+            {/* ── USP TAB ───────────────────────────────────────────────── */}
+            {activeTab === 'usp' && (
+              <div className="panel-products">
+                <div className="panel-inline-list">
+                  {(draft.usp?.items ?? []).map(u => (
+                    <div key={u.id} className="panel-inline-item">
+                      <div className="panel-inline-item-fields">
+                        <Field label="Titel">
+                          <input value={u.title} onChange={e => updateUspItem(u.id, 'title', e.target.value)} />
+                        </Field>
+                        <Field label="Beschreibung">
+                          <textarea rows={2} value={u.description} onChange={e => updateUspItem(u.id, 'description', e.target.value)} />
+                        </Field>
+                      </div>
+                      <button className="panel-inline-delete" onClick={() => deleteUspItem(u.id)} title="Entfernen">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button className="panel-add-big-btn" onClick={addUspItem}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  USP hinzufügen
+                </button>
+              </div>
+            )}
+
+            {/* ── NAV TAB ───────────────────────────────────────────────── */}
+            {activeTab === 'nav' && (
+              <>
+                <PanelSection title="Markenname">
+                  <Field label="Anzeigename">
+                    <input value={draft.nav?.brand ?? ''} onChange={e => update('nav.brand', e.target.value)} />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Logo">
+                  <UploadRow src={draft.nav?.logo ?? ''} onUpload={() => handleImageClick('nav.logo')} uploading={uploading && uploadTarget === 'nav.logo'} />
+                </PanelSection>
+                <PanelSection title="Telefonnummer (Nav)">
+                  <Field label="Nummer">
+                    <input value={draft.nav?.phone ?? ''} onChange={e => update('nav.phone', e.target.value)} placeholder="+43 664 000 0000" />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Navigation Links">
+                  <div className="panel-inline-list">
+                    {(draft.nav?.links ?? []).map((l, i) => (
+                      <div key={i} className="panel-inline-item panel-inline-item--compact">
+                        <div className="panel-inline-item-fields">
+                          <Field label="Label">
+                            <input value={l.label} onChange={e => updateNavLink(i, 'label', e.target.value)} placeholder="Startseite" />
+                          </Field>
+                          <Field label="Link">
+                            <input value={l.href} onChange={e => updateNavLink(i, 'href', e.target.value)} placeholder="#products" />
+                          </Field>
+                        </div>
+                        <button className="panel-inline-delete" onClick={() => deleteNavLink(i)} title="Entfernen">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="panel-add-big-btn" style={{ marginTop: 8 }} onClick={addNavLink}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Link hinzufügen
+                  </button>
+                </PanelSection>
+                <PanelSection title="CTA Button">
+                  <Field label="Button Text">
+                    <input value={draft.nav?.ctaLabel ?? ''} onChange={e => update('nav.ctaLabel', e.target.value)} placeholder="Jetzt kontaktieren" />
+                  </Field>
+                  <Field label="Button Link">
+                    <input value={draft.nav?.ctaHref ?? ''} onChange={e => update('nav.ctaHref', e.target.value)} placeholder="#contact" />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Footer">
+                  <Field label="Copyright">
+                    <input value={draft.footer?.copyright ?? ''} onChange={e => update('footer.copyright', e.target.value)} />
+                  </Field>
+                  <Field label="Tagline">
+                    <input value={draft.footer?.tagline ?? ''} onChange={e => update('footer.tagline', e.target.value)} />
+                  </Field>
+                  <Field label="Beschreibung">
+                    <textarea rows={2} value={draft.footer?.description ?? ''} onChange={e => update('footer.description', e.target.value)} />
                   </Field>
                 </PanelSection>
               </>
