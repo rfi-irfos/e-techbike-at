@@ -15,6 +15,74 @@ interface Props {
 type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
+// ── Minecraft Easter Eggs ──────────────────────────────────────────────────────
+
+function MCToast({ text }: { text: string }) {
+  return (
+    <div className="mc-toast" role="status" aria-live="polite">
+      <div className="mc-toast-icon">
+        <svg viewBox="0 0 16 16" width="32" height="32" style={{ imageRendering: 'pixelated' }}>
+          {/* dragon egg icon (pixelated diamond shape) */}
+          <rect x="6" y="0" width="4" height="2" fill="#330066"/>
+          <rect x="4" y="2" width="8" height="2" fill="#440088"/>
+          <rect x="2" y="4" width="12" height="4" fill="#5500aa"/>
+          <rect x="4" y="8" width="8" height="4" fill="#440088"/>
+          <rect x="6" y="12" width="4" height="2" fill="#330066"/>
+          <rect x="6" y="5" width="2" height="2" fill="#cc00ff"/>
+          <rect x="9" y="5" width="2" height="2" fill="#cc00ff"/>
+        </svg>
+      </div>
+      <div className="mc-toast-body">
+        <div className="mc-toast-label">Achievement Get!</div>
+        <div className="mc-toast-text">{text}</div>
+      </div>
+    </div>
+  )
+}
+
+function EnderDragon({ onCatch }: { onCatch: () => void }) {
+  return (
+    <div className="ender-dragon-wrap" onClick={onCatch} title="psst...">
+      <svg
+        viewBox="0 0 80 36"
+        width="100"
+        height="45"
+        style={{ imageRendering: 'pixelated', display: 'block', overflow: 'visible' }}
+      >
+        {/* left wing */}
+        <g className="dragon-wing-l">
+          <polygon points="4,18 0,4 18,14 14,20" fill="#2d004d"/>
+          <polygon points="18,14 10,2 20,10 18,14" fill="#3d0066"/>
+        </g>
+        {/* right wing */}
+        <g className="dragon-wing-r">
+          <polygon points="62,18 80,4 62,14 62,20" fill="#2d004d"/>
+          <polygon points="62,14 70,2 60,10 62,14" fill="#3d0066"/>
+        </g>
+        {/* tail */}
+        <rect x="4" y="20" width="18" height="8" rx="2" fill="#1a0033"/>
+        <rect x="0" y="22" width="8" height="6" rx="1" fill="#1a0033"/>
+        {/* body */}
+        <rect x="14" y="14" width="40" height="16" rx="3" fill="#1a0033"/>
+        {/* neck */}
+        <rect x="46" y="8" width="12" height="14" rx="2" fill="#220044"/>
+        {/* head */}
+        <rect x="52" y="4" width="20" height="16" rx="2" fill="#2a0055"/>
+        {/* eyes */}
+        <rect x="55" y="8" width="4" height="4" fill="#cc00ff"/>
+        <rect x="64" y="8" width="4" height="4" fill="#cc00ff"/>
+        {/* eye glow */}
+        <rect x="56" y="9" width="2" height="2" fill="#ff88ff"/>
+        <rect x="65" y="9" width="2" height="2" fill="#ff88ff"/>
+        {/* nostrils */}
+        <rect x="70" y="12" width="2" height="2" fill="#440077"/>
+        {/* horns */}
+        <rect x="56" y="2" width="2" height="4" fill="#1a0033"/>
+        <rect x="68" y="0" width="2" height="6" fill="#1a0033"/>
+      </svg>
+    </div>
+  )
+}
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
 
@@ -53,6 +121,14 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [panelWidth, setPanelWidth] = useState(340)
   const [editingPage, setEditingPage] = useState<string | null>(null)
   const [addMenuOpen, setAddMenuOpen] = useState(false)
+  const [mcAchievement, setMcAchievement] = useState<string | null>(null)
+  const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function triggerAchievement(text: string) {
+    if (mcTimerRef.current) clearTimeout(mcTimerRef.current)
+    setMcAchievement(text)
+    mcTimerRef.current = setTimeout(() => setMcAchievement(null), 3800)
+  }
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const panelBodyRef = useRef<HTMLDivElement>(null)
@@ -95,7 +171,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
 
   const handleSave = async () => {
     const ok = await onSave(draft)
-    if (ok) { setSaved(true); setTimeout(() => setSaved(false), 2500) }
+    if (ok) {
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+      triggerAchievement('Achievement Get!  Website aktualisiert')
+    }
   }
 
   const handleImageClick = (field: string) => {
@@ -286,9 +366,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
 
       {/* ── TOPBAR ──────────────────────────────────────────────────────── */}
       <div className="builder-topbar">
+        <EnderDragon onCatch={() => triggerAchievement('Achievement Get!  Enderdrachen gefangen!')} />
         <div className="builder-brand">
           <span className="builder-brand-dot" />
           <strong>{draft.nav?.brand || 'Meine Website'}</strong>
+          <span className="builder-crafting-badge">Crafting Table Edition</span>
         </div>
         <div className="builder-device-switch" role="group" aria-label="Ansicht wählen">
           {DEVICE_OPTS.map(d => (
@@ -348,6 +430,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           <button className="builder-btn-ghost" onClick={onLogout}>Logout</button>
         </div>
       </div>
+      {mcAchievement && <MCToast text={mcAchievement} />}
 
       {/* ── BODY ────────────────────────────────────────────────────────── */}
       <div className="builder-body">
