@@ -55,7 +55,15 @@ export default function App() {
     )
   }
 
+  if (route.pageSlug) {
+    const page = content.pages?.find(p => p.slug === route.pageSlug)
+    if (page) return <DynamicPage page={page} content={content} />
+  }
+
   if (route.staticPageId) {
+    // Check if a dynamic page overrides the static one (same slug)
+    const override = content.pages?.find(p => p.slug === route.staticPageId)
+    if (override) return <DynamicPage page={override} content={content} />
     return (
       <StaticPage
         pageId={route.staticPageId}
@@ -65,11 +73,6 @@ export default function App() {
         address={content.contact?.address}
       />
     )
-  }
-
-  if (route.pageSlug) {
-    const page = content.pages?.find(p => p.slug === route.pageSlug)
-    if (page) return <DynamicPage page={page} content={content} />
   }
 
   return <PublicSite content={content} />

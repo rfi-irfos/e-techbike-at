@@ -469,6 +469,7 @@ button { cursor: pointer; font-family: inherit; }
 .fmt-b { font-weight: 900; }
 .fmt-i { font-style: italic; }
 .fmt-u { text-decoration: underline; }
+.fmt-s { text-decoration: line-through; font-size: 11px; }
 .fmt-size-s { font-size: 10px; }
 .fmt-size-l { font-size: 15px; font-weight: 700; }
 .fmt-sep { width: 1px; height: 18px; background: rgba(255,255,255,.15); margin: 0 3px; flex-shrink: 0; }

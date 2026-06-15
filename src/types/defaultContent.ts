@@ -1327,4 +1327,73 @@ export const defaultContent: SiteContent = {
     ],
     copyright: '© 2026 e-techbike.at — made with love by RFI-IRFOS',
   },
+  pages: [
+    {
+      id: 'foerderung',
+      title: 'Förderungen',
+      slug: 'foerderung',
+      showInNav: false,
+      body: `<p class="sp-lead">Für den Kauf eines E-Fahrzeugs stehen in Österreich attraktive Förderungen zur Verfügung. Hier finden Sie einen Überblick der aktuellen Fördermöglichkeiten.</p>
+<h2>E-Fahrzeugförderung des Klimaschutzministeriums</h2>
+<p>Das Klimaschutzministerium fördert den Kauf von Elektrofahrrädern, E-Mopeds und E-Scootern. Die Förderung beträgt bis zu 33 % des Kaufpreises, maximal jedoch:</p>
+<ul>
+  <li>E-Fahrrad: bis zu 400 €</li>
+  <li>E-Lastenfahrrad: bis zu 1.400 €</li>
+  <li>E-Moped: bis zu 400 €</li>
+</ul>
+<p>Alle Förderungen werden direkt über die Klimaaktiv-Plattform beantragt.</p>
+<h2>Landesförderungen</h2>
+<p>Zusätzlich bieten viele Bundesländer eigene Förderungen an. Kontaktieren Sie uns für aktuelle Informationen zu Ihrer Region.</p>
+<h2>Wir helfen gerne!</h2>
+<p>Unser Team berät Sie kostenlos über alle verfügbaren Förderungen. Sprechen Sie uns einfach an!</p>`,
+    },
+    {
+      id: 'wie-kaufen',
+      title: 'Wie kaufen?',
+      slug: 'wie-kaufen',
+      showInNav: false,
+      body: `<p class="sp-lead">Der Kauf bei e-techbike ist einfach und sicher — ob online oder direkt in unserem Geschäft in Graz.</p>
+<h2>Online bestellen</h2>
+<ol>
+  <li>Fahrzeug im Sortiment auswählen und unverbindlich anfragen</li>
+  <li>Persönliche Beratung per Telefon oder WhatsApp</li>
+  <li>Bestellung per E-Mail oder Telefon aufgeben</li>
+  <li>Bezahlung per Überweisung oder auf Rechnung</li>
+  <li>Lieferung österreichweit in 5–7 Werktagen</li>
+</ol>
+<h2>Im Geschäft kaufen</h2>
+<p>Besuchen Sie uns in Graz. Nach telefonischer Vereinbarung können Sie alle Fahrzeuge vor Ort besichtigen und Probe fahren.</p>
+<h2>Bezahlungsmöglichkeiten</h2>
+<ul>
+  <li>Banküberweisung</li>
+  <li>Barzahlung bei Abholung</li>
+</ul>
+<h2>Garantie & Gewährleistung</h2>
+<p>Auf alle Fahrzeuge gewähren wir 2 Jahre gesetzliche Gewährleistung (Verschleißteile 1 Jahr, Akkus 6 Monate).</p>`,
+    },
+    {
+      id: 'akku-pflege',
+      title: 'Akku-Pflege',
+      slug: 'akku-pflege',
+      showInNav: false,
+      body: `<p class="sp-lead">Mit der richtigen Pflege halten Ihre Akkus deutlich länger. Hier unsere wichtigsten Tipps.</p>
+<h2>Laden</h2>
+<ul>
+  <li>Nur mit dem mitgelieferten Original-Ladegerät laden</li>
+  <li>Akku nach dem Laden sofort vom Ladegerät trennen</li>
+  <li>Nie vollständig entladen — optimale Ladung: 20–80 %</li>
+  <li>Nicht bei extremer Kälte oder Hitze laden</li>
+</ul>
+<h2>Lagerung</h2>
+<ul>
+  <li>Bei längerer Nichtnutzung: Akku zu 40–60 % laden</li>
+  <li>Kühl und trocken lagern (10–20 °C ideal)</li>
+  <li>Nicht in direktem Sonnenlicht lassen</li>
+</ul>
+<h2>Im Winter</h2>
+<p>Lithium-Akkus verlieren bei Kälte temporär an Kapazität. Bringen Sie den Akku vor der Fahrt auf Zimmertemperatur. Laden Sie nie bei Frost!</p>
+<h2>Fragen?</h2>
+<p>Bei Fragen zur Akku-Pflege oder -Wartung stehen wir Ihnen jederzeit zur Verfügung.</p>`,
+    },
+  ],
 }
