@@ -112,6 +112,7 @@ export interface SiteContent {
     formEnabled?: boolean
   }
   whatsapp: { enabled: boolean; number: string; message: string }
+  hiddenSections?: SectionId[]
   pages?: PageItem[]
   footer: {
     brand: string

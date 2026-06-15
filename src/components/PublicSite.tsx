@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import type { SiteContent, SectionId, CanvasPos, ProductItem } from '../types/content'
+import type { SiteContent, SectionId, CanvasPos } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
@@ -344,153 +344,6 @@ function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) =
   )
 }
 
-// ── Accordion ────────────────────────────────────────────────────────────────
-
-function Accordion({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen)
-  return (
-    <div className={`prod-accordion ${open ? 'open' : ''}`}>
-      <button className="prod-accordion-head" onClick={() => setOpen(o => !o)} aria-expanded={open}>
-        <span>{title}</span>
-        <svg className="prod-accordion-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      {open && <div className="prod-accordion-body">{children}</div>}
-    </div>
-  )
-}
-
-// ── Product Modal ─────────────────────────────────────────────────────────────
-
-function ProductModal({ product, contact, onClose }: {
-  product: ProductItem
-  contact: SiteContent['contact']
-  onClose: () => void
-}) {
-  const allImages = product.images?.length ? product.images : [product.image]
-  const [imgIdx, setImgIdx] = useState(0)
-
-  useEffect(() => { setImgIdx(0) }, [product.id])
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-      if (e.key === 'ArrowRight') setImgIdx(i => (i + 1) % allImages.length)
-      if (e.key === 'ArrowLeft') setImgIdx(i => (i - 1 + allImages.length) % allImages.length)
-    }
-    document.addEventListener('keydown', onKey)
-    return () => { document.body.style.overflow = ''; document.removeEventListener('keydown', onKey) }
-  }, [onClose, allImages.length])
-
-  const specsSummary = product.specs?.join(' · ') ?? ''
-  const emailBody = [
-    'Guten Tag,',
-    '',
-    'ich interessiere mich für folgendes Fahrzeug:',
-    '',
-    `Modell: ${product.name}`,
-    `Preis: ${product.price}`,
-    specsSummary ? `Eckdaten: ${specsSummary}` : '',
-    '',
-    'Können Sie mir bitte weitere Informationen geben und einen Termin für eine Probefahrt vereinbaren?',
-    '',
-    'Mit freundlichen Grüßen',
-  ].filter((l, i, arr) => !(l === '' && arr[i - 1] === '')).join('\n')
-
-  const waHref = contact.whatsapp
-    ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hallo! Ich interessiere mich für "${product.name}"${product.price !== 'auf Anfrage' ? ` (${product.price})` : ''}${specsSummary ? ` — ${specsSummary}` : ''}. Können Sie mich bitte beraten?`)}`
-    : undefined
-
-  return (
-    <>
-      <div className="prod-modal-backdrop" onClick={onClose} />
-      <div className="prod-modal" role="dialog" aria-modal="true" aria-label={product.name}>
-        <button className="prod-modal-close" onClick={onClose} aria-label="Schließen"><IconClose /></button>
-        <div className="prod-modal-inner">
-          <div className="prod-modal-left">
-            <div className="prod-modal-img-wrap">
-              {product.badge && <span className="prod-modal-badge">{product.badge}</span>}
-              <img src={allImages[imgIdx]} alt={product.name} className="prod-modal-img" />
-              {allImages.length > 1 && (
-                <>
-                  <button className="prod-modal-arrow prod-modal-arrow-l" onClick={() => setImgIdx(i => (i - 1 + allImages.length) % allImages.length)} aria-label="Vorheriges Bild">‹</button>
-                  <button className="prod-modal-arrow prod-modal-arrow-r" onClick={() => setImgIdx(i => (i + 1) % allImages.length)} aria-label="Nächstes Bild">›</button>
-                </>
-              )}
-            </div>
-            {allImages.length > 1 && (
-              <div className="prod-modal-thumbs">
-                {allImages.map((src, i) => (
-                  <button key={i} className={`prod-modal-thumb${i === imgIdx ? ' active' : ''}`} onClick={() => setImgIdx(i)}>
-                    <img src={src} alt={`${product.name} ${i + 1}`} />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="prod-modal-right">
-            <div className="prod-modal-cat">{product.category}</div>
-            <h2 className="prod-modal-name">{product.name}</h2>
-            <div className="prod-modal-price-row">
-              <span className="prod-modal-price">{product.price}</span>
-              {product.regularPrice && <span className="prod-modal-price-old">{product.regularPrice}</span>}
-            </div>
-            {product.regularPrice && <div className="prod-modal-price-note">inkl. MwSt., zzgl. Versand</div>}
-            <p className="prod-modal-desc">{product.description}</p>
-
-            {(product.specsTable?.length ?? 0) > 0 && (
-              <div className="prod-modal-specs-wrap">
-                <Accordion title="Produktinformationen" defaultOpen={true}>
-                  <table className="prod-modal-specs-table">
-                    <tbody>
-                      {product.specsTable!.map((row, i) => (
-                        <tr key={i}>
-                          <td className="prod-specs-label">{row.label}</td>
-                          <td className="prod-specs-value">{row.value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </Accordion>
-              </div>
-            )}
-
-            {product.details && (
-              <Accordion title="Produktdetails">
-                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: product.details }} />
-              </Accordion>
-            )}
-
-            {product.delivery && (
-              <Accordion title="Lieferung">
-                <p className="prod-accordion-text">{product.delivery}</p>
-              </Accordion>
-            )}
-
-            <div className="prod-modal-ctas">
-              {waHref && (
-                <a href={waHref} target="_blank" rel="noopener noreferrer" className="prod-modal-cta prod-modal-cta-wa">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.118 1.533 5.851L0 24l6.335-1.513A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.843 0-3.57-.49-5.062-1.346L2.5 21.5l.854-3.375A9.944 9.944 0 0 1 2 12c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10z"/></svg>
-                  <span>WhatsApp</span>
-                </a>
-              )}
-              {contact.phone && (
-                <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="prod-modal-cta prod-modal-cta-call">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.1-.45c.908.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <span>Anrufen</span>
-                </a>
-              )}
-              <a href={`mailto:${contact.email}?subject=${encodeURIComponent(`Anfrage: ${product.name}`)}&body=${encodeURIComponent(emailBody)}`} className="prod-modal-cta prod-modal-cta-mail">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <span>E-Mail</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
 // ── Category Browser (3-level drill-down) ────────────────────────────────────
 
 type BrowserLevel = 'categories' | 'subcategories' | 'products'
@@ -502,15 +355,13 @@ function IconBack() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
 }
 
-function CategoryBrowser({ categories, products, contact }: {
+function CategoryBrowser({ categories, products }: {
   categories: SiteContent['categories']
   products: SiteContent['products']
-  contact: SiteContent['contact']
 }) {
   const [level, setLevel] = useState<BrowserLevel>('categories')
   const [activeCatId, setActiveCatId] = useState<string | null>(null)
   const [activeSubId, setActiveSubId] = useState<string | null>(null)
-  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null)
   const touchStartX = useRef<number>(0)
   const touchStartY = useRef<number>(0)
 
@@ -670,7 +521,7 @@ function CategoryBrowser({ categories, products, contact }: {
           : (
             <div className="site-browser-prodlist">
               {visibleProducts.map(p => (
-                <button key={p.id} className="site-browser-prodcard" onClick={() => setSelectedProduct(p)}>
+                <a key={p.id} className="site-browser-prodcard" href={`#product/${p.id}`}>
                   <div className="site-browser-prodcard-img-wrap">
                     {p.badge && <span className="site-browser-prodcard-badge">{p.badge}</span>}
                     {p.image
@@ -691,16 +542,35 @@ function CategoryBrowser({ categories, products, contact }: {
                     </div>
                     <span className="site-browser-prodcard-cta">Details &amp; Anfrage</span>
                   </div>
-                </button>
+                </a>
               ))}
             </div>
           )
       )}
-
-      {selectedProduct && (
-        <ProductModal product={selectedProduct} contact={contact} onClose={() => setSelectedProduct(null)} />
-      )}
     </section>
+  )
+}
+
+// ── GDPR Cookie Banner ───────────────────────────────────────────────────────
+
+const GDPR_KEY = 'cookieConsent'
+
+function GdprBanner() {
+  const [visible, setVisible] = useState(() => !localStorage.getItem(GDPR_KEY))
+  if (!visible) return null
+  const accept = () => { localStorage.setItem(GDPR_KEY, 'accepted'); setVisible(false) }
+  const decline = () => { localStorage.setItem(GDPR_KEY, 'declined'); setVisible(false) }
+  return (
+    <div className="gdpr-banner" role="dialog" aria-label="Cookie-Einstellungen">
+      <p className="gdpr-text">
+        Wir verwenden Cookies für eine bessere Nutzererfahrung.{' '}
+        <a href="#p/datenschutz" className="gdpr-link">Datenschutz</a>
+      </p>
+      <div className="gdpr-actions">
+        <button type="button" className="gdpr-btn gdpr-btn-accept" onClick={accept}>Akzeptieren</button>
+        <button type="button" className="gdpr-btn gdpr-btn-decline" onClick={decline}>Ablehnen</button>
+      </div>
+    </div>
   )
 }
 
@@ -738,6 +608,7 @@ export function PublicSite({
   selectedProductId,
 }: Props) {
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, pages } = content
+  const hiddenSections = content.hiddenSections ?? []
   const pageNavLinks = (pages ?? []).filter(p => p.showInNav).map(p => ({ label: p.title, href: `#p/${p.slug}` }))
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
@@ -1125,7 +996,7 @@ export function PublicSite({
         </section>
 
         {/* ── TRUST STRIP ──────────────────────────────────────────────── */}
-        {(trust?.items?.length ?? 0) > 0 && (
+        {!hiddenSections.includes('trust') && (trust?.items?.length ?? 0) > 0 && (
           <div className={`site-trust${editMode ? ' site-edit-section' : ''}`} id="trust"
             onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('trust') } : undefined}>
             {editMode && <div className="site-edit-section-badge">Vertrauensleiste</div>}
@@ -1141,11 +1012,11 @@ export function PublicSite({
           </div>
         )}
 
-        {/* ── CATEGORY BROWSER (3-level: cat → subcat → products → modal) ── */}
-        {!editMode && (categories?.items?.length ?? 0) > 0 && (
-          <CategoryBrowser categories={categories} products={products} contact={contact} />
+        {/* ── CATEGORY BROWSER (3-level: cat → subcat → products) ── */}
+        {!editMode && !hiddenSections.includes('categories') && (categories?.items?.length ?? 0) > 0 && (
+          <CategoryBrowser categories={categories} products={products} />
         )}
-        {editMode && (categories?.items?.length ?? 0) > 0 && (
+        {editMode && !hiddenSections.includes('categories') && (categories?.items?.length ?? 0) > 0 && (
           <div className="site-edit-section site-edit-section--cats"
             onClick={e => { e.stopPropagation(); onSectionClick?.('categories') }}>
             <div className="site-edit-section-badge">Kategorien</div>
@@ -1159,7 +1030,7 @@ export function PublicSite({
         )}
 
         {/* Edit mode: keep flat product grid for admin editing */}
-        {editMode && (products?.items?.length ?? 0) > 0 && (
+        {editMode && !hiddenSections.includes('products') && (products?.items?.length ?? 0) > 0 && (
           <section className="site-section site-products" id="products">
             <div className="site-products-top">
               <E field="products.title" value={products.title} as="h2" className="site-products-h2" />
@@ -1191,7 +1062,7 @@ export function PublicSite({
         )}
 
         {/* ── USP ──────────────────────────────────────────────────────── */}
-        {(usp?.items?.length ?? 0) > 0 && (
+        {!hiddenSections.includes('usp') && (usp?.items?.length ?? 0) > 0 && (
           <section className={`site-section site-section-alt site-usp${editMode ? ' site-edit-section' : ''}`} id="usp"
             onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('usp') } : undefined}>
             {editMode && <div className="site-edit-section-badge">USPs</div>}
@@ -1210,7 +1081,7 @@ export function PublicSite({
         )}
 
         {/* ── NEWS ─────────────────────────────────────────────────────── */}
-        {(news?.items?.length ?? 0) > 0 && (
+        {!hiddenSections.includes('news') && (news?.items?.length ?? 0) > 0 && (
           <section className={`site-section site-news${editMode ? ' site-edit-section' : ''}`} id="news"
             onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('news') } : undefined}>
             {editMode && <div className="site-edit-section-badge">Aktuelles</div>}
@@ -1232,7 +1103,7 @@ export function PublicSite({
         )}
 
         {/* ── LOCATION ─────────────────────────────────────────────────── */}
-        <section className={`site-location${editMode ? ' site-edit-section' : ''}`} id="location"
+        {!hiddenSections.includes('location') && <section className={`site-location${editMode ? ' site-edit-section' : ''}`} id="location"
           onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('contact') } : undefined}>
           {editMode && <div className="site-edit-section-badge">Kontakt</div>}
           {contact?.mapSrc && (
@@ -1269,7 +1140,7 @@ export function PublicSite({
               <a href={`mailto:${contact?.email ?? ''}`} className="site-btn-lime-solid">Nachricht senden</a>
             )}
           </div>
-        </section>
+        </section>}
 
         {/* ── FOOTER ───────────────────────────────────────────────────── */}
         <footer className="site-footer">
@@ -1321,6 +1192,9 @@ export function PublicSite({
         {whatsapp?.enabled && !editMode && (
           <WhatsAppButton number={whatsapp.number} message={whatsapp.message} hidden={menuOpen} />
         )}
+
+        {/* ── GDPR COOKIE BANNER ───────────────────────────────────────── */}
+        {!editMode && <GdprBanner />}
       </div>
     </Ctx.Provider>
   )

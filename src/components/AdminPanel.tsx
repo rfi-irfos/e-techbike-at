@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import type { SiteContent, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem } from '../types/content'
+import type { SiteContent, SectionId, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 
@@ -853,6 +853,31 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                   <Field label="Beschreibung">
                     <textarea rows={2} value={draft.meta?.description ?? ''} onChange={e => update('meta.description', e.target.value)} />
                   </Field>
+                </PanelSection>
+                <PanelSection title="Sichtbarkeit">
+                  {([
+                    { id: 'trust' as SectionId, label: 'Vertrauensleiste' },
+                    { id: 'categories' as SectionId, label: 'Kategorien' },
+                    { id: 'products' as SectionId, label: 'Produkte (Rasteransicht)' },
+                    { id: 'usp' as SectionId, label: 'Vorteile (USPs)' },
+                    { id: 'news' as SectionId, label: 'Aktuelles (News)' },
+                    { id: 'location' as SectionId, label: 'Standort & Kontakt' },
+                  ] as { id: SectionId; label: string }[]).map(s => {
+                    const hidden = (draft.hiddenSections ?? []).includes(s.id)
+                    return (
+                      <label key={s.id} className="panel-checkbox" style={{ justifyContent: 'space-between' }}>
+                        <span>{s.label}</span>
+                        <input
+                          type="checkbox"
+                          checked={!hidden}
+                          onChange={e => {
+                            const cur = draft.hiddenSections ?? []
+                            update('hiddenSections', e.target.checked ? cur.filter(x => x !== s.id) : [...cur, s.id])
+                          }}
+                        />
+                      </label>
+                    )
+                  })}
                 </PanelSection>
                 <PanelSection title="Footer">
                   <Field label="Copyright">
