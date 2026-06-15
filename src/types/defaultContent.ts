@@ -1322,8 +1322,8 @@ export const defaultContent: SiteContent = {
     ],
     links: [
       { label: 'AGB', href: '/agb' },
-      { label: 'Datenschutz', href: '/datenschutz' },
-      { label: 'Impressum', href: '/impressum' },
+      { label: 'Datenschutz', href: '#p/datenschutz' },
+      { label: 'Impressum', href: '#p/impressum' },
     ],
     copyright: '© 2026 e-techbike.at — made with love by RFI-IRFOS',
   },
@@ -1394,6 +1394,81 @@ export const defaultContent: SiteContent = {
 <p>Lithium-Akkus verlieren bei Kälte temporär an Kapazität. Bringen Sie den Akku vor der Fahrt auf Zimmertemperatur. Laden Sie nie bei Frost!</p>
 <h2>Fragen?</h2>
 <p>Bei Fragen zur Akku-Pflege oder -Wartung stehen wir Ihnen jederzeit zur Verfügung.</p>`,
+    },
+    {
+      id: 'datenschutz',
+      title: 'Datenschutzerklärung',
+      slug: 'datenschutz',
+      showInNav: false,
+      metaTitle: 'Datenschutzerklärung — e-techbike.at',
+      body: `<p class="sp-lead">Der Schutz Ihrer personenbezogenen Daten ist uns ein wichtiges Anliegen. Diese Datenschutzerklärung informiert Sie gemäß DSGVO (EU 2016/679) und dem österreichischen Datenschutzgesetz (DSG).</p>
+
+<h2>1. Verantwortlicher</h2>
+<p>Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Website ist:<br>
+<strong>e-techbike.at</strong><br>
+Graz, Österreich<br>
+E-Mail: <a href="mailto:office@e-techbike.at">office@e-techbike.at</a></p>
+
+<h2>2. Welche Daten wir erheben</h2>
+<p>Wir erheben nur die Daten, die Sie uns freiwillig mitteilen — etwa wenn Sie uns per E-Mail, Telefon oder WhatsApp kontaktieren:</p>
+<ul>
+  <li>Name und Kontaktdaten (E-Mail, Telefonnummer)</li>
+  <li>Inhalt Ihrer Anfrage</li>
+</ul>
+<p>Beim Besuch unserer Website werden technisch notwendige Daten (IP-Adresse, Browsertyp, aufgerufene Seiten, Zeitstempel) in Server-Logs gespeichert. Diese Daten werden nicht mit anderen Quellen zusammengeführt und nach spätestens 7 Tagen gelöscht.</p>
+
+<h2>3. Zweck der Verarbeitung</h2>
+<ul>
+  <li>Beantwortung Ihrer Anfragen (Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO)</li>
+  <li>Betrieb und Sicherheit der Website (Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO)</li>
+</ul>
+
+<h2>4. Cookies</h2>
+<p>Diese Website verwendet ausschließlich technisch notwendige Cookies (z. B. zur Speicherung Ihrer Cookie-Präferenz). Es werden keine Tracking- oder Marketing-Cookies eingesetzt. Wir verwenden keine Analyse-Tools (z. B. Google Analytics) ohne Ihre ausdrückliche Einwilligung.</p>
+
+<h2>5. Weitergabe von Daten</h2>
+<p>Ihre Daten werden nicht an Dritte verkauft oder für Werbezwecke weitergegeben. Eine Weitergabe erfolgt nur, wenn dies zur Vertragserfüllung notwendig ist oder wir gesetzlich dazu verpflichtet sind.</p>
+
+<h2>6. Ihre Rechte</h2>
+<p>Sie haben gemäß DSGVO das Recht auf:</p>
+<ul>
+  <li><strong>Auskunft</strong> über Ihre gespeicherten Daten (Art. 15)</li>
+  <li><strong>Berichtigung</strong> unrichtiger Daten (Art. 16)</li>
+  <li><strong>Löschung</strong> Ihrer Daten ("Recht auf Vergessenwerden", Art. 17)</li>
+  <li><strong>Einschränkung</strong> der Verarbeitung (Art. 18)</li>
+  <li><strong>Datenübertragbarkeit</strong> (Art. 20)</li>
+  <li><strong>Widerspruch</strong> gegen die Verarbeitung (Art. 21)</li>
+</ul>
+<p>Zur Ausübung dieser Rechte wenden Sie sich an: <a href="mailto:office@e-techbike.at">office@e-techbike.at</a></p>
+
+<h2>7. Beschwerderecht</h2>
+<p>Sie haben das Recht, Beschwerde bei der österreichischen Datenschutzbehörde einzulegen:<br>
+Österreichische Datenschutzbehörde, Barichgasse 40–42, 1030 Wien<br>
+<a href="https://www.dsb.gv.at" target="_blank" rel="noopener noreferrer">www.dsb.gv.at</a></p>
+
+<h2>8. Aktualität</h2>
+<p>Diese Datenschutzerklärung wurde zuletzt im Juni 2026 aktualisiert und gilt für die Website e-techbike.at.</p>`,
+    },
+    {
+      id: 'impressum',
+      title: 'Impressum',
+      slug: 'impressum',
+      showInNav: false,
+      metaTitle: 'Impressum — e-techbike.at',
+      body: `<p class="sp-lead">Angaben gemäß § 5 ECG und § 14 UGB.</p>
+
+<h2>Unternehmensangaben</h2>
+<p><strong>e-techbike.at</strong><br>
+Graz, Österreich</p>
+
+<h2>Kontakt</h2>
+<p>E-Mail: <a href="mailto:office@e-techbike.at">office@e-techbike.at</a></p>
+
+<h2>Haftungsausschluss</h2>
+<p>Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr. Als Diensteanbieter sind wir gemäß § 17 ECG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.</p>
+
+<h2>Urheberrecht</h2>
+<p>Die durch uns erstellten Inhalte und Werke auf diesen Seiten unterliegen dem österreichischen Urheberrecht. Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des Betreibers.</p>`,
     },
   ],
 }
