@@ -49,6 +49,15 @@ export interface TrustItem {
   text: string
 }
 
+export interface PageItem {
+  id: string
+  title: string
+  slug: string
+  body: string
+  showInNav?: boolean
+  metaTitle?: string
+}
+
 export type SectionId = 'trust' | 'categories' | 'products' | 'usp' | 'news' | 'location'
 export const DEFAULT_SECTION_ORDER: SectionId[] = ['trust', 'categories', 'products', 'usp', 'news', 'location']
 
@@ -103,6 +112,7 @@ export interface SiteContent {
     formEnabled?: boolean
   }
   whatsapp: { enabled: boolean; number: string; message: string }
+  pages?: PageItem[]
   footer: {
     brand: string
     tagline: string

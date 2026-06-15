@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import type { SiteContent, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem } from '../types/content'
+import { useState, useRef, useEffect } from 'react'
+import type { SiteContent, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 
@@ -12,7 +12,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style'
+type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 
@@ -49,9 +49,34 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [editingCategory, setEditingCategory] = useState<string | null>(null)
   const [device, setDevice] = useState<DeviceView>('edit')
   const [productModal, setProductModal] = useState<string | null>(null)
+  const [specsInput, setSpecsInput] = useState('')
+  const [panelWidth, setPanelWidth] = useState(340)
+  const [editingPage, setEditingPage] = useState<string | null>(null)
+  const [addMenuOpen, setAddMenuOpen] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const panelBodyRef = useRef<HTMLDivElement>(null)
+  const addMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => { setSpecsInput('') }, [editingProduct])
+  useEffect(() => {
+    if (!addMenuOpen) return
+    const onDown = (e: MouseEvent) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(e.target as Node)) setAddMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [addMenuOpen])
+
+  const startPanelResize = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const startX = e.clientX
+    const startW = panelWidth
+    const onMove = (ev: MouseEvent) => setPanelWidth(Math.max(240, Math.min(640, startW + startX - ev.clientX)))
+    const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp) }
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+  }
 
   // ── State helpers ─────────────────────────────────────────────────────────
 
@@ -210,6 +235,34 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     update('nav.links', draft.nav.links.map((l, idx) => idx === i ? { ...l, [field]: value } : l))
   }
 
+  // ── Page helpers ──────────────────────────────────────────────────────────
+
+  const addPage = () => {
+    const id = `pg${Date.now()}`
+    const newPage: PageItem = { id, title: 'Neue Seite', slug: `neue-seite-${id.slice(-4)}`, body: '<p>Hier kommt der Seiteninhalt.</p>', showInNav: false }
+    update('pages', [...(draft.pages ?? []), newPage])
+    setEditingPage(id)
+    setActiveTab('pages')
+  }
+  const deletePage = (id: string) => {
+    update('pages', (draft.pages ?? []).filter(p => p.id !== id))
+    if (editingPage === id) setEditingPage(null)
+  }
+  const updatePage = (id: string, field: keyof PageItem, value: unknown) => {
+    update('pages', (draft.pages ?? []).map(p => p.id === id ? { ...p, [field]: value } : p))
+  }
+
+  // ── Quick-add handler ─────────────────────────────────────────────────────
+
+  const handleQuickAdd = (action: string) => {
+    setAddMenuOpen(false)
+    if (action === 'product') { addProduct(); setActiveTab('products') }
+    else if (action === 'category') { addCategory(); setActiveTab('categories') }
+    else if (action === 'page') { addPage() }
+    else if (action === 'news') { addNews(); setActiveTab('news') }
+    else if (action === 'navlink') { addNavLink(); setActiveTab('nav') }
+  }
+
   const tabs: Array<{ id: PanelTab; label: string }> = [
     { id: 'products',   label: 'Produkte' },
     { id: 'categories', label: 'Kategorien' },
@@ -217,6 +270,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     { id: 'trust',      label: 'Vorteile' },
     { id: 'usp',        label: 'USPs' },
     { id: 'news',       label: 'Aktuelles' },
+    { id: 'pages',      label: 'Seiten' },
     { id: 'contact',    label: 'Kontakt' },
     { id: 'nav',        label: 'Navigation' },
     { id: 'style',      label: 'Stil' },
@@ -253,6 +307,37 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
         </div>
         <div className="builder-topbar-right">
           <span className="builder-user">{user.name || user.email}</span>
+          <div className="builder-add-wrap" ref={addMenuRef}>
+            <button className="builder-add-btn" onClick={() => setAddMenuOpen(o => !o)}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Hinzufügen
+            </button>
+            {addMenuOpen && (
+              <div className="builder-add-menu">
+                <button className="builder-add-item" onClick={() => handleQuickAdd('product')}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  Neues Produkt
+                </button>
+                <button className="builder-add-item" onClick={() => handleQuickAdd('category')}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                  Neue Kategorie
+                </button>
+                <button className="builder-add-item" onClick={() => handleQuickAdd('news')}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Neue Neuigkeit
+                </button>
+                <div className="builder-add-sep" />
+                <button className="builder-add-item" onClick={() => handleQuickAdd('page')}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                  Neue Seite
+                </button>
+                <button className="builder-add-item" onClick={() => handleQuickAdd('navlink')}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  Nav-Link
+                </button>
+              </div>
+            )}
+          </div>
           <button
             className={`builder-save-btn-top ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
             onClick={handleSave}
@@ -305,7 +390,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
         )}
 
         {/* RIGHT: Panel */}
-        <aside className="builder-panel">
+        <aside className="builder-panel" style={{ width: panelWidth }}>
+          <div className="builder-panel-resize" onMouseDown={startPanelResize} />
           {/* Tab bar */}
           <div className="builder-tabs">
             {tabs.map(t => (
@@ -358,12 +444,28 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                     <Field label="Bezeichnung">
                       <input value={editingProd.badge ?? ''} onChange={e => updateProduct(editingProd.id, 'badge', e.target.value)} placeholder="Bestseller, Beliebt …" />
                     </Field>
-                    <Field label="Spezifikationen (Komma-getrennt)">
-                      <input
-                        value={(editingProd.specs ?? []).join(', ')}
-                        onChange={e => updateProduct(editingProd.id, 'specs', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-                        placeholder="48V, 20Ah, 80 km"
-                      />
+                    <Field label="Spezifikationen">
+                      <div className="pem-tags" style={{ marginBottom: 6 }}>
+                        {(editingProd.specs ?? []).map((s, i) => (
+                          <span key={i} className="pem-tag">
+                            {s}
+                            <button onClick={() => updateProduct(editingProd.id, 'specs', (editingProd.specs ?? []).filter((_, idx) => idx !== i))} title="Entfernen">
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                      <div className="pem-tag-input-row">
+                        <input
+                          value={specsInput}
+                          onChange={e => setSpecsInput(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') { e.preventDefault(); const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } }
+                          }}
+                          placeholder="Spec + Enter"
+                        />
+                        <button className="pem-tag-add" onClick={() => { const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } }}>+</button>
+                      </div>
                     </Field>
                     <Field label="Beschreibung">
                       <textarea rows={3} value={editingProd.description} onChange={e => updateProduct(editingProd.id, 'description', e.target.value)} placeholder="Kurze Produktbeschreibung" />
@@ -762,6 +864,79 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                 </PanelSection>
               </>
             )}
+
+            {/* ── PAGES TAB ─────────────────────────────────────────────── */}
+            {activeTab === 'pages' && (() => {
+              const editingPageItem = editingPage ? (draft.pages ?? []).find(p => p.id === editingPage) : null
+              return (
+                <div className="panel-products">
+                  {editingPageItem ? (
+                    <div className="panel-product-form">
+                      <button className="panel-back-btn" onClick={() => setEditingPage(null)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        Zur Liste
+                      </button>
+                      <Field label="Titel">
+                        <input value={editingPageItem.title} onChange={e => updatePage(editingPageItem.id, 'title', e.target.value)} />
+                      </Field>
+                      <Field label="URL-Slug (nach #p/)">
+                        <input value={editingPageItem.slug} onChange={e => updatePage(editingPageItem.id, 'slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))} placeholder="meine-seite" />
+                      </Field>
+                      <Field label="">
+                        <div style={{ padding: '7px 10px', background: '#f5f9ff', borderRadius: 7, fontSize: 12, color: '#0099CC', fontFamily: 'monospace' }}>
+                          Link: <strong>#p/{editingPageItem.slug}</strong>
+                        </div>
+                      </Field>
+                      <Field label="">
+                        <label className="panel-checkbox">
+                          <input type="checkbox" checked={editingPageItem.showInNav ?? false} onChange={e => updatePage(editingPageItem.id, 'showInNav', e.target.checked)} />
+                          In Navigation anzeigen
+                        </label>
+                      </Field>
+                      <Field label="SEO-Titel (optional)">
+                        <input value={editingPageItem.metaTitle ?? ''} onChange={e => updatePage(editingPageItem.id, 'metaTitle', e.target.value)} placeholder={`${editingPageItem.title} — ${draft.meta?.title ?? ''}`} />
+                      </Field>
+                      <Field label="Seiteninhalt (HTML)">
+                        <textarea
+                          rows={10}
+                          value={editingPageItem.body}
+                          onChange={e => updatePage(editingPageItem.id, 'body', e.target.value)}
+                          placeholder="<p>Hier kommt Ihr Text...</p>"
+                          style={{ fontFamily: 'monospace', fontSize: 12 }}
+                        />
+                      </Field>
+                      <button className="panel-delete-btn" onClick={() => deletePage(editingPageItem.id)}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                        Seite löschen
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="panel-product-list">
+                        {(draft.pages ?? []).length === 0 && (
+                          <div style={{ padding: '20px 16px', color: '#aaa', fontSize: 13, textAlign: 'center' }}>
+                            Noch keine Seiten. Erstell eine mit dem Button unten.
+                          </div>
+                        )}
+                        {(draft.pages ?? []).map(p => (
+                          <div key={p.id} className="panel-product-row" onClick={() => setEditingPage(p.id)}>
+                            <div className="panel-product-info">
+                              <div className="panel-product-name">{p.title}</div>
+                              <div className="panel-product-meta">#p/{p.slug}{p.showInNav ? ' · Nav' : ''}</div>
+                            </div>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                          </div>
+                        ))}
+                      </div>
+                      <button className="panel-add-big-btn" onClick={addPage}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Seite hinzufügen
+                      </button>
+                    </>
+                  )}
+                </div>
+              )
+            })()}
 
           </div>
 

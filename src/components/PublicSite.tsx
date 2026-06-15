@@ -716,7 +716,8 @@ export function PublicSite({
   onTextChange, onImageClick, onUpdate, onProductClick, onProductDblClick, onSectionClick,
   selectedProductId,
 }: Props) {
-  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer } = content
+  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, pages } = content
+  const pageNavLinks = (pages ?? []).filter(p => p.showInNav).map(p => ({ label: p.title, href: `#p/${p.slug}` }))
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -990,6 +991,9 @@ export function PublicSite({
               {nav.links.map((l, i) => (
                 <E key={i} field={`nav.links.${i}.label`} value={l.label} as="a" href={l.href} />
               ))}
+              {pageNavLinks.map((l, i) => (
+                <a key={`page-${i}`} href={l.href}>{l.label}</a>
+              ))}
             </nav>
             <div className="site-nav-right">
               <div className="site-nav-desktop">
@@ -1029,6 +1033,9 @@ export function PublicSite({
           <nav className="site-mobile-links">
             {nav.links.map((l, i) => (
               <a key={i} href={l.href} onClick={() => closeMenu()}>{l.label}</a>
+            ))}
+            {pageNavLinks.map((l, i) => (
+              <a key={`page-${i}`} href={l.href} onClick={() => closeMenu()}>{l.label}</a>
             ))}
           </nav>
 

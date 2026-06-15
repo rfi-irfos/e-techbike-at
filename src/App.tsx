@@ -6,14 +6,16 @@ import { PublicSite } from './components/PublicSite'
 import { AdminPanel } from './components/AdminPanel'
 import { LoginPage } from './components/LoginPage'
 import { StaticPage } from './components/StaticPage'
+import { DynamicPage } from './components/DynamicPage'
 
 function getRoute(hash: string) {
-  if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, staticPageId: null }
-  if (hash === '#uber-uns')   return { isAdmin: false, staticPageId: 'uber-uns' }
-  if (hash === '#wie-kaufen') return { isAdmin: false, staticPageId: 'wie-kaufen' }
-  if (hash === '#foerderung') return { isAdmin: false, staticPageId: 'foerderung' }
-  if (hash === '#akku-pflege') return { isAdmin: false, staticPageId: 'akku-pflege' }
-  return { isAdmin: false, staticPageId: null }
+  if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, staticPageId: null, pageSlug: null }
+  if (hash === '#uber-uns')   return { isAdmin: false, staticPageId: 'uber-uns', pageSlug: null }
+  if (hash === '#wie-kaufen') return { isAdmin: false, staticPageId: 'wie-kaufen', pageSlug: null }
+  if (hash === '#foerderung') return { isAdmin: false, staticPageId: 'foerderung', pageSlug: null }
+  if (hash === '#akku-pflege') return { isAdmin: false, staticPageId: 'akku-pflege', pageSlug: null }
+  if (hash.startsWith('#p/')) return { isAdmin: false, staticPageId: null, pageSlug: hash.slice(3) }
+  return { isAdmin: false, staticPageId: null, pageSlug: null }
 }
 
 export default function App() {
@@ -63,6 +65,11 @@ export default function App() {
         address={content.contact?.address}
       />
     )
+  }
+
+  if (route.pageSlug) {
+    const page = content.pages?.find(p => p.slug === route.pageSlug)
+    if (page) return <DynamicPage page={page} content={content} />
   }
 
   return <PublicSite content={content} />
