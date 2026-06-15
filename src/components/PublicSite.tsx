@@ -104,6 +104,8 @@ function FormatToolbar({ anchorEl }: { anchorEl: HTMLElement | null }) {
       const sel = window.getSelection()
       if (sel) { sel.removeAllRanges(); sel.addRange(_fmtSavedRange) }
     }
+    // produce CSS spans (not legacy <font>) so colour/size actually render
+    if (cmd === 'foreColor' || cmd === 'fontSize') { try { document.execCommand('styleWithCSS', false, 'true') } catch { /* noop */ } }
     document.execCommand(cmd, false, val)
   }
 
@@ -966,6 +968,10 @@ export function PublicSite({
           ref={heroRef as React.RefObject<HTMLElement>}
           onMouseDown={e => {
             if (!editMode) return
+            // don't hijack the drag when selecting/clicking editable text,
+            // buttons or links — only drag from the bare hero background
+            const el = e.target as HTMLElement
+            if (el.isContentEditable || el.closest('.editable-text, .editable-img-wrap, button, a')) return
             heroDragRef.current = { startX: e.clientX, startY: e.clientY, startBgX: heroBgPos.x, startBgY: heroBgPos.y }
           }}
         >
