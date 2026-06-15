@@ -1611,7 +1611,7 @@ button { cursor: pointer; font-family: inherit; }
   z-index: 200;
   cursor: crosshair;
   pointer-events: all;
-  animation: dragon-soar 22s linear infinite;
+  animation: dragon-soar 50s linear infinite;
   filter: drop-shadow(0 0 6px #9900cc) drop-shadow(0 0 12px #6600aa);
 }
 .ender-dragon-wrap:hover {
@@ -1628,13 +1628,17 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 @keyframes dragon-soar {
-  0%   { left: 102%; transform: translateY(-50%) scaleX(1); }
-  48%  { left: -14%; transform: translateY(-50%) scaleX(1); }
-  49%  { left: -14%; transform: translateY(-50%) scaleX(-1); }
-  50%  { left: -14%; transform: translateY(-50%) scaleX(-1); }
-  98%  { left: 102%; transform: translateY(-50%) scaleX(-1); }
-  99%  { left: 102%; transform: translateY(-50%) scaleX(1); }
-  100% { left: 102%; transform: translateY(-50%) scaleX(1); }
+  /* flies right→left: head must face left → scaleX(-1) */
+  0%   { left: 110%; transform: translateY(-50%) scaleX(-1); }
+  48%  { left: -16%; transform: translateY(-50%) scaleX(-1); }
+  /* instant flip at left wall */
+  49%  { left: -16%; transform: translateY(-50%) scaleX(1); }
+  50%  { left: -16%; transform: translateY(-50%) scaleX(1); }
+  /* flies left→right: head faces right → scaleX(1) */
+  98%  { left: 110%; transform: translateY(-50%) scaleX(1); }
+  /* instant flip at right wall */
+  99%  { left: 110%; transform: translateY(-50%) scaleX(-1); }
+  100% { left: 110%; transform: translateY(-50%) scaleX(-1); }
 }
 
 /* Wing flap */
