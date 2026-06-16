@@ -1463,13 +1463,17 @@ Graz, Österreich</p>
 
 <h2>Mitgliedschaft</h2>
 <p>e-techbike.at ist Mitglied der <strong>Wirtschaftskammer Österreich (WKO)</strong>.</p>
-<a href="https://www.wko.at" target="_blank" rel="noopener" style="display:inline-block;margin:12px 0 20px;">
-  <svg viewBox="0 0 200 68" width="160" height="54" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="WKO Mitglied" style="display:block;">
-    <rect width="130" height="68" fill="#CC0000"/>
-    <text x="8" y="50" font-family="Arial Black,Impact,sans-serif" font-size="42" font-weight="900" fill="#FFFFFF" letter-spacing="-1">WKO</text>
-    <rect x="130" y="0"  width="70" height="22.7" fill="#CC0000"/>
-    <rect x="130" y="22.7" width="70" height="22.6" fill="#FFFFFF"/>
-    <rect x="130" y="45.3" width="70" height="22.7" fill="#CC0000"/>
+<a href="https://www.wko.at" target="_blank" rel="noopener" style="display:inline-block;margin:12px 0 20px;text-decoration:none;">
+  <svg viewBox="0 0 420 100" width="168" height="40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="WKO — Wirtschaftskammer Österreich" style="display:block;">
+    <rect x="0"   y="0" width="100" height="100" fill="#CC0000"/>
+    <text x="50"  y="78" font-family="Arial Black,sans-serif" font-size="74" font-weight="900" fill="#fff" text-anchor="middle">W</text>
+    <rect x="105" y="0" width="100" height="100" fill="#CC0000"/>
+    <text x="155" y="78" font-family="Arial Black,sans-serif" font-size="74" font-weight="900" fill="#fff" text-anchor="middle">K</text>
+    <rect x="210" y="0" width="100" height="100" fill="#CC0000"/>
+    <text x="260" y="78" font-family="Arial Black,sans-serif" font-size="74" font-weight="900" fill="#fff" text-anchor="middle">O</text>
+    <rect x="320" y="0"  width="100" height="33" fill="#CC0000"/>
+    <rect x="320" y="33" width="100" height="34" fill="#fff"/>
+    <rect x="320" y="67" width="100" height="33" fill="#CC0000"/>
   </svg>
 </a>
 
