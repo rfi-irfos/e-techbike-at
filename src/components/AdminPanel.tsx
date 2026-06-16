@@ -122,6 +122,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [editingPage, setEditingPage] = useState<string | null>(null)
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState(false)
   const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function triggerAchievement(text: string) {
@@ -155,8 +156,10 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   }
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Double-click = text selection intent, never navigate
+    if (e.detail >= 2) return
     const target = e.target as HTMLElement
-    // Only skip if the element is ALREADY being actively edited (cursor inside)
+    // Skip if the element is already being actively edited
     if (target.isContentEditable && document.activeElement === target) return
     const el = target.closest('[data-cid]') as HTMLElement | null
     if (!el) return
@@ -167,6 +170,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
       const idx = parseInt(cid.split('.')[2])
       const item = draft.products?.items?.[idx]
       if (item) { setActiveTab('products'); setEditingProduct(item.id) }
+    } else if (cid.startsWith('products.')) {
+      setActiveTab('products')
     } else if (cid.startsWith('news.items.') || cid.startsWith('news.')) {
       const idx = parseInt(cid.split('.')[2])
       const item = draft.news?.items?.[idx]
@@ -203,11 +208,15 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   }
 
   const handleSave = async () => {
+    setSaveError(false)
     const ok = await onSave(draft)
     if (ok) {
       setSaved(true)
       setTimeout(() => setSaved(false), 2500)
       triggerAchievement('Achievement Get!  Website aktualisiert')
+    } else {
+      setSaveError(true)
+      setTimeout(() => setSaveError(false), 3500)
     }
   }
 
@@ -454,11 +463,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
             )}
           </div>
           <button
-            className={`builder-save-btn-top ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
+            className={`builder-save-btn-top ${saving ? 'loading' : ''} ${saved ? 'done' : ''} ${saveError ? 'error' : ''}`}
             onClick={handleSave}
             disabled={saving}
           >
-            {saving ? 'Speichern…' : saved ? 'Gespeichert' : 'Speichern'}
+            {saving ? 'Speichern…' : saved ? 'Gespeichert' : saveError ? 'Fehler!' : 'Speichern'}
           </button>
           <button className="builder-btn-ghost" onClick={onLogout}>Logout</button>
         </div>
@@ -1084,11 +1093,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           {/* SAVE FOOTER */}
           <div className="builder-panel-foot">
             <button
-              className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
+              className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''} ${saveError ? 'error' : ''}`}
               onClick={handleSave}
               disabled={saving}
             >
-              {saving ? 'Speichern…' : saved ? 'Gespeichert!' : 'Speichern'}
+              {saving ? 'Speichern…' : saved ? 'Gespeichert!' : saveError ? 'Fehler beim Speichern' : 'Speichern'}
             </button>
           </div>
         </aside>
