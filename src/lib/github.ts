@@ -4,15 +4,19 @@ const BASE = 'https://api.github.com'
 
 const OWNER   = import.meta.env.VITE_GH_OWNER   as string
 const REPO    = import.meta.env.VITE_GH_REPO    as string
-const TOKEN   = import.meta.env.VITE_GH_TOKEN   as string
 const CONTENT_PATH  = (import.meta.env.VITE_GH_CONTENT_PATH  as string) || 'public/content.json'
 const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'public/uploads'
+
+// PAT is never baked into the bundle — set at runtime after login
+let _runtimeToken = ''
+export function setGhToken(t: string) { _runtimeToken = t }
+export function clearGhToken() { _runtimeToken = '' }
 
 export { CONTENT_PATH, UPLOADS_DIR }
 
 function headers() {
   return {
-    'Authorization': `Bearer ${TOKEN}`,
+    'Authorization': `Bearer ${_runtimeToken}`,
     'Accept': 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
     'Content-Type': 'application/json',
@@ -52,5 +56,5 @@ export function b64Decode(b64: string): string {
 }
 
 export function isConfigured(): boolean {
-  return !!(OWNER && REPO && TOKEN)
+  return !!(OWNER && REPO && _runtimeToken)
 }
