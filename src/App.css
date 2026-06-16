@@ -544,27 +544,29 @@ button { cursor: pointer; font-family: inherit; }
 /* ══════════════════════════════════════════════════════════════════════════════
    BUILDER (always-on canvas layout)
 ══════════════════════════════════════════════════════════════════════════════ */
-.builder { display: flex; flex-direction: column; height: 100vh; background: #f0f2f5; }
+.builder { display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; }
 
-/* Top bar */
+/* Top bar — Minecraft stone */
 .builder-topbar {
-  height: 52px; background: #fff; border-bottom: 1px solid #e4e4e4;
+  height: 52px; background: #2a2a2a; border-bottom: 2px solid #141414;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 20px; flex-shrink: 0; gap: 16px;
   position: relative; overflow: visible;
 }
-.builder-brand { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 700; color: #111; flex-shrink: 0; }
-.builder-brand-dot { width: 7px; height: 7px; background: #0099CC; border-radius: 50%; flex-shrink: 0; }
-.builder-topbar-hint { font-size: 12px; color: #aaa; flex: 1; text-align: center; }
+.builder-brand { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 700; color: #e8e8e8; flex-shrink: 0; }
+.builder-brand-dot { width: 7px; height: 7px; background: #5D9E2E; border-radius: 2px; flex-shrink: 0; }
+.builder-topbar-hint { font-size: 12px; color: #666; flex: 1; text-align: center; }
 .builder-topbar-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
-.builder-user { font-size: 13px; color: #777; }
-.builder-btn-ghost { background: none; border: 1.5px solid #ddd; border-radius: 6px; padding: 5px 12px; font-size: 13px; color: #555; transition: .2s; }
-.builder-btn-ghost:hover { border-color: #0099CC; color: #0099CC; }
+.builder-user { font-size: 13px; color: #888; }
+.builder-btn-ghost { background: none; border: 1.5px solid #444; border-radius: 4px; padding: 5px 12px; font-size: 13px; color: #bbb; transition: .2s; }
+.builder-btn-ghost:hover { border-color: #5D9E2E; color: #7DC845; }
+.builder-btn-ghost.active { border-color: #5D9E2E; color: #7DC845; background: #1a2e0a; }
 .builder-save-btn-top {
-  background: #0099CC; color: #fff; border: none;
-  padding: 7px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; transition: .2s;
+  background: #3A7D44; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 4px; font-size: 13px; font-weight: 700; transition: .2s;
+  image-rendering: pixelated;
 }
-.builder-save-btn-top:hover:not(:disabled) { background: #0080aa; }
+.builder-save-btn-top:hover:not(:disabled) { background: #5D9E2E; }
 .builder-save-btn-top.done { background: #22c55e; }
 .builder-save-btn-top.loading { opacity: .7; }
 
@@ -611,10 +613,10 @@ button { cursor: pointer; font-family: inherit; }
 .builder-canvas-pane .site-format-toolbar { display: none; }
 .builder-canvas-pane .site-wa-fab { display: none; }
 
-/* Right: settings panel */
+/* Right: settings panel — Minecraft stone wall */
 .builder-panel {
   width: 300px; flex-shrink: 0;
-  background: #fff; border-left: 1px solid #e4e4e4;
+  background: #2a2a2a; border-left: 2px solid #141414;
   display: flex; flex-direction: column; overflow: hidden;
   position: relative;
 }
@@ -626,41 +628,41 @@ button { cursor: pointer; font-family: inherit; }
 .builder-panel-resize:hover { background: rgba(0,153,204,.25); }
 .builder-panel-resize:active { background: rgba(0,153,204,.45); }
 
-/* Section tabs */
+/* Section tabs — Minecraft hotbar style */
 .builder-tabs {
   display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 12px;
-  border-bottom: 1px solid #e4e4e4; background: #f9fafb; flex-shrink: 0;
+  border-bottom: 2px solid #141414; background: #222222; flex-shrink: 0;
 }
 .builder-tab {
-  background: none; border: 1.5px solid transparent; border-radius: 6px;
-  padding: 5px 11px; font-size: 12px; font-weight: 600; color: #666;
+  background: none; border: 1.5px solid transparent; border-radius: 4px;
+  padding: 5px 11px; font-size: 12px; font-weight: 600; color: #888;
   transition: .15s; cursor: pointer;
 }
-.builder-tab:hover { background: #f0f0f0; color: #111; }
-.builder-tab.active { background: #EEF8FF; border-color: #0099CC; color: #0099CC; }
+.builder-tab:hover { background: #3a3a3a; color: #e8e8e8; }
+.builder-tab.active { background: #1a3a0a; border-color: #5D9E2E; color: #7DC845; }
 
 /* Panel body */
 .builder-panel-body { flex: 1; overflow-y: auto; padding: 4px 0 8px; }
 
 .panel-section { padding: 14px 16px 4px; }
-.panel-section + .panel-section { border-top: 1px solid #f0f0f0; }
+.panel-section + .panel-section { border-top: 1px solid #1a1a1a; }
 .panel-section-title {
   font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  color: #aaa; margin-bottom: 10px;
+  color: #5D9E2E; margin-bottom: 10px;
 }
 
 .panel-field { margin-bottom: 10px; }
-.panel-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #999; margin-bottom: 5px; }
+.panel-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #777; margin-bottom: 5px; }
 .panel-field input[type="text"],
 .panel-field input[type="email"],
 .panel-field input[type="date"],
 .panel-field select,
 .panel-field textarea {
-  width: 100%; border: 1.5px solid #ddd; border-radius: 6px;
+  width: 100%; border: 1.5px solid #444; border-radius: 4px;
   padding: 7px 10px; font-size: 13px; font-family: inherit;
-  background: #fff; outline: none; transition: border-color .2s; color: #111;
+  background: #1e1e1e; outline: none; transition: border-color .2s; color: #e8e8e8;
 }
-.panel-field input:focus, .panel-field select:focus, .panel-field textarea:focus { border-color: #0099CC; }
+.panel-field input:focus, .panel-field select:focus, .panel-field textarea:focus { border-color: #5D9E2E; }
 .panel-field textarea { resize: vertical; min-height: 56px; }
 
 /* Color row */
@@ -673,8 +675,8 @@ button { cursor: pointer; font-family: inherit; }
 /* Upload row */
 .panel-upload-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .panel-upload-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #e4e4e4; flex-shrink: 0; }
-.panel-upload-btn { background: #fff; border: 1.5px solid #ddd; border-radius: 6px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #555; transition: .2s; }
-.panel-upload-btn:hover:not(:disabled) { border-color: #0099CC; color: #0099CC; }
+.panel-upload-btn { background: #1e1e1e; border: 1.5px solid #444; border-radius: 4px; padding: 7px 14px; font-size: 13px; font-weight: 600; color: #bbb; transition: .2s; }
+.panel-upload-btn:hover:not(:disabled) { border-color: #5D9E2E; color: #7DC845; }
 .panel-upload-btn:disabled { opacity: .5; }
 
 /* Product list */
@@ -685,32 +687,32 @@ button { cursor: pointer; font-family: inherit; }
   padding: 10px; border-radius: 8px; cursor: pointer;
   transition: background .15s; border: 1px solid transparent;
 }
-.panel-product-row:hover { background: #f5f8ff; border-color: #d0e8ff; }
-.panel-product-row--active { background: #EEF8FF !important; border-color: #0099CC !important; }
-.panel-product-row--active > svg { color: #0099CC; }
-.panel-product-row > svg { color: #ccc; flex-shrink: 0; }
-.panel-product-thumb { width: 44px; height: 44px; border-radius: 6px; border: 1px solid #e0e0e0; overflow: hidden; flex-shrink: 0; background: #f5f5f5; }
+.panel-product-row:hover { background: #1a3a0a; border-color: #3a6018; }
+.panel-product-row--active { background: #1a3a0a !important; border-color: #5D9E2E !important; }
+.panel-product-row--active > svg { color: #7DC845; }
+.panel-product-row > svg { color: #555; flex-shrink: 0; }
+.panel-product-thumb { width: 44px; height: 44px; border-radius: 4px; border: 1px solid #444; overflow: hidden; flex-shrink: 0; background: #1e1e1e; }
 .panel-product-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
 .panel-product-thumb-empty { width: 100%; height: 100%; background: #f0f0f0; }
 .panel-product-info { flex: 1; min-width: 0; }
-.panel-product-name { font-size: 13px; font-weight: 700; color: #111; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px; }
-.panel-product-meta { font-size: 11px; color: #888; }
+.panel-product-name { font-size: 13px; font-weight: 700; color: #e8e8e8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px; }
+.panel-product-meta { font-size: 11px; color: #777; }
 .panel-add-big-btn {
   margin: 8px 6px; display: flex; align-items: center; justify-content: center; gap: 7px;
-  background: none; border: 1.5px dashed #bdd3ee; border-radius: 8px;
-  padding: 12px; font-size: 13px; font-weight: 600; color: #0099CC;
+  background: none; border: 1.5px dashed #3a6018; border-radius: 4px;
+  padding: 12px; font-size: 13px; font-weight: 600; color: #5D9E2E;
   transition: .2s;
 }
-.panel-add-big-btn:hover { border-color: #0099CC; background: #f0f8ff; }
+.panel-add-big-btn:hover { border-color: #7DC845; background: #1a3a0a; color: #7DC845; }
 
 /* Product form */
 .panel-product-form { padding: 8px 12px 16px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
 .panel-back-btn {
   display: flex; align-items: center; gap: 6px;
-  background: none; border: none; font-size: 13px; font-weight: 600; color: #0099CC;
+  background: none; border: none; font-size: 13px; font-weight: 600; color: #5D9E2E;
   padding: 4px 0; margin-bottom: 4px; cursor: pointer;
 }
-.panel-back-btn:hover { color: #0080aa; }
+.panel-back-btn:hover { color: #7DC845; }
 .panel-product-img-area {
   position: relative; width: 100%; height: 160px;
   border: 1.5px dashed #d0d8e8; border-radius: 10px; overflow: hidden;

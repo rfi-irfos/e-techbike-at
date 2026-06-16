@@ -156,7 +156,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement
-    if (target.isContentEditable || target.closest('.editable-text')) return
+    // Only skip if the element is ALREADY being actively edited (cursor inside)
+    if (target.isContentEditable && document.activeElement === target) return
     const el = target.closest('[data-cid]') as HTMLElement | null
     if (!el) return
     const cid = el.dataset.cid ?? ''
@@ -166,14 +167,23 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
       const idx = parseInt(cid.split('.')[2])
       const item = draft.products?.items?.[idx]
       if (item) { setActiveTab('products'); setEditingProduct(item.id) }
-    } else if (cid.startsWith('news.items.')) {
+    } else if (cid.startsWith('news.items.') || cid.startsWith('news.')) {
       const idx = parseInt(cid.split('.')[2])
       const item = draft.news?.items?.[idx]
       if (item) { setActiveTab('news'); setEditingNews(item.id) }
+      else setActiveTab('news')
     } else if (cid.startsWith('contact.') || cid.startsWith('whatsapp.')) {
       setActiveTab('contact')
     } else if (cid.startsWith('meta.') || cid.startsWith('footer.')) {
       setActiveTab('style')
+    } else if (cid.startsWith('categories.items.')) {
+      const idx = parseInt(cid.split('.')[2])
+      const item = draft.categories?.items?.[idx]
+      if (item) { setActiveTab('categories'); setEditingCategory(item.id) }
+    } else if (cid.startsWith('trust.')) {
+      setActiveTab('trust')
+    } else if (cid.startsWith('usp.')) {
+      setActiveTab('usp')
     }
   }
 
