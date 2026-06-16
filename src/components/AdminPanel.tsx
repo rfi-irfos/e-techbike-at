@@ -44,41 +44,118 @@ function EnderDragon({ onCatch }: { onCatch: () => void }) {
   return (
     <div className="ender-dragon-wrap" onClick={onCatch} title="psst...">
       <svg
-        viewBox="0 0 80 36"
-        width="100"
-        height="45"
+        viewBox="0 0 88 42"
+        width="112"
+        height="53"
         style={{ imageRendering: 'pixelated', display: 'block', overflow: 'visible' }}
       >
-        {/* left wing */}
-        <g className="dragon-wing-l">
-          <polygon points="4,18 0,4 18,14 14,20" fill="#2d004d"/>
-          <polygon points="18,14 10,2 20,10 18,14" fill="#3d0066"/>
-        </g>
-        {/* right wing */}
-        <g className="dragon-wing-r">
-          <polygon points="62,18 80,4 62,14 62,20" fill="#2d004d"/>
-          <polygon points="62,14 70,2 60,10 62,14" fill="#3d0066"/>
-        </g>
-        {/* tail */}
-        <rect x="4" y="20" width="18" height="8" rx="2" fill="#1a0033"/>
-        <rect x="0" y="22" width="8" height="6" rx="1" fill="#1a0033"/>
+        {/* tail — tapers left */}
+        <rect x="0"  y="26" width="4"  height="4"  fill="#1a0033"/>
+        <rect x="3"  y="24" width="5"  height="6"  fill="#1a0033"/>
+        <rect x="7"  y="22" width="6"  height="8"  fill="#220044"/>
         {/* body */}
-        <rect x="14" y="14" width="40" height="16" rx="3" fill="#1a0033"/>
+        <rect x="13" y="18" width="34" height="13" rx="1" fill="#1a0033"/>
+        {/* wings from MID-back, spread upward */}
+        <g className="dragon-wing-l">
+          <polygon points="19,18  2,2   17,16  21,18"  fill="#2d004d"/>
+          <polygon points="19,18  5,0   1,9    13,15"  fill="#3d0066"/>
+        </g>
+        <g className="dragon-wing-r">
+          <polygon points="39,18  56,2  43,16  37,18"  fill="#2d004d"/>
+          <polygon points="39,18  53,0  57,9   45,15"  fill="#3d0066"/>
+        </g>
+        {/* spine spikes */}
+        <rect x="18" y="14" width="3" height="5" fill="#220044"/>
+        <rect x="25" y="13" width="3" height="6" fill="#220044"/>
+        <rect x="33" y="14" width="3" height="5" fill="#220044"/>
+        <rect x="41" y="13" width="3" height="6" fill="#220044"/>
         {/* neck */}
-        <rect x="46" y="8" width="12" height="14" rx="2" fill="#220044"/>
+        <rect x="47" y="11" width="10" height="14" rx="1" fill="#220044"/>
         {/* head */}
-        <rect x="52" y="4" width="20" height="16" rx="2" fill="#2a0055"/>
+        <rect x="54" y="7"  width="22" height="16" rx="1" fill="#2a0055"/>
         {/* eyes */}
-        <rect x="55" y="8" width="4" height="4" fill="#cc00ff"/>
-        <rect x="64" y="8" width="4" height="4" fill="#cc00ff"/>
+        <rect x="57" y="10" width="4" height="4" fill="#cc00ff"/>
+        <rect x="67" y="10" width="4" height="4" fill="#cc00ff"/>
         {/* eye glow */}
-        <rect x="56" y="9" width="2" height="2" fill="#ff88ff"/>
-        <rect x="65" y="9" width="2" height="2" fill="#ff88ff"/>
+        <rect x="58" y="11" width="2" height="2" fill="#ff88ff"/>
+        <rect x="68" y="11" width="2" height="2" fill="#ff88ff"/>
         {/* nostrils */}
-        <rect x="70" y="12" width="2" height="2" fill="#440077"/>
+        <rect x="75" y="15" width="2" height="2" fill="#440077"/>
         {/* horns */}
-        <rect x="56" y="2" width="2" height="4" fill="#1a0033"/>
-        <rect x="68" y="0" width="2" height="6" fill="#1a0033"/>
+        <rect x="58" y="4"  width="2" height="5" fill="#1a0033"/>
+        <rect x="69" y="2"  width="2" height="7" fill="#1a0033"/>
+      </svg>
+    </div>
+  )
+}
+
+function MCTopbarTrees() {
+  return (
+    <div className="mc-topbar-trees" aria-hidden="true">
+      <svg viewBox="0 0 380 46" width="380" height="46" style={{ imageRendering: 'pixelated', display: 'block' }} preserveAspectRatio="xMidYMax meet">
+        {/* ground */}
+        <rect x="0"   y="34" width="380" height="4"  fill="#5D9E2E"/>
+        <rect x="0"   y="38" width="380" height="8"  fill="#7A5230"/>
+        {/* tree 1 */}
+        <rect x="6"   y="10" width="18" height="6"  fill="#2D6020"/>
+        <rect x="4"   y="16" width="22" height="6"  fill="#3A7D44"/>
+        <rect x="2"   y="22" width="26" height="12" fill="#2D6020"/>
+        <rect x="12"  y="30" width="8"  height="8"  fill="#6B4A1E"/>
+        {/* creeper */}
+        <rect x="44"  y="18" width="16" height="16" fill="#3A7D44"/>
+        <rect x="47"  y="21" width="4"  height="4"  fill="#111"/>
+        <rect x="57"  y="21" width="4"  height="4"  fill="#111"/>
+        <rect x="51"  y="27" width="2"  height="3"  fill="#111"/>
+        <rect x="55"  y="27" width="2"  height="3"  fill="#111"/>
+        <rect x="49"  y="30" width="10" height="2"  fill="#111"/>
+        <rect x="51"  y="29" width="6"  height="2"  fill="#111"/>
+        {/* tree 2 */}
+        <rect x="78"  y="6"  width="22" height="8"  fill="#2D6020"/>
+        <rect x="76"  y="14" width="26" height="8"  fill="#3A7D44"/>
+        <rect x="74"  y="22" width="30" height="12" fill="#2D6020"/>
+        <rect x="84"  y="30" width="10" height="8"  fill="#6B4A1E"/>
+        {/* grass blocks */}
+        <rect x="118" y="26" width="12" height="4"  fill="#5D9E2E"/>
+        <rect x="118" y="30" width="12" height="8"  fill="#7A5230"/>
+        <rect x="132" y="28" width="12" height="2"  fill="#5D9E2E"/>
+        <rect x="132" y="30" width="12" height="8"  fill="#7A5230"/>
+        {/* tree 3 small */}
+        <rect x="154" y="14" width="16" height="6"  fill="#2D6020"/>
+        <rect x="152" y="20" width="20" height="6"  fill="#3A7D44"/>
+        <rect x="150" y="26" width="24" height="8"  fill="#2D6020"/>
+        <rect x="158" y="30" width="8"  height="8"  fill="#6B4A1E"/>
+        {/* stone/cobble blocks */}
+        <rect x="186" y="22" width="10" height="12" fill="#7F7F7F"/>
+        <rect x="196" y="18" width="10" height="16" fill="#9A9A9A"/>
+        <rect x="206" y="22" width="10" height="12" fill="#7F7F7F"/>
+        <rect x="188" y="22" width="2"  height="2"  fill="#6A6A6A"/>
+        <rect x="198" y="18" width="2"  height="2"  fill="#AAAAAA"/>
+        {/* tree 4 */}
+        <rect x="228" y="8"  width="20" height="8"  fill="#2D6020"/>
+        <rect x="226" y="16" width="24" height="8"  fill="#3A7D44"/>
+        <rect x="224" y="24" width="28" height="10" fill="#2D6020"/>
+        <rect x="233" y="30" width="10" height="8"  fill="#6B4A1E"/>
+        {/* TNT */}
+        <rect x="266" y="18" width="16" height="16" fill="#C03030"/>
+        <rect x="268" y="18" width="12" height="4"  fill="#EEEEEE"/>
+        <rect x="268" y="30" width="12" height="4"  fill="#EEEEEE"/>
+        <rect x="270" y="20" width="2"  height="12" fill="#C03030"/>
+        <rect x="278" y="20" width="2"  height="12" fill="#C03030"/>
+        {/* tree 5 */}
+        <rect x="298" y="10" width="18" height="6"  fill="#2D6020"/>
+        <rect x="296" y="16" width="22" height="6"  fill="#3A7D44"/>
+        <rect x="294" y="22" width="26" height="12" fill="#2D6020"/>
+        <rect x="303" y="30" width="8"  height="8"  fill="#6B4A1E"/>
+        {/* diamond ore block */}
+        <rect x="336" y="20" width="16" height="16" fill="#7F7F7F"/>
+        <rect x="338" y="22" width="4"  height="4"  fill="#4FC3D0"/>
+        <rect x="346" y="22" width="4"  height="4"  fill="#4FC3D0"/>
+        <rect x="342" y="28" width="4"  height="4"  fill="#4FC3D0"/>
+        {/* tree 6 */}
+        <rect x="360" y="12" width="16" height="6"  fill="#2D6020"/>
+        <rect x="358" y="18" width="20" height="6"  fill="#3A7D44"/>
+        <rect x="356" y="24" width="24" height="10" fill="#2D6020"/>
+        <rect x="364" y="30" width="8"  height="8"  fill="#6B4A1E"/>
       </svg>
     </div>
   )
@@ -123,12 +200,22 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
   const [saveError, setSaveError] = useState(false)
+  const [mcTheme, setMcTheme] = useState(() => localStorage.getItem('mc-theme') !== 'false')
   const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function triggerAchievement(text: string) {
     if (mcTimerRef.current) clearTimeout(mcTimerRef.current)
     setMcAchievement(text)
     mcTimerRef.current = setTimeout(() => setMcAchievement(null), 3800)
+  }
+
+  const toggleMcTheme = () => {
+    setMcTheme(t => {
+      const next = !t
+      localStorage.setItem('mc-theme', String(next))
+      if (next) triggerAchievement('Minecraft-Mode AN! Lets go Timea!')
+      return next
+    })
   }
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
@@ -403,11 +490,12 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const editingCat = editingCategory ? draft.categories?.items?.find(c => c.id === editingCategory) : null
 
   return (
-    <div className="builder">
+    <div className={`builder${mcTheme ? ' mc-theme' : ''}`}>
       <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChangeAll} />
 
       {/* ── TOPBAR ──────────────────────────────────────────────────────── */}
       <div className="builder-topbar">
+        {mcTheme && <MCTopbarTrees />}
         <EnderDragon onCatch={() => triggerAchievement('Achievement Get!  Enderdrachen gefangen!')} />
         <div className="builder-brand">
           <span className="builder-brand-dot" />
@@ -430,6 +518,16 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           ))}
         </div>
         <div className="builder-topbar-right">
+          <button
+            className={`builder-mc-toggle ${mcTheme ? 'active' : ''}`}
+            onClick={toggleMcTheme}
+            title={mcTheme ? 'Minecraft-Theme ausschalten' : 'Minecraft-Theme einschalten'}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.71 5.63l-2.34-2.34a1 1 0 0 0-1.41 0l-3 3-1.42-1.42-1.41 1.42 1.41 1.41L3 17.25V21h3.75l9.96-9.96 1.41 1.42 1.42-1.42-1.42-1.41 3-3a1 1 0 0 0 0-1.42z"/>
+            </svg>
+            {mcTheme ? 'MC: AN' : 'MC: AUS'}
+          </button>
           <span className="builder-user">{user.name || user.email}</span>
           <div className="builder-add-wrap" ref={addMenuRef}>
             <button className="builder-add-btn" onClick={() => setAddMenuOpen(o => !o)}>
