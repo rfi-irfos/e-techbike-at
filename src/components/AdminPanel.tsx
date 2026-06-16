@@ -213,7 +213,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     if (ok) {
       setSaved(true)
       setTimeout(() => setSaved(false), 2500)
-      triggerAchievement('Achievement Get!  Website aktualisiert')
+      triggerAchievement('Achievement Get!  Website gespeichert — Live in ~2 Min aktuell')
     } else {
       setSaveError(true)
       setTimeout(() => setSaveError(false), 3500)
