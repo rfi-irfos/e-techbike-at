@@ -37,6 +37,10 @@ interface EProps {
 function E({ field, value, as, className, style, href, title }: EProps) {
   const { editMode, onTextChange, setFocusedEl } = useContext(Ctx)
   const Tag = (as ?? 'span') as TagName
+  // Freeze innerHTML while the element is focused so re-renders don't reset selection/cursor
+  const isEditingRef = useRef(false)
+  const htmlRef = useRef({ __html: value })
+  if (!isEditingRef.current) htmlRef.current = { __html: value }
 
   if (!editMode) {
     const props: Record<string, unknown> = { className, style, dangerouslySetInnerHTML: { __html: value }, 'data-cid': field }
@@ -51,9 +55,10 @@ function E({ field, value, as, className, style, href, title }: EProps) {
     'data-cid': field,
     contentEditable: true,
     suppressContentEditableWarning: true,
-    dangerouslySetInnerHTML: { __html: value },
-    onFocus: (e: React.FocusEvent<HTMLElement>) => setFocusedEl(e.currentTarget),
+    dangerouslySetInnerHTML: htmlRef.current,
+    onFocus: (e: React.FocusEvent<HTMLElement>) => { isEditingRef.current = true; setFocusedEl(e.currentTarget) },
     onBlur: (e: React.FocusEvent<HTMLElement>) => {
+      isEditingRef.current = false
       setFocusedEl(null)
       onTextChange(field, e.currentTarget.innerHTML)
     },
@@ -706,6 +711,7 @@ export function PublicSite({
       })
     }
     const onUp = () => {
+      if (!heroDragRef.current) return // not a hero-drag mouseup, skip
       heroDragRef.current = null
       setHeroBgPos(p => { onUpdate?.('hero.bgX', p.x); onUpdate?.('hero.bgY', p.y); return p })
     }
