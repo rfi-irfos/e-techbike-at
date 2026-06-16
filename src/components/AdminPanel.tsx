@@ -213,7 +213,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     setMcTheme(t => {
       const next = !t
       localStorage.setItem('mc-theme', String(next))
-      if (next) triggerAchievement('Minecraft-Mode AN! Lets go Timea!')
+      if (next) triggerAchievement('Minecraft-Mode AN! Lets go!')
       return next
     })
   }

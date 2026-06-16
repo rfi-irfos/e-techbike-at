@@ -1314,14 +1314,14 @@ export const defaultContent: SiteContent = {
       {
         title: 'Rechtliches',
         links: [
-          { label: 'AGB', href: '/agb' },
-          { label: 'Datenschutz', href: '/datenschutz' },
-          { label: 'Impressum', href: '/impressum' },
+          { label: 'AGB', href: '#p/agb' },
+          { label: 'Datenschutz', href: '#p/datenschutz' },
+          { label: 'Impressum', href: '#p/impressum' },
         ],
       },
     ],
     links: [
-      { label: 'AGB', href: '/agb' },
+      { label: 'AGB', href: '#p/agb' },
       { label: 'Datenschutz', href: '#p/datenschutz' },
       { label: 'Impressum', href: '#p/impressum' },
     ],
@@ -1460,6 +1460,18 @@ E-Mail: <a href="mailto:office@e-techbike.at">office@e-techbike.at</a></p>
 <h2>Unternehmensangaben</h2>
 <p><strong>e-techbike.at</strong><br>
 Graz, Österreich</p>
+
+<h2>Mitgliedschaft</h2>
+<p>e-techbike.at ist Mitglied der <strong>Wirtschaftskammer Österreich (WKO)</strong>.</p>
+<a href="https://www.wko.at" target="_blank" rel="noopener" style="display:inline-block;margin:12px 0 20px;">
+  <svg viewBox="0 0 200 68" width="160" height="54" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="WKO Mitglied" style="display:block;">
+    <rect width="130" height="68" fill="#CC0000"/>
+    <text x="8" y="50" font-family="Arial Black,Impact,sans-serif" font-size="42" font-weight="900" fill="#FFFFFF" letter-spacing="-1">WKO</text>
+    <rect x="130" y="0"  width="70" height="22.7" fill="#CC0000"/>
+    <rect x="130" y="22.7" width="70" height="22.6" fill="#FFFFFF"/>
+    <rect x="130" y="45.3" width="70" height="22.7" fill="#CC0000"/>
+  </svg>
+</a>
 
 <h2>Kontakt</h2>
 <p>E-Mail: <a href="mailto:office@e-techbike.at">office@e-techbike.at</a></p>
