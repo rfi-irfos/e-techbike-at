@@ -137,6 +137,22 @@ button { cursor: pointer; font-family: inherit; }
 }
 .site-nav-burger:hover { border-color: var(--primary); color: var(--primary); }
 
+/* Compact lang toggle — shown next to burger on mobile, hidden on desktop */
+.site-nav-lang-topbar { display: none; }
+
+/* ── Lang toggle ─────────────────────────────────────────────────────────── */
+.lang-toggle {
+  display: inline-flex; gap: 2px; background: var(--surface-sunken);
+  border: 1px solid var(--border); border-radius: 9px; padding: 3px;
+}
+.lang-toggle-btn {
+  border: none; background: transparent; font-size: 12px; font-weight: 800;
+  letter-spacing: .03em; padding: 5px 10px; border-radius: 6px;
+  color: var(--text-soft); cursor: pointer; transition: background .2s, color .2s;
+}
+.lang-toggle-btn:hover { color: var(--text); }
+.lang-toggle-btn.active { background: var(--primary); color: var(--on-primary); }
+
 /* ── HERO ────────────────────────────────────────────────────────────────── */
 .site-hero {
   margin-top: 70px;
@@ -308,7 +324,8 @@ button { cursor: pointer; font-family: inherit; }
   padding: 3px 9px; border-radius: 3px;
 }
 .site-pcard-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
-.site-pcard-brand { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); margin-bottom: 5px; }
+.site-pcard-brand { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+.site-cat-icon { width: 14px; height: 14px; flex-shrink: 0; stroke: var(--primary); }
 .site-pcard-name { font-size: 17px; font-weight: 800; margin-bottom: 10px; }
 .site-pcard-specs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .site-spec { background: var(--surface-sunken); border: 1px solid var(--border); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 4px; color: var(--text-soft); }
@@ -353,6 +370,9 @@ button { cursor: pointer; font-family: inherit; }
 .site-news-date { font-size: 12px; font-weight: 600; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em; }
 .site-news-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; line-height: 1.4; color: var(--text); }
 .site-news-text { font-size: 14px; color: var(--text-soft); line-height: 1.7; }
+.site-news-read-more { display: inline-block; margin-top: 12px; font-size: 12px; font-weight: 700; color: var(--primary); letter-spacing: .04em; }
+.site-news-card.clickable { cursor: pointer; }
+.site-news-card.clickable:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
 /* ── LOCATION ────────────────────────────────────────────────────────────── */
 .site-location { display: grid; grid-template-columns: 1fr 1fr; min-height: 440px; }
@@ -418,6 +438,38 @@ button { cursor: pointer; font-family: inherit; }
 .site-footer-links { display: flex; gap: 20px; }
 .site-footer-links a { color: #444; transition: color .2s; }
 .site-footer-links a:hover { color: #fff; }
+
+/* ── ARTICLE MODAL ───────────────────────────────────────────────────────── */
+.site-modal-scrim {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  animation: site-modal-fade .2s ease;
+}
+@keyframes site-modal-fade { from { opacity: 0 } to { opacity: 1 } }
+.site-modal {
+  position: relative; background: var(--surface); color: var(--text);
+  width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
+  border-radius: 22px; box-shadow: 0 32px 80px rgba(0,0,0,.32);
+  animation: site-modal-pop .24s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes site-modal-pop { from { opacity: 0; transform: translateY(16px) scale(.98) } to { opacity: 1; transform: none } }
+.site-modal-close {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  width: 36px; height: 36px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,.9); color: #111;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,.18); transition: transform .15s; cursor: pointer;
+}
+.site-modal-close:hover { transform: rotate(90deg); }
+.site-modal-img { width: 100%; height: 210px; overflow: hidden; border-radius: 22px 22px 0 0; background: var(--surface-sunken); }
+.site-modal-img img { width: 100%; height: 100%; object-fit: cover; }
+.site-modal-body { padding: 26px 30px 30px; }
+.site-modal-title { font-size: 26px; font-weight: 900; line-height: 1.2; color: var(--text); margin-bottom: 18px; }
+.site[data-theme="hc"] .site-modal { border: 2px solid #fff; }
+.site[data-theme="hc"] .site-modal-close { background: #ffd400; color: #000; }
+.site-modal-article { max-width: 680px; }
+.site-modal-article-body { font-size: 15px; line-height: 1.8; color: var(--text-soft); white-space: pre-line; }
 
 /* ── WHATSAPP FLOAT ──────────────────────────────────────────────────────── */
 .site-whatsapp-btn {
@@ -899,6 +951,7 @@ button { cursor: pointer; font-family: inherit; }
 @media (max-width: 680px) {
   .site-main-nav, .site-nav-desktop { display: none; }
   .site-nav-burger { display: flex; }
+  .site-nav-lang-topbar { display: flex; align-items: center; }
   .site-nav { padding: 0 18px; height: 62px; }
   .site-logo-img { height: 40px; }
 
@@ -981,6 +1034,7 @@ button { cursor: pointer; font-family: inherit; }
 @container dev (max-width: 680px) {
   .site-main-nav, .site-nav-desktop { display: none; }
   .site-nav-burger { display: flex; }
+  .site-nav-lang-topbar { display: flex; align-items: center; }
   .site-nav { padding: 0 18px; height: 62px; }
   .site-logo-img { height: 40px; }
 

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import type { SiteContent, SectionId, CanvasPos } from '../types/content'
+import type { SiteContent, SectionId, CanvasPos, NewsItem } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
+import { useLang, type Lang } from '../hooks/useLang'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
 
@@ -587,6 +588,51 @@ const USP_ICONS = [
   <svg key="u6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
 ]
 
+// ── Language toggle ────────────────────────────────────────────────────────────
+
+const LANG_OPTS: { id: Lang; label: string }[] = [
+  { id: 'en', label: 'EN' },
+  { id: 'de', label: 'DE' },
+  { id: 'hu', label: 'HU' },
+]
+
+function LanguageToggle() {
+  const { lang, setLang, t } = useLang()
+  return (
+    <div className="lang-toggle" role="group" aria-label={t.language}>
+      {LANG_OPTS.map(o => (
+        <button
+          key={o.id}
+          type="button"
+          className={`lang-toggle-btn ${lang === o.id ? 'active' : ''}`}
+          aria-pressed={lang === o.id}
+          onClick={() => setLang(o.id)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+// ── Category icons ────────────────────────────────────────────────────────────
+
+function CategoryIcon({ category }: { category: string }) {
+  const c = (category ?? '').toLowerCase()
+  const cls = "site-cat-icon"
+  if (c === 'english')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  if (c === 'german' || c === 'deutsch')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+  if (c === 'exam prep' || c === 'prüfung' || c === 'vizsga')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  if (c === 'hungarian' || c === 'ungarisch' || c === 'magyar' || c === 'gyerekek')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+  if (c === 'kids' || c === 'kinder' || c === 'kinder & jugendliche')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+}
+
 // ── Public Site ───────────────────────────────────────────────────────────────
 
 interface Props {
@@ -615,6 +661,8 @@ export function PublicSite({
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [modalArticle, setModalArticle] = useState<NewsItem | null>(null)
+  const { t } = useLang()
   const openMenu = () => { history.pushState({ drawer: true }, ''); setMenuOpen(true) }
   const closeMenu = () => { setMenuOpen(false) }
   useEffect(() => {
@@ -622,6 +670,13 @@ export function PublicSite({
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [menuOpen])
+  useEffect(() => {
+    if (!modalArticle) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalArticle(null) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [modalArticle])
+
   const { theme, setTheme } = useTheme()
   const [heroBgPos, setHeroBgPos] = useState({ x: hero.bgX ?? 50, y: hero.bgY ?? 50 })
   const [heroHeight, setHeroHeight] = useState(hero.minHeight ?? 680)
@@ -902,6 +957,9 @@ export function PublicSite({
                   <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
                 )}
               </div>
+              <div className="site-nav-lang-topbar">
+                <LanguageToggle />
+              </div>
               <button className="site-nav-burger" aria-label="Menü öffnen" aria-expanded={menuOpen} onClick={() => openMenu()}>
                 <IconMenu />
               </button>
@@ -1006,12 +1064,12 @@ export function PublicSite({
           <div className={`site-trust${editMode ? ' site-edit-section' : ''}`} id="trust"
             onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('trust') } : undefined}>
             {editMode && <div className="site-edit-section-badge">Vertrauensleiste</div>}
-            {trust.items.map((t) => (
+            {trust.items.map((t, ti) => (
               <div key={t.id} className="site-trust-item">
                 <TrustIcon icon={t.icon} />
                 <span>
-                  <strong dangerouslySetInnerHTML={{ __html: t.bold }} />
-                  {' '}<span dangerouslySetInnerHTML={{ __html: t.text }} />
+                  <E field={`trust.items.${ti}.bold`} value={t.bold} as="strong" />
+                  {' '}<E field={`trust.items.${ti}.text`} value={t.text} as="span" />
                 </span>
               </div>
             ))}
@@ -1054,7 +1112,7 @@ export function PublicSite({
                     <EImg field={`products.items.${i}.image`} src={p.image} alt={p.name} className="site-pcard-photo" />
                   </div>
                   <div className="site-pcard-body">
-                    <div className="site-pcard-brand">{p.category}</div>
+                    <div className="site-pcard-brand">{!editMode && <CategoryIcon category={p.category} />}{p.category}</div>
                     <E field={`products.items.${i}.name`} value={p.name} as="div" className="site-pcard-name" />
                     <E field={`products.items.${i}.description`} value={p.description} as="div" className="site-pcard-desc" />
                     <div className="site-pcard-foot">
@@ -1095,12 +1153,22 @@ export function PublicSite({
             <E field="news.title" value={news.title} as="h2" className="site-section-title" />
             <div className="site-news-grid">
               {news.items.map((n, i) => (
-                <div key={n.id} className="site-news-card">
+                <div
+                  key={n.id}
+                  className={`site-news-card ${!editMode ? 'clickable' : ''}`}
+                  {...(!editMode ? {
+                    role: 'button',
+                    tabIndex: 0,
+                    onClick: () => setModalArticle(n),
+                    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalArticle(n) } },
+                  } : {})}
+                >
                   {n.image && <img src={n.image} alt={n.title} className="site-news-img" />}
                   <div className="site-news-body">
                     <div className="site-news-date">{new Date(n.date).toLocaleDateString('de-AT', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                     <E field={`news.items.${i}.title`} value={n.title} as="h3" className="site-news-title" />
                     <E field={`news.items.${i}.body`} value={n.body} as="p" className="site-news-text" />
+                    {!editMode && <span className="site-news-read-more">{t.readMore} →</span>}
                   </div>
                 </div>
               ))}
@@ -1193,6 +1261,23 @@ export function PublicSite({
             </div>
           </div>
         </footer>
+
+        {/* ── ARTICLE MODAL ────────────────────────────────────────────── */}
+        {modalArticle && !editMode && (
+          <div className="site-modal-scrim" onClick={() => setModalArticle(null)} role="dialog" aria-modal="true" aria-label={modalArticle.title}>
+            <div className="site-modal site-modal-article" onClick={e => e.stopPropagation()}>
+              <button className="site-modal-close" aria-label={t.close} onClick={() => setModalArticle(null)}><IconClose /></button>
+              {modalArticle.image && (
+                <div className="site-modal-img"><img src={modalArticle.image} alt={modalArticle.title} /></div>
+              )}
+              <div className="site-modal-body">
+                <div className="site-news-date">{new Date(modalArticle.date).toLocaleDateString('de-AT', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                <h3 className="site-modal-title" dangerouslySetInnerHTML={{ __html: modalArticle.title }} />
+                <div className="site-modal-article-body" dangerouslySetInnerHTML={{ __html: modalArticle.body }} />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── WHATSAPP FLOAT ───────────────────────────────────────────── */}
         {whatsapp?.enabled && !editMode && (

@@ -154,6 +154,27 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     document.addEventListener('mouseup', onUp)
   }
 
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = (e.target as HTMLElement).closest('[data-cid]') as HTMLElement | null
+    if (!el) return
+    const cid = el.dataset.cid ?? ''
+    if (cid.startsWith('hero.') || cid.startsWith('nav.')) {
+      setActiveTab('hero')
+    } else if (cid.startsWith('products.items.')) {
+      const idx = parseInt(cid.split('.')[2])
+      const item = draft.products?.items?.[idx]
+      if (item) { setActiveTab('products'); setEditingProduct(item.id) }
+    } else if (cid.startsWith('news.items.')) {
+      const idx = parseInt(cid.split('.')[2])
+      const item = draft.news?.items?.[idx]
+      if (item) { setActiveTab('news'); setEditingNews(item.id) }
+    } else if (cid.startsWith('contact.') || cid.startsWith('whatsapp.')) {
+      setActiveTab('contact')
+    } else if (cid.startsWith('meta.') || cid.startsWith('footer.')) {
+      setActiveTab('style')
+    }
+  }
+
   // ── State helpers ─────────────────────────────────────────────────────────
 
   const update = (path: string, value: unknown) => {
@@ -437,7 +458,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
 
         {/* LEFT: Canvas editor OR device preview */}
         {device === 'edit' ? (
-          <div className="builder-canvas-pane" ref={previewRef}>
+          <div className="builder-canvas-pane" ref={previewRef} onClick={handleCanvasClick}>
             <PublicSite
               content={draft}
               editMode={true}
