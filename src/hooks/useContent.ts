@@ -11,7 +11,8 @@ export function useContent() {
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}content.json`)
+        const bust = `?t=${Date.now()}`
+        const res = await fetch(`${import.meta.env.BASE_URL}content.json${bust}`, { cache: 'no-store' })
         if (!res.ok) throw new Error('missing')
         setContent(await res.json())
       } catch {
