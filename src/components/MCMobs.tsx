@@ -161,6 +161,25 @@ export function EndermanMob() {
   )
 }
 
+export function CreeperMob() {
+  return (
+    <div className="lazi-mob lazi-creeper" title="Ssss...">
+      <svg viewBox="0 0 16 24" width="32" height="48" style={{ imageRendering: 'pixelated', display: 'block' }}>
+        <rect x="0" y="0" width="16" height="16" fill="#3A7D44"/>
+        <rect x="2" y="4" width="4" height="4" fill="#111"/>
+        <rect x="10" y="4" width="4" height="4" fill="#111"/>
+        <rect x="4" y="10" width="2" height="3" fill="#111"/>
+        <rect x="10" y="10" width="2" height="3" fill="#111"/>
+        <rect x="6" y="11" width="4" height="2" fill="#111"/>
+        <rect x="4" y="13" width="8" height="1" fill="#111"/>
+        <rect x="2" y="16" width="12" height="8" fill="#3A7D44"/>
+        <rect x="2" y="24" width="4" height="4" fill="#2D6020"/>
+        <rect x="10" y="24" width="4" height="4" fill="#2D6020"/>
+      </svg>
+    </div>
+  )
+}
+
 export function MCMobStrip({ onMobClick }: { onMobClick?: (mob: string) => void }) {
   return (
     <div className="lazi-mob-area">
@@ -169,6 +188,58 @@ export function MCMobStrip({ onMobClick }: { onMobClick?: (mob: string) => void 
       <div className="lazi-mob-wrap" onClick={() => onMobClick?.('cow')}><CowMob /></div>
       <div className="lazi-mob-wrap lazi-mob-dragon" onClick={() => onMobClick?.('dragon')}><DragonMob /></div>
       <div className="lazi-mob-wrap lazi-mob-creeper" onClick={() => onMobClick?.('enderman')}><EndermanMob /></div>
+    </div>
+  )
+}
+
+export function WolfMob({ tamed, bones }: { tamed: boolean; bones: number }) {
+  return (
+    <div className="lazi-mob lazi-wolf" title={tamed ? 'Guter Wolf! Sitz!' : bones > 0 ? `${bones} Knochen — noch ${3 - bones} bis zahm!` : 'Klick um Knochen zu geben!'}>
+      <svg viewBox="0 0 24 20" width="48" height="40" style={{ imageRendering: 'pixelated', display: 'block' }}>
+        {/* body */}
+        <rect x="4" y="6" width="14" height="9" fill={tamed ? '#aaa' : '#888'}/>
+        {/* head */}
+        <rect x="14" y="2" width="9" height="8" fill={tamed ? '#aaa' : '#888'}/>
+        {/* snout */}
+        <rect x="20" y="5" width="4" height="3" fill="#ccc"/>
+        {/* nose */}
+        <rect x="22" y="4" width="2" height="2" fill="#333"/>
+        {/* eye */}
+        <rect x="16" y="3" width="2" height="2" fill="#333"/>
+        {/* ear */}
+        <rect x="15" y="0" width="3" height="4" fill={tamed ? '#aaa' : '#888'}/>
+        <rect x="20" y="0" width="3" height="4" fill={tamed ? '#aaa' : '#888'}/>
+        {/* tail */}
+        <rect x="0" y="4" width="4" height="3" fill={tamed ? '#aaa' : '#888'}/>
+        <rect x="0" y="2" width="3" height="3" fill={tamed ? '#aaa' : '#888'}/>
+        {/* legs */}
+        <rect x="5" y="14" width="3" height="4" fill={tamed ? '#999' : '#777'}/>
+        <rect x="10" y="14" width="3" height="4" fill={tamed ? '#999' : '#777'}/>
+        <rect x="14" y="14" width="3" height="4" fill={tamed ? '#999' : '#777'}/>
+        {/* collar when tamed */}
+        {tamed && <rect x="14" y="7" width="5" height="2" fill="#cc2222"/>}
+        {/* bone if feeding */}
+        {!tamed && bones > 0 && <rect x="18" y="10" width="6" height="2" fill="#eee"/>}
+      </svg>
+    </div>
+  )
+}
+
+export function CrmMobStrip({ onWolfClick, wolfBones, wolfTamed }: {
+  onWolfClick?: () => void
+  wolfBones?: number
+  wolfTamed?: boolean
+}) {
+  return (
+    <div className="lazi-mob-area">
+      <div className="lazi-mob-wrap"><PigMob /></div>
+      <div className="lazi-mob-wrap"><SheepMob /></div>
+      <div className="lazi-mob-wrap"><CowMob /></div>
+      <div className="lazi-mob-wrap lazi-mob-creeper"><CreeperMob /></div>
+      <div className="lazi-mob-wrap lazi-mob-creeper"><EndermanMob /></div>
+      <div className="lazi-mob-wrap" onClick={onWolfClick} style={{ cursor: 'pointer' }}>
+        <WolfMob tamed={wolfTamed ?? false} bones={wolfBones ?? 0} />
+      </div>
     </div>
   )
 }

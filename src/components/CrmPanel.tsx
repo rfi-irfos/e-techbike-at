@@ -1,7 +1,40 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Customer } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
-import { MCTopbarTrees, MCMobStrip } from './MCMobs'
+import { MCTopbarTrees, CrmMobStrip } from './MCMobs'
+// eslint-disable-next-line
+
+// ── Achievements (shared storage with LaziPanel) ──────────────────────────────
+const ACH_KEY = 'lazi_achievements'
+const FIRST_THREE = ['ach-erste-schritte', 'ach-baumeisterin', 'ach-haendlerin']
+
+const ACHIEVEMENTS = [
+  { id: 'ach-erste-schritte',   title: 'Erste Schritte',          desc: 'Website zum ersten Mal besucht' },
+  { id: 'ach-baumeisterin',     title: 'Baumeisterin',             desc: 'Erste Änderung im Builder gespeichert' },
+  { id: 'ach-haendlerin',       title: 'Händlerin',                desc: 'Erstes Produkt hinzugefügt' },
+  { id: 'ach-fotografin',       title: 'Fotografin',               desc: 'Erstes Bild hochgeladen' },
+  { id: 'ach-schreiberin',      title: 'Schreiberin',              desc: 'Erste Seite erstellt' },
+  { id: 'ach-kontaktmeisterin', title: 'Kontaktmeisterin',         desc: 'Kontaktformular ausgefüllt' },
+  { id: 'ach-diamant',          title: 'Diamant-Tier',             desc: '10 Produkte im Shop' },
+  { id: 'ach-nether',           title: 'Nether-Portal',            desc: 'Zu spät nachts noch am Arbeiten' },
+  { id: 'ach-enderdrachen',     title: 'Enderdrachen-Bezwingerin', desc: 'Alles auf der Website fertig' },
+  { id: 'ach-schaf',            title: 'Schaf-Flüsterin',          desc: 'Pinkes Schaf entdeckt' },
+  { id: 'ach-ferkel',           title: 'Ferkel-Königin',           desc: 'Schwein gestreichelt' },
+  { id: 'ach-kuh',              title: 'Kuh-Baronin',              desc: 'Kuh gemolken' },
+  { id: 'ach-wolf',             title: 'Wolfsbändigerin',          desc: 'Wolf mit 3 Knochen gezähmt' },
+]
+
+function loadAchievements(): Set<string> {
+  try {
+    const raw = localStorage.getItem(ACH_KEY)
+    const set = raw ? new Set<string>(JSON.parse(raw)) : new Set<string>()
+    FIRST_THREE.forEach(id => set.add(id))
+    localStorage.setItem(ACH_KEY, JSON.stringify([...set]))
+    return set
+  } catch {
+    return new Set(FIRST_THREE)
+  }
+}
 
 const CUSTOMERS_PATH = 'public/customers.json'
 
@@ -39,7 +72,26 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   const [modalOpen, setModalOpen]         = useState(false)
   const [editId, setEditId]               = useState<string | null>(null)
   const [form, setForm]                   = useState(emptyForm())
+  const [crmTab, setCrmTab]               = useState<'kunden' | 'achievements'>('kunden')
+  const [unlocked, setUnlocked]           = useState<Set<string>>(() => mcMode ? loadAchievements() : new Set())
+  const [wolfBones, setWolfBones]         = useState(0)
+  const [wolfTamed, setWolfTamed]         = useState(false)
   const shaRef = useRef<string | null>(null)
+
+  function handleWolfClick() {
+    if (wolfTamed) return
+    const next = wolfBones + 1
+    setWolfBones(next)
+    if (next >= 3) {
+      setWolfTamed(true)
+      setUnlocked(prev => {
+        const s = new Set(prev)
+        s.add('ach-wolf')
+        localStorage.setItem(ACH_KEY, JSON.stringify([...s]))
+        return s
+      })
+    }
+  }
 
   useEffect(() => { loadCustomers() }, [])
 
@@ -173,8 +225,44 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
         {mcMode && <span className="crm-mc-badge">Timi's Kundenliste</span>}
       </div>
 
+      {/* ── MC tab bar ── */}
+      {mcMode && (
+        <div className="crm-mc-tabs">
+          <button className={`crm-mc-tab${crmTab === 'kunden' ? ' active' : ''}`} onClick={() => setCrmTab('kunden')}>Kunden</button>
+          <button className={`crm-mc-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
+            Achievements
+            <span className="crm-mc-tab-count">{unlocked.size}/13</span>
+          </button>
+        </div>
+      )}
+
+      {/* ── Achievements grid (MC only) ── */}
+      {mcMode && crmTab === 'achievements' && (
+        <div className="lazi-grid" style={{ padding: '20px 24px' }}>
+          {ACHIEVEMENTS.map(a => {
+            const isUnlocked = unlocked.has(a.id)
+            return (
+              <div
+                key={a.id}
+                className={`lazi-ach-slot${isUnlocked ? ' unlocked' : ''}`}
+                title={isUnlocked ? a.desc : '???'}
+                onClick={() => {
+                  if (!isUnlocked) return
+                }}
+              >
+                <div className="lazi-ach-icon">
+                  {isUnlocked ? '★' : '?'}
+                </div>
+                <div className="lazi-ach-title">{isUnlocked ? a.title : '???'}</div>
+                <div className="lazi-ach-desc">{isUnlocked ? a.desc : '???'}</div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       {/* ── Header ── */}
-      <div className="crm-header">
+      {(!mcMode || crmTab === 'kunden') && <div className="crm-header">
         <h2 className="crm-title">
           {mcMode ? (
             <svg viewBox="0 0 16 16" width="18" height="18" style={{ imageRendering: 'pixelated' }}>
@@ -223,14 +311,14 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
             </button>
           ))}
         </div>
-      </div>
+      </div>}
 
       {/* ── Feedback ── */}
-      {saveMsg === 'ok'  && <div className="crm-feedback crm-feedback--ok">Gespeichert.</div>}
-      {saveMsg === 'err' && <div className="crm-feedback crm-feedback--err">Fehler beim Speichern.</div>}
+      {(!mcMode || crmTab === 'kunden') && saveMsg === 'ok'  && <div className="crm-feedback crm-feedback--ok">Gespeichert.</div>}
+      {(!mcMode || crmTab === 'kunden') && saveMsg === 'err' && <div className="crm-feedback crm-feedback--err">Fehler beim Speichern.</div>}
 
       {/* ── List ── */}
-      {loading ? (
+      {(!mcMode || crmTab === 'kunden') && loading ? (
         <div className="crm-empty">Wird geladen…</div>
       ) : (
         <div className="crm-list">
@@ -430,7 +518,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       {/* ── MC mob strip + ground at bottom ── */}
       {mcMode && (
         <>
-          <MCMobStrip />
+          <CrmMobStrip onWolfClick={handleWolfClick} wolfBones={wolfBones} wolfTamed={wolfTamed} />
           <div className="lazi-ground" />
         </>
       )}

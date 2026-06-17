@@ -2668,3 +2668,13 @@ button { cursor: pointer; font-family: inherit; }
 
 /* Partner badge */
 .site-partner-badge { display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5B8731;border:1.5px solid #5B8731;border-radius:3px;padding:2px 8px;margin-bottom:8px; }
+
+/* CRM MC tab bar */
+.crm-mc-tabs { display:flex;gap:2px;padding:6px 10px 0;background:#2a1d10;border-bottom:2px solid #5a4020; }
+.crm-mc-tab { padding:6px 14px;font-family:monospace;font-size:12px;font-weight:700;letter-spacing:.05em;border:2px solid #5a4020;border-bottom:none;border-radius:3px 3px 0 0;background:#1a100a;color:#b09070;cursor:pointer;display:flex;align-items:center;gap:6px; }
+.crm-mc-tab.active { background:#3d2b1a;color:#FFFF55;border-color:#7DC845; }
+.crm-mc-tab-count { font-size:10px;background:#3A7D44;color:#FFFF55;padding:1px 5px;border-radius:2px; }
+
+/* Wolf mob animation */
+.lazi-wolf { animation: lazi-walk 2.8s steps(1) infinite; }
+@keyframes lazi-walk { 0%,100% { transform: scaleX(1) } 50% { transform: scaleX(-1) } }
