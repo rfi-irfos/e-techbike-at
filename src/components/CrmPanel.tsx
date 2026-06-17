@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Customer } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
-import { MCTopbarTrees, CrmMobStrip } from './MCMobs'
+import { MCTopbarTrees, CrmScene } from './MCMobs'
 // eslint-disable-next-line
 
 // ── Achievements (shared storage with LaziPanel) ──────────────────────────────
@@ -18,10 +18,21 @@ const ACHIEVEMENTS = [
   { id: 'ach-diamant',          title: 'Diamant-Tier',             desc: '10 Produkte im Shop' },
   { id: 'ach-nether',           title: 'Nether-Portal',            desc: 'Zu spät nachts noch am Arbeiten' },
   { id: 'ach-enderdrachen',     title: 'Enderdrachen-Bezwingerin', desc: 'Alles auf der Website fertig' },
-  { id: 'ach-schaf',            title: 'Schaf-Flüsterin',          desc: 'Pinkes Schaf entdeckt' },
+  { id: 'ach-schaf',            title: 'Schaf-Flüsterin',          desc: 'Schaf entdeckt' },
   { id: 'ach-ferkel',           title: 'Ferkel-Königin',           desc: 'Schwein gestreichelt' },
   { id: 'ach-kuh',              title: 'Kuh-Baronin',              desc: 'Kuh gemolken' },
   { id: 'ach-wolf',             title: 'Wolfsbändigerin',          desc: 'Wolf mit 3 Knochen gezähmt' },
+  { id: 'ach-wolf-name',        title: 'Namensgabe',               desc: 'Wolf einen Namen gegeben' },
+  { id: 'ach-wolf-pet',         title: 'Gestreichelt!',            desc: 'Wolf gestreichelt' },
+  { id: 'ach-wolf-bone',        title: 'Großzügig!',               desc: 'Wolf einen Knochen gegeben' },
+  { id: 'ach-wolf-apple',       title: 'Apfelliebe!',              desc: 'Wolf einen Apfel gegeben' },
+  { id: 'ach-wolf-fetch',       title: 'Apport!',                  desc: 'Ball für Wolf geworfen' },
+  { id: 'ach-wolf-trick',       title: 'Braver Wolf!',             desc: 'Wolf einen Trick beigebracht' },
+  { id: 'ach-wolf-howl',        title: 'Mondgeheul!',              desc: 'Wolf nachts heulen lassen' },
+  { id: 'ach-wolf-lv5',         title: 'Wolf-Level 5',             desc: 'Wolf auf Level 5 gebracht' },
+  { id: 'ach-wolf-lv10',        title: 'Wolf-Level 10 — Legende!', desc: 'Wolf auf Level 10 gebracht' },
+  { id: 'ach-wolf-hunger',      title: 'Hungernot!',               desc: 'Wolf war am Verhungern' },
+  { id: 'ach-creeper',          title: 'Das War Knapp!',           desc: 'Creeper-Explosion überlebt' },
 ]
 
 function loadAchievements(): Set<string> {
@@ -74,23 +85,15 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   const [form, setForm]                   = useState(emptyForm())
   const [crmTab, setCrmTab]               = useState<'kunden' | 'achievements'>('kunden')
   const [unlocked, setUnlocked]           = useState<Set<string>>(() => mcMode ? loadAchievements() : new Set())
-  const [wolfBones, setWolfBones]         = useState(0)
-  const [wolfTamed, setWolfTamed]         = useState(false)
   const shaRef = useRef<string | null>(null)
 
-  function handleWolfClick() {
-    if (wolfTamed) return
-    const next = wolfBones + 1
-    setWolfBones(next)
-    if (next >= 3) {
-      setWolfTamed(true)
-      setUnlocked(prev => {
-        const s = new Set(prev)
-        s.add('ach-wolf')
-        localStorage.setItem(ACH_KEY, JSON.stringify([...s]))
-        return s
-      })
-    }
+  function handleAchUnlock(id: string) {
+    setUnlocked(prev => {
+      if (prev.has(id)) return prev
+      const s = new Set(prev); s.add(id)
+      localStorage.setItem(ACH_KEY, JSON.stringify([...s]))
+      return s
+    })
   }
 
   useEffect(() => { loadCustomers() }, [])
@@ -515,13 +518,8 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
         </div>
       )}
 
-      {/* ── MC mob strip + ground at bottom ── */}
-      {mcMode && (
-        <>
-          <CrmMobStrip onWolfClick={handleWolfClick} wolfBones={wolfBones} wolfTamed={wolfTamed} />
-          <div className="lazi-ground" />
-        </>
-      )}
+      {/* ── Gamified MC scene at bottom ── */}
+      {mcMode && <CrmScene onAchUnlock={handleAchUnlock} />}
 
     </div>
   )
