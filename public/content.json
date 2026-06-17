@@ -642,7 +642,7 @@
         "badge": "",
         "category": "Akkus",
         "subcategory": "sub-bat-li",
-        "description": "48V 25Ah Lithium-Ionen-Akku — kompakt, wartungsfrei, kein Memory-Effekt. Ideal für E-Bikes und leichte E-Mopeds.",
+        "description": "48V 25Ah Lithium-Ionen-Akku — kompakt, wartungsfrei, kein Memory-Effekt. Ideal für E-Bikes und leichte E-Mopeds.\n\n",
         "price": "€540,00",
         "image": "uploads/etb-akku-li-48v-box.jpg",
         "specs": [
@@ -3072,7 +3072,7 @@
   "contact": {
     "title": "Besuchen Sie uns in Graz.",
     "subtitle": "Persönliche Beratung, Testfahrten und direkte Abholung. Kein Termin nötig.",
-    "email": "e-techbike@a1.net",
+    "email": "lacitimi2@gmail.com",
     "phone": "+43 664 73726965",
     "address": "Buchkogelgasse 9, 8020 Graz",
     "whatsapp": "+436647372965",
