@@ -2473,3 +2473,12 @@ button { cursor: pointer; font-family: inherit; }
 .crm-modal-full {
   grid-column: 1 / -1;
 }
+
+/* Rich text editor for page content */
+.rte-wrap { border: 1px solid var(--border, #ccc); border-radius: 4px; overflow: hidden; background: #fff; }
+.rte-toolbar { display: flex; gap: 2px; padding: 4px 6px; border-bottom: 1px solid var(--border, #ccc); background: #f5f5f5; }
+.rte-toolbar button { padding: 2px 8px; font-size: 13px; font-weight: 600; border: 1px solid #ccc; border-radius: 3px; background: #fff; cursor: pointer; line-height: 1.4; }
+.rte-toolbar button:hover { background: #e8e8e8; }
+.rte-body { min-height: 180px; padding: 10px 12px; font-size: 14px; line-height: 1.6; outline: none; }
+.rte-body p { margin: 0 0 8px; }
+.rte-body ul { margin: 0 0 8px; padding-left: 20px; }

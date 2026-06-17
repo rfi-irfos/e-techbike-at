@@ -210,14 +210,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     mcTimerRef.current = setTimeout(() => setMcAchievement(null), 3800)
   }
 
-  const toggleMcTheme = () => {
-    setMcTheme(t => {
-      const next = !t
-      localStorage.setItem('mc-theme', String(next))
-      if (next) triggerAchievement('Minecraft-Mode AN! Lets go!')
-      return next
-    })
-  }
+  void setMcTheme // kept for MC theme state
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const panelBodyRef = useRef<HTMLDivElement>(null)
@@ -520,16 +513,16 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           ))}
         </div>
         <div className="builder-topbar-right">
-          <button
-            className={`builder-mc-toggle ${mcTheme ? 'active' : ''}`}
-            onClick={toggleMcTheme}
-            title={mcTheme ? 'Minecraft-Theme ausschalten' : 'Minecraft-Theme einschalten'}
+          <a
+            href="#lazi"
+            className="builder-mc-toggle active"
+            title="Lazi's Panel"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M20.71 5.63l-2.34-2.34a1 1 0 0 0-1.41 0l-3 3-1.42-1.42-1.41 1.42 1.41 1.41L3 17.25V21h3.75l9.96-9.96 1.41 1.42 1.42-1.42-1.42-1.41 3-3a1 1 0 0 0 0-1.42z"/>
             </svg>
-            {mcTheme ? 'MC: AN' : 'MC: AUS'}
-          </button>
+            MC: AN
+          </a>
           <span className="builder-user">{user.name || user.email}</span>
           <div className="builder-add-wrap" ref={addMenuRef}>
             <button className="builder-add-btn" onClick={() => setAddMenuOpen(o => !o)}>
@@ -1157,14 +1150,27 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                       <Field label="SEO-Titel (optional)">
                         <input value={editingPageItem.metaTitle ?? ''} onChange={e => updatePage(editingPageItem.id, 'metaTitle', e.target.value)} placeholder={`${editingPageItem.title} — ${draft.meta?.title ?? ''}`} />
                       </Field>
-                      <Field label="Seiteninhalt (HTML)">
-                        <textarea
-                          rows={10}
-                          value={editingPageItem.body}
-                          onChange={e => updatePage(editingPageItem.id, 'body', e.target.value)}
-                          placeholder="<p>Hier kommt Ihr Text...</p>"
-                          style={{ fontFamily: 'monospace', fontSize: 12 }}
-                        />
+                      <Field label="Seiteninhalt">
+                        <div className="rte-wrap">
+                          <div className="rte-toolbar">
+                            {[
+                              { cmd: 'bold', label: 'B', title: 'Fett' },
+                              { cmd: 'italic', label: 'I', title: 'Kursiv' },
+                              { cmd: 'insertUnorderedList', label: '•—', title: 'Liste' },
+                            ].map(({ cmd, label, title }) => (
+                              <button key={cmd} type="button" title={title}
+                                onMouseDown={e => { e.preventDefault(); document.execCommand(cmd, false) }}
+                              >{label}</button>
+                            ))}
+                          </div>
+                          <div
+                            className="rte-body"
+                            contentEditable
+                            suppressContentEditableWarning
+                            dangerouslySetInnerHTML={{ __html: editingPageItem.body }}
+                            onBlur={e => updatePage(editingPageItem.id, 'body', e.currentTarget.innerHTML)}
+                          />
+                        </div>
                       </Field>
                       <button className="panel-delete-btn" onClick={() => deletePage(editingPageItem.id)}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>

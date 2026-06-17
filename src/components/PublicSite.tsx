@@ -1187,15 +1187,10 @@ export function PublicSite({
         {!hiddenSections.includes('location') && <section className={`site-location${editMode ? ' site-edit-section' : ''}`} id="location"
           onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('contact') } : undefined}>
           {editMode && <div className="site-edit-section-badge">Kontakt</div>}
-          <div className={`site-location-maps-row${contact?.partnerShop ? ' site-location-maps-two' : ''}`}>
+          <div className="site-location-maps-row">
             {contact?.mapSrc && (
               <div className="site-map">
                 <iframe src={contact.mapSrc} allowFullScreen loading="lazy" title="Standort Graz" />
-              </div>
-            )}
-            {contact?.partnerShop?.mapSrc && (
-              <div className="site-map">
-                <iframe src={contact.partnerShop.mapSrc} allowFullScreen loading="lazy" title={`Standort ${contact.partnerShop.name}`} />
               </div>
             )}
           </div>
