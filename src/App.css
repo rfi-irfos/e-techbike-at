@@ -2484,9 +2484,8 @@ button { cursor: pointer; font-family: inherit; }
 .rte-body ul { margin: 0 0 8px; padding-left: 20px; }
 
 /* CRM admin button */
-.builder-crm-btn { display:flex;align-items:center;gap:5px;padding:5px 10px;font-size:11px;font-weight:600;border:1.5px solid #A0A0A0;border-radius:4px;background:transparent;color:var(--text,#333);cursor:pointer;letter-spacing:.03em; }
-.builder-crm-btn:hover { border-color:#7DC845;color:#7DC845; }
-.builder-crm-btn.active { border-color:#7DC845;color:#7DC845;background:rgba(61,120,30,.25); }
+.builder-crm-btn { display:flex;align-items:center;gap:5px;padding:5px 12px;font-size:11px;font-weight:700;border:2px solid #45b0e0;border-radius:4px;background:#1a8ab5;color:#fff;cursor:pointer;letter-spacing:.04em;text-decoration:none; }
+.builder-crm-btn:hover { background:#1070a0;border-color:#70d0f0;color:#fff; }
 /* Red logout button */
 .builder-logout-btn { display:flex;align-items:center;justify-content:center;width:30px;height:28px;border:1.5px solid #cc3333;border-radius:4px;background:transparent;color:#cc3333;cursor:pointer; }
 .builder-logout-btn:hover { background:#cc3333;color:#fff; }
@@ -2524,3 +2523,8 @@ button { cursor: pointer; font-family: inherit; }
 .crm-mc .crm-action-btn { border-color:#5a4020;color:#b09070; }
 .crm-mc .crm-action-btn:hover { border-color:#7DC845;color:#FFFF55; }
 .crm-mc .crm-empty { color:#b09070;font-family:monospace; }
+
+/* CRM placeholder rows */
+.crm-row-placeholder { opacity: .45; pointer-events: none; }
+.crm-placeholder-text { filter: blur(2px); user-select: none; }
+.crm-empty-hint { font-size: 12px; margin-top: 8px; font-style: italic; }

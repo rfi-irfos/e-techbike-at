@@ -228,14 +228,28 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       {/* ── List ── */}
       {loading ? (
         <div className="crm-empty">Wird geladen…</div>
-      ) : filtered.length === 0 ? (
-        <div className="crm-empty">
-          {customers.length === 0
-            ? 'Noch keine Kunden. Füge deinen ersten Kontakt hinzu.'
-            : 'Keine Treffer für diese Filter.'}
-        </div>
       ) : (
         <div className="crm-list">
+          {filtered.length === 0 && customers.length === 0 && (
+            <>
+              {(['Max Mustermann', 'Anna Beispiel', 'Thomas K.'] as const).map((name, i) => (
+                <div key={i} className="crm-row crm-row-placeholder">
+                  <div className="crm-row-main">
+                    <span className="crm-row-name crm-placeholder-text">{name}</span>
+                    <span className={`crm-status-badge crm-status-badge--${(['offen','angeboten','verkauft'] as const)[i]}`}>
+                      {(['Offen','Angeboten','Verkauft'] as const)[i]}
+                    </span>
+                  </div>
+                  <div className="crm-row-detail crm-placeholder-text">{['+43 664 …','…','…'][i]}</div>
+                  <div className="crm-row-detail crm-placeholder-text">{['E-Scooter 45km/h · €1.200','E-Fahrrad · €850','E-Moped'][i]}</div>
+                </div>
+              ))}
+              <div className="crm-empty crm-empty-hint">So sehen Ihre Kontakte aus — klick auf + Neuer Kontakt um zu starten.</div>
+            </>
+          )}
+          {filtered.length === 0 && customers.length > 0 && (
+            <div className="crm-empty">Keine Treffer für diese Filter.</div>
+          )}
           {filtered.map(c => (
             <div key={c.id} className="crm-row">
               <div className="crm-row-main">
