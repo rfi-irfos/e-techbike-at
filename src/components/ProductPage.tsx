@@ -135,6 +135,22 @@ export function ProductPage({ product, content }: { product: ProductItem; conten
               </Accordion>
             )}
 
+            {(product.variants?.length ?? 0) > 0 && (
+              <div className="prodpage-variants">
+                <div className="prodpage-variants-title">Sonderausführungen</div>
+                {product.variants!.map((v, vi) => (
+                  <div key={vi} className="prodpage-variant-row">
+                    <span className="prodpage-variant-label">{v.label}</span>
+                    <div className="prodpage-variant-chips">
+                      {v.options.map((opt, oi) => (
+                        <span key={oi} className="prodpage-variant-chip">{opt}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="prod-modal-ctas prodpage-ctas">
               {waHref && (
                 <a href={waHref} target="_blank" rel="noopener noreferrer" className="prod-modal-cta prod-modal-cta-wa">

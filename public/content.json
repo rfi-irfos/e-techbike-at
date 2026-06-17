@@ -3072,14 +3072,19 @@
   "contact": {
     "title": "Besuchen Sie uns in Graz.",
     "subtitle": "Persönliche Beratung, Testfahrten und direkte Abholung. Kein Termin nötig.",
-    "email": "lacitimi2@gmail.com",
+    "email": "lauzitimi2@gmail.com",
     "phone": "+43 664 73726965",
     "address": "Ghegagasse 29, 8020 Graz",
     "whatsapp": "+436647372965",
     "facebook": "https://www.facebook.com/etechbike/",
     "instagram": "",
-    "mapSrc": "https://maps.google.com/maps?q=Buchkogelgasse+9,+8020+Graz,+Austria&output=embed&z=16",
-    "formEnabled": true
+    "mapSrc": "https://maps.google.com/maps?q=Ghegagasse+29,+8020+Graz,+Austria&output=embed&z=16",
+    "formEnabled": true,
+    "partnerShop": {
+      "name": "Bikely",
+      "address": "Gablenzgasse 17, 1150 Wien",
+      "mapSrc": "https://maps.google.com/maps?q=Gablenzgasse+17,+1150+Wien,+Austria&output=embed&z=16"
+    }
   },
   "whatsapp": {
     "enabled": true,
@@ -3174,5 +3179,35 @@
       }
     ],
     "copyright": "© 2026 e-techbike.at — made with love by RFI-IRFOS"
-  }
+  },
+  "pages": [
+    {
+      "id": "pg-uber-uns",
+      "title": "Über uns",
+      "slug": "uber-uns",
+      "showInNav": false,
+      "body": "<p class=\"sp-lead\">e-techbike ist ein Einzelhandelsunternehmen für den Direktvertrieb umweltfreundlicher elektrischer Fortbewegungsmittel. Unsere Standorte liegen in Graz und Wien.</p><p>Bei uns finden Sie das für Sie ideale Elektrofahrzeug zu absolut besten Preisen. Wir bieten nach dem Verkauf jeglichen Service rund um Ersatzteile, Zubehör und preiswerte Reparaturen für alle Fahrzeuge aus unserem gesamten Sortiment.</p><p>Wir arbeiten mit kompetenten und vertrauenswürdigen Partnern aus Mitteleuropa und China zusammen, die über langjährige Erfahrung verfügen. Unser Unternehmen greift auf eines der größten Elektrofahrrad-Lager in Europa zu und beliefert neben Österreich Kunden in zahlreichen europäischen Ländern.</p><h2>Unser Versprechen</h2><ul><li>Qualitativ hochwertige Waren zu günstigen Lagerdirektpreisen</li><li>Umfangreiches Sortiment, laufend erweitert</li><li>Pünktliche Lieferung und schnelle Reklamationsbearbeitung</li><li>2 Jahre gesetzliche Gewährleistung auf alle Fahrzeuge (Verschleißteile: 1 Jahr, Akkus: 6 Monate)</li><li>Service als oberstes Gebot</li></ul>"
+    },
+    {
+      "id": "pg-wie-kaufen",
+      "title": "Wie kaufen?",
+      "slug": "wie-kaufen",
+      "showInNav": true,
+      "body": "<p class=\"sp-lead\">Bevor Sie bestellen, informieren Sie sich bitte über unseren aktuellen Lagerbestand und Lieferzeiten — telefonisch oder per E-Mail.</p><h2>Bestellung aufgeben</h2><p>Sie können Ihre Bestellung via E-Mail oder SMS einschicken. Unsere Abholstandorte befinden sich in Graz und Wien.</p><h2>Lieferung</h2><ul><li>Hauszustellung innerhalb der Stadtgebiete von Graz und Wien: <strong>kostenlos</strong></li><li>Österreichweit: €40 pro 100 km (Hin- und Rückfahrt)</li></ul><h2>Bezahlung</h2><h3>Barzahlung</h3><p>Im Geschäft oder bei Lieferung zu Ihnen nach Hause.</p><h3>Vorabüberweisung</h3><div class=\"sp-bank-card\"><strong>E-TECHBIKE</strong><span>TIMEA DOBOSNE KOVACS</span><span>STMK SPARKASSE</span><span>IBAN: AT45 2081 5000 4188 5187</span><span>BIC: STSPAT26XXX</span></div>"
+    },
+    {
+      "id": "pg-foerderung",
+      "title": "Förderungen",
+      "slug": "foerderung",
+      "showInNav": true,
+      "body": "<p class=\"sp-lead\">Der österreichische Staat fördert den Kauf von Elektrofahrzeugen. Wir helfen Ihnen bei der Antragstellung — kostenlos.</p><h2>Elektro-Kraftwagen-Förderung für Privatpersonen</h2><p>Ziel ist es, durch die Förderung des Ankaufes von neuen Elektrofahrzeugen die Marktentwicklung der Elektromobilität in Österreich zu forcieren und einen Beitrag zur klimafreundlichen Veränderung des Mobilitätsverhaltens zu leisten.</p><h2>Aktuelle Förderbeträge</h2><div class=\"sp-foerder-grid\"><div class=\"sp-foerder-card\"><span class=\"sp-foerder-amount\">bis €1.800</span><span>E-Motorrad / E-Moped 45 km/h</span></div><div class=\"sp-foerder-card\"><span class=\"sp-foerder-amount\">bis €1.200</span><span>E-Scooter / E-Moped 25 km/h</span></div><div class=\"sp-foerder-card\"><span class=\"sp-foerder-amount\">bis €500</span><span>E-Klapprad / E-Fahrrad</span></div><div class=\"sp-foerder-card\"><span class=\"sp-foerder-amount\">bis €3.000</span><span>E-Seniorenmobil / Kabinenroller</span></div></div><p>Erkundigen Sie sich auch bei Ihrer Gemeinde — viele fördern Elektromobilität zusätzlich.</p>"
+    },
+    {
+      "id": "pg-akku-pflege",
+      "title": "Akku-Pflege",
+      "slug": "akku-pflege",
+      "showInNav": true,
+      "body": "<h2>Bleigel-Akkus — wichtige Hinweise</h2><ul><li>Nur für die geeignete Anwendung einsetzen — Versorgungsbatterie nicht als Starterbatterie verwenden</li><li>Passendes Ladegerät verwenden: Kapazität, Typ und Ladekennlinie müssen übereinstimmen</li><li>Vor dem ersten Gebrauch vollständig laden</li><li>Volle Kapazität erst nach 3–4 Ladezyklen erreicht</li><li>Kein Memory-Effekt — auch nach kurzem Gebrauch sofort nachladen möglich</li><li>Tiefentladung vermeiden: max. 60 % Kapazität entnehmen</li><li>Bei Nichtbenutzung: einmal im Monat nachladen</li></ul><h2>Lithium-Ionen-Akkus — wichtige Hinweise</h2><ul><li>Nur für die geeignete Anwendung einsetzen</li><li>Passendes Lithium-Ladegerät verwenden</li><li>Vor dem ersten Gebrauch möglichst vollständig laden</li><li>Kein Memory-Effekt — jederzeit nachladen</li><li>Tiefentladung schadet dem Akku: max. 15 % Restkapazität entnehmen</li><li>Bei Nichtbenutzung: alle 2 Monate nachladen</li></ul><h2>Sicherheitshinweise</h2><ul><li>Ladegerät, Kabel und Stecker vor jeder Benutzung prüfen</li><li>Fahrzeug und Ladegerät nicht selbst öffnen oder reparieren</li><li>Akku nicht unbeaufsichtigt laden</li><li>Nicht in den Hausmüll — gemäß EU-Richtlinie 2006/66/EG gesondert entsorgen</li></ul>"
+    }
+  ]
 }

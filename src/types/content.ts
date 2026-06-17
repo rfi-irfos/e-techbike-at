@@ -23,6 +23,7 @@ export interface ProductItem {
   specsTable?: { label: string; value: string }[]
   details?: string
   delivery?: string
+  variants?: Array<{ label: string; options: string[] }>
 }
 
 export interface CategoryItem {
@@ -110,6 +111,7 @@ export interface SiteContent {
     instagram?: string
     mapSrc?: string
     formEnabled?: boolean
+    partnerShop?: { name: string; address: string; mapSrc?: string }
   }
   whatsapp: { enabled: boolean; number: string; message: string }
   hiddenSections?: SectionId[]

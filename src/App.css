@@ -375,13 +375,18 @@ button { cursor: pointer; font-family: inherit; }
 .site-news-card.clickable:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
 /* ── LOCATION ────────────────────────────────────────────────────────────── */
-.site-location { display: grid; grid-template-columns: 1fr 1fr; min-height: 440px; }
+.site-location { display: flex; flex-direction: column; min-height: 440px; }
+.site-location-maps-row { display: grid; grid-template-columns: 1fr; min-height: 340px; }
+.site-location-maps-row.site-location-maps-two { grid-template-columns: 1fr 1fr; }
+.site-location-info-row { display: grid; grid-template-columns: 1fr; }
+.site-location-info-row.site-location-info-two { grid-template-columns: 1fr 1fr; }
 .site-map { overflow: hidden; }
-.site-map iframe { width: 100%; height: 100%; min-height: 440px; border: 0; display: block; }
+.site-map iframe { width: 100%; height: 100%; min-height: 340px; border: 0; display: block; }
 .site-location-info {
   background: linear-gradient(160deg, #003650, #005f80);
-  padding: 70px 60px; display: flex; flex-direction: column; justify-content: center;
+  padding: 50px 60px; display: flex; flex-direction: column; justify-content: center;
 }
+.site-location-partner { padding: 50px 60px; background: linear-gradient(160deg, #002840, #004060); }
 .site-location-h2 { font-size: 36px; font-weight: 900; color: #fff; margin-bottom: 14px; }
 .site-location-sub { font-size: 16px; color: rgba(255,255,255,.72); line-height: 1.7; margin-bottom: 36px; }
 .site-cinfo-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
@@ -2093,3 +2098,163 @@ button { cursor: pointer; font-family: inherit; }
 
 /* ── Brand dot ───────────────────────────────────────────────────────────── */
 .mc-theme .builder-brand-dot { background: #5DC845; border-radius: 0; }
+
+/* ── Product page variants ───────────────────────────────────────────────── */
+.prodpage-variants { margin: 18px 0; padding: 16px; background: var(--surface-subtle, #f8f8f8); border-radius: 10px; border: 1px solid rgba(0,0,0,.07); }
+.prodpage-variants-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #777; margin-bottom: 12px; }
+.prodpage-variant-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.prodpage-variant-label { font-size: 13px; font-weight: 700; color: var(--text, #111); min-width: 80px; flex-shrink: 0; }
+.prodpage-variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.prodpage-variant-chip { display: inline-block; padding: 3px 10px; border-radius: 99px; background: var(--primary, #0073b1); color: #fff; font-size: 12px; font-weight: 600; }
+
+/* ── Product edit modal — variants editor ────────────────────────────────── */
+.pem-variant-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+.pem-variant-label-input { flex: 0 0 120px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; }
+.pem-variant-opts-input { flex: 1; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; }
+.pem-variant-del { flex-shrink: 0; width: 22px; height: 22px; border: none; background: #fee; border-radius: 4px; color: #c00; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.pem-variant-del:hover { background: #fcc; }
+.pem-variant-add { margin-top: 4px; font-size: 12px; padding: 5px 10px; border: 1px dashed #bbb; border-radius: 5px; background: none; cursor: pointer; color: #555; }
+.pem-variant-add:hover { background: #f5f5f5; border-color: #888; }
+
+/* ── Footer lazi link ────────────────────────────────────────────────────── */
+.site-footer-lazi-link { opacity: .25; font-size: 11px; transition: opacity .2s; }
+.site-footer-lazi-link:hover { opacity: .7; }
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* ── LAZI PANEL — Minecraft theme ────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+.lazi-panel {
+  min-height: 100svh;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.15) 0px, rgba(0,0,0,.15) 2px, transparent 2px, transparent 18px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.1) 0px, rgba(0,0,0,.1) 2px, transparent 2px, transparent 18px),
+    #3a3028;
+  font-family: 'Courier New', Courier, monospace;
+  color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* header */
+.lazi-header { background: #1a1206; border-bottom: 4px solid #0a0704; }
+.lazi-header-dirt {
+  height: 18px;
+  background:
+    repeating-linear-gradient(90deg, #6B4226 0px, #6B4226 18px, #7A5230 18px, #7A5230 36px);
+}
+.lazi-header-inner { display: flex; align-items: center; gap: 16px; padding: 8px 20px; }
+.lazi-back-btn {
+  display: flex; align-items: center; gap: 4px;
+  color: #aaa; text-decoration: none; font-size: 13px;
+  background: #222; border: 2px solid #555; border-bottom-color: #333; border-right-color: #333;
+  padding: 4px 10px; cursor: pointer;
+}
+.lazi-back-btn:hover { background: #333; color: #fff; }
+.lazi-title { flex: 1; text-align: center; font-size: 22px; font-weight: 700; color: #FFD700; text-shadow: 2px 2px #000, -1px -1px #000; letter-spacing: 2px; }
+.lazi-score { font-size: 12px; color: #aaa; white-space: nowrap; }
+
+/* tabs — inventory slot style */
+.lazi-tabs { display: flex; background: #2a2010; border-bottom: 4px solid #0a0704; padding: 8px 16px; gap: 4px; }
+.lazi-tab-btn {
+  flex: 1; padding: 10px 6px;
+  background: #444; color: #ccc;
+  border: none; cursor: pointer;
+  border-top: 2px solid #666; border-left: 2px solid #666;
+  border-bottom: 2px solid #222; border-right: 2px solid #222;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  transition: background .1s;
+}
+.lazi-tab-btn:hover { background: #555; color: #fff; }
+.lazi-tab-btn.active {
+  background: #5B8731; color: #fff;
+  border-top: 2px solid #7ab043; border-left: 2px solid #7ab043;
+  border-bottom: 2px solid #3a5c1a; border-right: 2px solid #3a5c1a;
+}
+
+/* content area */
+.lazi-content { flex: 1; padding: 24px 20px; overflow-y: auto; }
+
+/* achievements grid */
+.lazi-ach-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 700px; margin: 0 auto; }
+@media (max-width: 600px) { .lazi-ach-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 400px) { .lazi-ach-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.lazi-ach-slot {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 12px 6px;
+  border-top: 2px solid #888; border-left: 2px solid #888;
+  border-bottom: 2px solid #222; border-right: 2px solid #222;
+  background: #3a3a3a;
+  cursor: default;
+  text-align: center;
+}
+.lazi-ach-slot.unlocked { background: #2a3a1a; border-top-color: #5B8731; border-left-color: #5B8731; }
+.lazi-ach-slot.locked { opacity: .6; }
+.lazi-ach-icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: #111; margin-bottom: 4px;
+  border-top: 2px solid #222; border-left: 2px solid #222;
+  border-bottom: 2px solid #555; border-right: 2px solid #555;
+}
+.lazi-ach-slot.unlocked .lazi-ach-icon {
+  border-top-color: #1a1a1a; border-left-color: #1a1a1a;
+  border-bottom-color: #FFD700; border-right-color: #FFD700;
+  background: #0f1a08;
+}
+.lazi-ach-title { font-size: 11px; font-weight: 700; color: #FFD700; line-height: 1.2; }
+.lazi-ach-slot.locked .lazi-ach-title { color: #888; }
+.lazi-ach-desc { font-size: 9px; color: #aaa; line-height: 1.3; }
+
+/* contacts tab */
+.lazi-kontakte { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.lazi-contact-card {
+  padding: 16px 18px; background: #2a2010;
+  border-top: 2px solid #555; border-left: 2px solid #555;
+  border-bottom: 2px solid #111; border-right: 2px solid #111;
+}
+.lazi-contact-name { font-size: 15px; font-weight: 700; color: #FFD700; margin-bottom: 4px; }
+.lazi-contact-email { font-size: 13px; color: #45D3E8; }
+
+/* rechnungen tab */
+.lazi-rechnungen { display: flex; align-items: center; justify-content: center; min-height: 200px; }
+.lazi-empty-card {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding: 32px; background: #2a2010;
+  border-top: 2px solid #555; border-left: 2px solid #555;
+  border-bottom: 2px solid #111; border-right: 2px solid #111;
+  text-align: center; max-width: 280px;
+}
+.lazi-empty-chest { opacity: .8; }
+.lazi-empty-text { font-size: 14px; color: #aaa; line-height: 1.5; }
+
+/* mob area */
+.lazi-mob-area {
+  display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap;
+  padding: 12px 20px 0;
+  border-top: 4px solid #5D9E2E;
+  background: linear-gradient(to bottom, #3a3028 0%, #2a2018 100%);
+  position: relative; overflow: hidden; min-height: 120px;
+}
+.lazi-mob-wrap { cursor: pointer; position: relative; flex-shrink: 0; }
+.lazi-mob-wrap:hover { transform: scale(1.1); }
+.lazi-mob-wrap.clicked { animation: mob-click .4s ease; }
+@keyframes mob-click { 0% { transform: scale(1); } 30% { transform: scale(1.25) translateY(-8px); } 100% { transform: scale(1); } }
+
+/* mob animations */
+.lazi-pig { animation: mob-walk 3s linear infinite; }
+@keyframes mob-walk { 0%,100% { transform: translateX(0); } 50% { transform: translateX(12px); } }
+.lazi-sheep { animation: mob-bounce 2.2s ease-in-out infinite; }
+@keyframes mob-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.lazi-cow { animation: mob-graze 4s ease-in-out infinite; }
+@keyframes mob-graze { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(2deg); } 75% { transform: rotate(-2deg); } }
+.lazi-mob-dragon { margin-left: auto; animation: dragon-fly 6s ease-in-out infinite; }
+@keyframes dragon-fly { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-18px); } 70% { transform: translateY(-10px); } }
+.lazi-mob-creeper { animation: creeper-sway 8s ease-in-out infinite; }
+@keyframes creeper-sway { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-8px); } }
+
+/* ground strip */
+.lazi-ground {
+  height: 24px;
+  background:
+    repeating-linear-gradient(90deg, #5D9E2E 0px, #5D9E2E 18px, #4a8c22 18px, #4a8c22 36px);
+  border-top: 4px solid #3a7010;
+}

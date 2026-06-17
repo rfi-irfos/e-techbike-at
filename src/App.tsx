@@ -8,16 +8,18 @@ import { LoginPage } from './components/LoginPage'
 import { StaticPage } from './components/StaticPage'
 import { DynamicPage } from './components/DynamicPage'
 import { ProductPage } from './components/ProductPage'
+import { LaziPanel } from './components/LaziPanel'
 
 function getRoute(hash: string) {
-  if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, staticPageId: null, pageSlug: null, productId: null }
-  if (hash === '#uber-uns')   return { isAdmin: false, staticPageId: 'uber-uns', pageSlug: null, productId: null }
-  if (hash === '#wie-kaufen') return { isAdmin: false, staticPageId: 'wie-kaufen', pageSlug: null, productId: null }
-  if (hash === '#foerderung') return { isAdmin: false, staticPageId: 'foerderung', pageSlug: null, productId: null }
-  if (hash === '#akku-pflege') return { isAdmin: false, staticPageId: 'akku-pflege', pageSlug: null, productId: null }
-  if (hash.startsWith('#product/')) return { isAdmin: false, staticPageId: null, pageSlug: null, productId: hash.slice(9) }
-  if (hash.startsWith('#p/')) return { isAdmin: false, staticPageId: null, pageSlug: hash.slice(3), productId: null }
-  return { isAdmin: false, staticPageId: null, pageSlug: null, productId: null }
+  if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, isLazi: false, staticPageId: null, pageSlug: null, productId: null }
+  if (hash === '#lazi') return { isAdmin: false, isLazi: true, staticPageId: null, pageSlug: null, productId: null }
+  if (hash === '#uber-uns')   return { isAdmin: false, isLazi: false, staticPageId: 'uber-uns', pageSlug: null, productId: null }
+  if (hash === '#wie-kaufen') return { isAdmin: false, isLazi: false, staticPageId: 'wie-kaufen', pageSlug: null, productId: null }
+  if (hash === '#foerderung') return { isAdmin: false, isLazi: false, staticPageId: 'foerderung', pageSlug: null, productId: null }
+  if (hash === '#akku-pflege') return { isAdmin: false, isLazi: false, staticPageId: 'akku-pflege', pageSlug: null, productId: null }
+  if (hash.startsWith('#product/')) return { isAdmin: false, isLazi: false, staticPageId: null, pageSlug: null, productId: hash.slice(9) }
+  if (hash.startsWith('#p/')) return { isAdmin: false, isLazi: false, staticPageId: null, pageSlug: hash.slice(3), productId: null }
+  return { isAdmin: false, isLazi: false, staticPageId: null, pageSlug: null, productId: null }
 }
 
 export default function App() {
@@ -41,6 +43,10 @@ export default function App() {
 
   if (!content) {
     return <div className="error-screen">Inhalt konnte nicht geladen werden.</div>
+  }
+
+  if (route.isLazi) {
+    return <LaziPanel />
   }
 
   if (route.isAdmin) {

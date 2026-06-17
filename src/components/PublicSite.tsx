@@ -1187,38 +1187,58 @@ export function PublicSite({
         {!hiddenSections.includes('location') && <section className={`site-location${editMode ? ' site-edit-section' : ''}`} id="location"
           onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('contact') } : undefined}>
           {editMode && <div className="site-edit-section-badge">Kontakt</div>}
-          {contact?.mapSrc && (
-            <div className="site-map">
-              <iframe src={contact.mapSrc} allowFullScreen loading="lazy" title="Standort" />
+          <div className={`site-location-maps-row${contact?.partnerShop ? ' site-location-maps-two' : ''}`}>
+            {contact?.mapSrc && (
+              <div className="site-map">
+                <iframe src={contact.mapSrc} allowFullScreen loading="lazy" title="Standort Graz" />
+              </div>
+            )}
+            {contact?.partnerShop?.mapSrc && (
+              <div className="site-map">
+                <iframe src={contact.partnerShop.mapSrc} allowFullScreen loading="lazy" title={`Standort ${contact.partnerShop.name}`} />
+              </div>
+            )}
+          </div>
+          <div className={`site-location-info-row${contact?.partnerShop ? ' site-location-info-two' : ''}`}>
+            <div className="site-location-info">
+              <E field="contact.title" value={contact?.title ?? ''} as="h2" className="site-location-h2" />
+              {contact?.subtitle && <E field="contact.subtitle" value={contact.subtitle} as="p" className="site-location-sub" />}
+              <div className="site-cinfo-list">
+                {contact?.phone && (
+                  <div className="site-cinfo-item">
+                    <IconPhone />
+                    <E field="contact.phone" value={contact.phone} as="a" href={`tel:${contact.phone}`} />
+                  </div>
+                )}
+                {contact?.email && (
+                  <div className="site-cinfo-item">
+                    <IconMail />
+                    <E field="contact.email" value={contact.email} as="a" href={`mailto:${contact.email}`} />
+                  </div>
+                )}
+                {contact?.address && (
+                  <div className="site-cinfo-item">
+                    <IconLocation />
+                    <E field="contact.address" value={contact.address} as="span" />
+                  </div>
+                )}
+              </div>
+              {contact?.formEnabled && !editMode ? (
+                <ContactForm />
+              ) : (
+                <a href={`mailto:${contact?.email ?? ''}`} className="site-btn-lime-solid">Nachricht senden</a>
+              )}
             </div>
-          )}
-          <div className="site-location-info">
-            <E field="contact.title" value={contact?.title ?? ''} as="h2" className="site-location-h2" />
-            {contact?.subtitle && <E field="contact.subtitle" value={contact.subtitle} as="p" className="site-location-sub" />}
-            <div className="site-cinfo-list">
-              {contact?.phone && (
-                <div className="site-cinfo-item">
-                  <IconPhone />
-                  <E field="contact.phone" value={contact.phone} as="a" href={`tel:${contact.phone}`} />
+            {contact?.partnerShop && (
+              <div className="site-location-info site-location-partner">
+                <h2 className="site-location-h2">{contact.partnerShop.name}</h2>
+                <div className="site-cinfo-list">
+                  <div className="site-cinfo-item">
+                    <IconLocation />
+                    <span>{contact.partnerShop.address}</span>
+                  </div>
                 </div>
-              )}
-              {contact?.email && (
-                <div className="site-cinfo-item">
-                  <IconMail />
-                  <E field="contact.email" value={contact.email} as="a" href={`mailto:${contact.email}`} />
-                </div>
-              )}
-              {contact?.address && (
-                <div className="site-cinfo-item">
-                  <IconLocation />
-                  <E field="contact.address" value={contact.address} as="span" />
-                </div>
-              )}
-            </div>
-            {contact?.formEnabled && !editMode ? (
-              <ContactForm />
-            ) : (
-              <a href={`mailto:${contact?.email ?? ''}`} className="site-btn-lime-solid">Nachricht senden</a>
+              </div>
             )}
           </div>
         </section>}
@@ -1265,6 +1285,7 @@ export function PublicSite({
               {(footer?.links ?? []).map((l, i) => (
                 <E key={i} field={`footer.links.${i}.label`} value={l.label} as="a" href={l.href} />
               ))}
+              <a href="#lazi" className="site-footer-lazi-link" aria-label="Lazi">Lazi</a>
             </div>
           </div>
         </footer>

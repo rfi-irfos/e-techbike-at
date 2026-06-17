@@ -868,6 +868,17 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                     </label>
                   </Field>
                 </PanelSection>
+                <PanelSection title="Partner-Standort (optional)">
+                  <Field label="Name">
+                    <input value={draft.contact?.partnerShop?.name ?? ''} onChange={e => update('contact.partnerShop', { ...(draft.contact?.partnerShop ?? {}), name: e.target.value })} placeholder="z.B. Bikely Wien" />
+                  </Field>
+                  <Field label="Adresse">
+                    <textarea rows={2} value={draft.contact?.partnerShop?.address ?? ''} onChange={e => update('contact.partnerShop', { ...(draft.contact?.partnerShop ?? {}), address: e.target.value })} placeholder="Straße Nr, PLZ Ort" />
+                  </Field>
+                  <Field label="Google Maps Embed-URL">
+                    <textarea rows={2} value={draft.contact?.partnerShop?.mapSrc ?? ''} onChange={e => update('contact.partnerShop', { ...(draft.contact?.partnerShop ?? {}), mapSrc: e.target.value })} placeholder="https://maps.google.com/maps?q=…&output=embed" />
+                  </Field>
+                </PanelSection>
               </>
             )}
 
@@ -1160,10 +1171,19 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                     </div>
                   ) : (
                     <>
+                      <div style={{ padding: '10px 14px 4px', fontSize: 12, color: '#666', lineHeight: 1.5 }}>
+                        Hier sehen Sie alle bearbeitbaren Seiten — auch die Nav-Seiten wie <strong>Förderungen</strong>, <strong>Wie kaufen</strong> und <strong>Akku-Pflege</strong>. Seiten mit <strong>Nav</strong>-Badge erscheinen in der Navigation.
+                      </div>
+                      <div style={{ padding: '4px 14px 8px' }}>
+                        <button className="panel-add-big-btn" style={{ fontSize: 12, padding: '6px 12px' }} onClick={() => setActiveTab('nav')}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                          Zum Nav-Tab (Links verwalten)
+                        </button>
+                      </div>
                       <div className="panel-product-list">
                         {(draft.pages ?? []).length === 0 && (
                           <div style={{ padding: '20px 16px', color: '#aaa', fontSize: 13, textAlign: 'center' }}>
-                            Noch keine Seiten. Erstell eine mit dem Button unten.
+                            Noch keine Seiten vorhanden.
                           </div>
                         )}
                         {(draft.pages ?? []).map(p => (
@@ -1178,7 +1198,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                       </div>
                       <button className="panel-add-big-btn" onClick={addPage}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Seite hinzufügen
+                        Neue Seite hinzufügen
                       </button>
                     </>
                   )}
@@ -1374,6 +1394,38 @@ function ProductEditModal({
             <div className="pem-field">
               <label>Lieferung</label>
               <textarea rows={2} value={product.delivery ?? ''} onChange={e => u('delivery', e.target.value)} placeholder="Lieferinfos…" />
+            </div>
+
+            <div className="pem-field">
+              <label>Sonderausführungen <span style={{ fontWeight: 400, color: '#888', fontSize: 11 }}>(z.B. Farben, Batterietypen)</span></label>
+              {(product.variants ?? []).map((v, vi) => (
+                <div key={vi} className="pem-variant-row">
+                  <input
+                    className="pem-variant-label-input"
+                    value={v.label}
+                    placeholder="Bezeichnung (z.B. Farbe)"
+                    onChange={e => {
+                      const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, label: e.target.value } : vv)
+                      u('variants', updated)
+                    }}
+                  />
+                  <input
+                    className="pem-variant-opts-input"
+                    value={v.options.join(', ')}
+                    placeholder="Optionen, kommagetrennt"
+                    onChange={e => {
+                      const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: e.target.value.split(',').map(s => s.trim()).filter(Boolean) } : vv)
+                      u('variants', updated)
+                    }}
+                  />
+                  <button className="pem-variant-del" onClick={() => u('variants', (product.variants ?? []).filter((_, i) => i !== vi))} title="Entfernen">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+              ))}
+              <button className="pem-variant-add" onClick={() => u('variants', [...(product.variants ?? []), { label: '', options: [] }])}>
+                + Ausführung hinzufügen
+              </button>
             </div>
 
             <div className="pem-field">
