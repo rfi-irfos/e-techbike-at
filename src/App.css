@@ -2482,3 +2482,18 @@ button { cursor: pointer; font-family: inherit; }
 .rte-body { min-height: 180px; padding: 10px 12px; font-size: 14px; line-height: 1.6; outline: none; }
 .rte-body p { margin: 0 0 8px; }
 .rte-body ul { margin: 0 0 8px; padding-left: 20px; }
+
+/* CRM admin button */
+.builder-crm-btn { display:flex;align-items:center;gap:5px;padding:5px 10px;font-size:11px;font-weight:600;border:1.5px solid #A0A0A0;border-radius:4px;background:transparent;color:var(--text,#333);cursor:pointer;letter-spacing:.03em; }
+.builder-crm-btn:hover { border-color:#7DC845;color:#7DC845; }
+.builder-crm-btn.active { border-color:#7DC845;color:#7DC845;background:rgba(61,120,30,.25); }
+/* Red logout button */
+.builder-logout-btn { display:flex;align-items:center;justify-content:center;width:30px;height:28px;border:1.5px solid #cc3333;border-radius:4px;background:transparent;color:#cc3333;cursor:pointer; }
+.builder-logout-btn:hover { background:#cc3333;color:#fff; }
+
+/* Lazi rechnungen toggle */
+.lazi-toggle-row { display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(255,255,255,.06);border:2px solid #5a4a2a;border-radius:4px;margin-bottom:16px; }
+.lazi-toggle-label { font-family:monospace;font-size:13px;color:#d4b896;letter-spacing:.05em; }
+.lazi-toggle-btn { padding:6px 16px;font-family:monospace;font-size:13px;font-weight:bold;border:2px solid;border-radius:3px;cursor:pointer;letter-spacing:.1em; }
+.lazi-toggle-btn.on { background:#3A7D44;border-color:#7DC845;color:#FFFF55; }
+.lazi-toggle-btn.off { background:#5a3a1a;border-color:#8b6340;color:#aaa; }

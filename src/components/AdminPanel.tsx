@@ -184,7 +184,7 @@ const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = 
   { id: 'mobile', label: 'Mobil', icon: <IconMobile /> },
 ]
 
-export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }: Props) {
+export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
   const [saved, setSaved] = useState(false)
@@ -210,7 +210,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     mcTimerRef.current = setTimeout(() => setMcAchievement(null), 3800)
   }
 
-  void setMcTheme // kept for MC theme state
+  const toggleMcTheme = () => setMcTheme(t => {
+    const next = !t
+    localStorage.setItem('mc-theme', String(next))
+    return next
+  })
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const panelBodyRef = useRef<HTMLDivElement>(null)
@@ -513,17 +517,26 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           ))}
         </div>
         <div className="builder-topbar-right">
-          <a
-            href="#lazi"
-            className="builder-mc-toggle active"
-            title="Lazi's Panel"
+          <button
+            className={`builder-mc-toggle ${mcTheme ? 'active' : ''}`}
+            onClick={toggleMcTheme}
+            title={mcTheme ? 'Minecraft-Modus ausschalten' : 'Minecraft-Modus einschalten'}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M20.71 5.63l-2.34-2.34a1 1 0 0 0-1.41 0l-3 3-1.42-1.42-1.41 1.42 1.41 1.41L3 17.25V21h3.75l9.96-9.96 1.41 1.42 1.42-1.42-1.42-1.41 3-3a1 1 0 0 0 0-1.42z"/>
             </svg>
-            MC: AN
-          </a>
-          <span className="builder-user">{user.name || user.email}</span>
+            {mcTheme ? 'MC: AN' : 'MC: AUS'}
+          </button>
+          <button
+            className={`builder-crm-btn ${activeTab === 'kunden' ? 'active' : ''}`}
+            onClick={() => setActiveTab(activeTab === 'kunden' ? 'products' : 'kunden')}
+            title="CRM / Kundenverwaltung"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Admin
+          </button>
           <div className="builder-add-wrap" ref={addMenuRef}>
             <button className="builder-add-btn" onClick={() => setAddMenuOpen(o => !o)}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -562,7 +575,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           >
             {saving ? 'Speichern…' : saved ? 'Gespeichert' : saveError ? 'Fehler!' : 'Speichern'}
           </button>
-          <button className="builder-btn-ghost" onClick={onLogout}>Logout</button>
+          <button className="builder-logout-btn" onClick={onLogout} title="Abmelden">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
         </div>
       </div>
       {mcAchievement && <MCToast text={mcAchievement} />}

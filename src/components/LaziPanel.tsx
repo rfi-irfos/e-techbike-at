@@ -272,25 +272,28 @@ function DragonMob() {
   )
 }
 
-function CreeperMob() {
+function EndermanMob() {
   return (
-    <div className="lazi-mob lazi-creeper" title="Ssss...">
-      <svg viewBox="0 0 16 24" width="32" height="48" style={{ imageRendering: 'pixelated', display: 'block' }}>
-        {/* head */}
-        <rect x="0" y="0" width="16" height="16" fill="#3A7D44"/>
-        {/* eyes */}
-        <rect x="2" y="4" width="4" height="4" fill="#111"/>
-        <rect x="10" y="4" width="4" height="4" fill="#111"/>
-        {/* mouth */}
-        <rect x="4" y="10" width="2" height="3" fill="#111"/>
-        <rect x="10" y="10" width="2" height="3" fill="#111"/>
-        <rect x="6" y="11" width="4" height="2" fill="#111"/>
-        <rect x="4" y="13" width="8" height="1" fill="#111"/>
-        {/* body */}
-        <rect x="2" y="16" width="12" height="8" fill="#3A7D44"/>
-        {/* legs */}
-        <rect x="2" y="24" width="4" height="4" fill="#2D6020"/>
-        <rect x="10" y="24" width="4" height="4" fill="#2D6020"/>
+    <div className="lazi-mob lazi-creeper" title="Hallo! :)">
+      <svg viewBox="0 0 10 32" width="24" height="64" style={{ imageRendering: 'pixelated', display: 'block' }}>
+        {/* head — small and cute */}
+        <rect x="1" y="0" width="8" height="8" fill="#1a1a2e"/>
+        {/* big cute purple eyes */}
+        <rect x="2" y="2" width="2" height="2" fill="#aa44ff"/>
+        <rect x="6" y="2" width="2" height="2" fill="#aa44ff"/>
+        {/* little smile */}
+        <rect x="3" y="6" width="4" height="1" fill="#aa44ff"/>
+        {/* long thin body */}
+        <rect x="3" y="8" width="4" height="10" fill="#1a1a2e"/>
+        {/* long thin legs */}
+        <rect x="3" y="18" width="1" height="8" fill="#1a1a2e"/>
+        <rect x="6" y="18" width="1" height="8" fill="#1a1a2e"/>
+        {/* long thin arms */}
+        <rect x="1" y="9" width="2" height="7" fill="#1a1a2e"/>
+        <rect x="7" y="9" width="2" height="7" fill="#1a1a2e"/>
+        {/* purple particle sparkles */}
+        <rect x="0" y="4" width="1" height="1" fill="#aa44ff"/>
+        <rect x="9" y="6" width="1" height="1" fill="#aa44ff"/>
       </svg>
     </div>
   )
@@ -303,6 +306,7 @@ export function LaziPanel() {
   const [tab, setTab] = useState<LaziTab>('achievements')
   const [unlocked, setUnlocked] = useState<Set<string>>(loadUnlocked)
   const [clickedMob, setClickedMob] = useState<string | null>(null)
+  const [showRechnungen, setShowRechnungen] = useState(false)
 
   // Unlock "Erste Schritte" on first visit
   useEffect(() => {
@@ -348,7 +352,7 @@ export function LaziPanel() {
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
             Zurueck
           </a>
-          <span className="lazi-title">Lazi's Welt</span>
+          <span className="lazi-title">Timi's Welt</span>
           <span className="lazi-score">{unlockedCount}/{ACHIEVEMENTS.length} Achievements</span>
         </div>
       </div>
@@ -403,19 +407,30 @@ export function LaziPanel() {
 
         {tab === 'rechnungen' && (
           <div className="lazi-rechnungen">
-            <div className="lazi-empty-card">
-              <div className="lazi-empty-chest">
-                <svg viewBox="0 0 32 24" width="64" height="48" style={{ imageRendering: 'pixelated' }}>
-                  <rect x="0" y="8" width="32" height="16" fill="#6B4226"/>
-                  <rect x="0" y="0" width="32" height="10" fill="#7A5230"/>
-                  <rect x="2" y="1" width="28" height="8" fill="#8B6340"/>
-                  <rect x="0" y="8" width="32" height="2" fill="#5A3618"/>
-                  <rect x="12" y="7" width="8" height="4" fill="#888"/>
-                  <rect x="14" y="8" width="4" height="2" fill="#FFD700"/>
-                </svg>
-              </div>
-              <div className="lazi-empty-text">Noch keine Rechnungen. Wenn du gross bist!</div>
+            <div className="lazi-toggle-row">
+              <span className="lazi-toggle-label">Rechnungen anzeigen</span>
+              <button
+                className={`lazi-toggle-btn ${showRechnungen ? 'on' : 'off'}`}
+                onClick={() => setShowRechnungen(v => !v)}
+              >{showRechnungen ? 'AN' : 'AUS'}</button>
             </div>
+            {showRechnungen ? (
+              <div className="lazi-empty-card">
+                <div className="lazi-empty-chest">
+                  <svg viewBox="0 0 32 24" width="64" height="48" style={{ imageRendering: 'pixelated' }}>
+                    <rect x="0" y="8" width="32" height="16" fill="#6B4226"/>
+                    <rect x="0" y="0" width="32" height="10" fill="#7A5230"/>
+                    <rect x="2" y="1" width="28" height="8" fill="#8B6340"/>
+                    <rect x="0" y="8" width="32" height="2" fill="#5A3618"/>
+                    <rect x="12" y="7" width="8" height="4" fill="#888"/>
+                    <rect x="14" y="8" width="4" height="2" fill="#FFD700"/>
+                  </svg>
+                </div>
+                <div className="lazi-empty-text">Noch keine Rechnungen. Wenn du gross bist!</div>
+              </div>
+            ) : (
+              <div className="lazi-empty-text" style={{ marginTop: 24 }}>Truhe ist zu. Drück AN um reinzuschauen.</div>
+            )}
           </div>
         )}
 
@@ -435,8 +450,8 @@ export function LaziPanel() {
         <div className={`lazi-mob-wrap lazi-mob-dragon${clickedMob === 'dragon' ? ' clicked' : ''}`} onClick={() => handleMobClick('dragon', 'ach-enderdrachen')}>
           <DragonMob />
         </div>
-        <div className={`lazi-mob-wrap lazi-mob-creeper${clickedMob === 'creeper' ? ' clicked' : ''}`} onClick={() => handleMobClick('creeper', 'ach-schaf')}>
-          <CreeperMob />
+        <div className={`lazi-mob-wrap lazi-mob-creeper${clickedMob === 'enderman' ? ' clicked' : ''}`} onClick={() => handleMobClick('enderman', 'ach-enderdrachen')}>
+          <EndermanMob />
         </div>
       </div>
 
