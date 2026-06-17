@@ -71,7 +71,7 @@ export default function App() {
 
   if (route.productId) {
     const product = content.products?.items.find(p => p.id === route.productId)
-    if (product) return <ProductPage product={product} content={content} />
+    if (product) return <ProductPage product={product} content={content} products={content.products?.items ?? []} />
   }
 
   if (route.pageSlug) {

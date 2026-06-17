@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 import type { SiteContent, SectionId, CanvasPos, NewsItem } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
+import { InquiryModal } from './InquiryModal'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
 
@@ -668,6 +669,8 @@ export function PublicSite({
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [modalArticle, setModalArticle] = useState<NewsItem | null>(null)
+  const [inquiryOpen, setInquiryOpen] = useState(false)
+  const [inquiryProductId, setInquiryProductId] = useState<string | undefined>()
   const { t } = useLang()
   const openMenu = () => { history.pushState({ drawer: true }, ''); setMenuOpen(true) }
   const closeMenu = () => { setMenuOpen(false) }
@@ -1058,7 +1061,17 @@ export function PublicSite({
             <E field="hero.subheadline" value={hero.subheadline} as="p" className="site-hero-sub" />
             <div className="site-hero-btns">
               <E field="hero.ctaLabel" value={hero.ctaLabel} as="a" href={hero.ctaHref} className="site-btn-lime-lg" />
-              {hero.ctaSecLabel && <E field="hero.ctaSecLabel" value={hero.ctaSecLabel} as="a" href={hero.ctaSecHref ?? '#'} className="site-btn-ghost-lg" />}
+              {hero.ctaSecLabel && editMode && (
+                <E field="hero.ctaSecLabel" value={hero.ctaSecLabel} as="a" href={hero.ctaSecHref ?? '#'} className="site-btn-ghost-lg" />
+              )}
+              {hero.ctaSecLabel && !editMode && (
+                <button
+                  type="button"
+                  className="site-btn-ghost-lg"
+                  dangerouslySetInnerHTML={{ __html: hero.ctaSecLabel }}
+                  onClick={() => { setInquiryProductId(undefined); setInquiryOpen(true) }}
+                />
+              )}
             </div>
           </div>
           {editMode && (
@@ -1226,6 +1239,7 @@ export function PublicSite({
             </div>
             {contact?.partnerShop && (
               <div className="site-location-info site-location-partner">
+                <div className="site-partner-badge">Unser Partner</div>
                 <h2 className="site-location-h2">{contact.partnerShop.name}</h2>
                 <div className="site-cinfo-list">
                   <div className="site-cinfo-item">
@@ -1309,6 +1323,15 @@ export function PublicSite({
 
         {/* ── GDPR COOKIE BANNER ───────────────────────────────────────── */}
         {!editMode && <GdprBanner />}
+
+        {/* ── INQUIRY MODAL ────────────────────────────────────────────── */}
+        {inquiryOpen && !editMode && (
+          <InquiryModal
+            products={products?.items ?? []}
+            preselectedProductId={inquiryProductId}
+            onClose={() => { setInquiryOpen(false); setInquiryProductId(undefined) }}
+          />
+        )}
       </div>
     </Ctx.Provider>
   )

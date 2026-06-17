@@ -1,0 +1,198 @@
+import { useState, useEffect } from 'react'
+import type { ProductItem } from '../types/content'
+
+export interface InquiryModalProps {
+  products: ProductItem[]
+  preselectedProductId?: string
+  onClose: () => void
+}
+
+export function InquiryModal({ products, preselectedProductId, onClose }: InquiryModalProps) {
+  const [selectedId, setSelectedId] = useState(preselectedProductId ?? products[0]?.id ?? '')
+  const [variantSelections, setVariantSelections] = useState<Record<number, string>>({})
+  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' })
+  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
+
+  const selectedProduct = products.find(p => p.id === selectedId) ?? null
+
+  // Reset variant selections when product changes
+  useEffect(() => {
+    const defaults: Record<number, string> = {}
+    selectedProduct?.variants?.forEach((v, i) => {
+      defaults[i] = v.options[0] ?? ''
+    })
+    setVariantSelections(defaults)
+  }, [selectedId])
+
+  // Close on Escape
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
+    const productName = selectedProduct?.name ?? ''
+
+    const variantenStr = selectedProduct?.variants
+      ?.map((v, i) => `${v.label}: ${variantSelections[i] ?? v.options[0] ?? ''}`)
+      .join(', ') ?? ''
+
+    if (!key) {
+      const body = encodeURIComponent(
+        `Produkt: ${productName}\n${variantenStr ? `Sonderausführungen: ${variantenStr}\n` : ''}Name: ${form.name}\nTelefon: ${form.phone}\n\n${form.message}`
+      )
+      window.location.href = `mailto:?subject=${encodeURIComponent(`Neue Anfrage: ${productName}`)}&body=${body}`
+      return
+    }
+
+    setStatus('sending')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: key,
+          subject: `Neue Anfrage: ${productName}`,
+          name: form.name,
+          email: form.email || 'keine angabe',
+          replyto: form.email || '',
+          produkt: productName,
+          varianten: variantenStr,
+          telefon: form.phone,
+          nachricht: form.message,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStatus('ok')
+        setTimeout(() => onClose(), 2500)
+      } else {
+        setStatus('err')
+      }
+    } catch {
+      setStatus('err')
+    }
+  }
+
+  return (
+    <div className="pem-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Anfrage senden">
+      <div className="inquiry-modal" onClick={e => e.stopPropagation()}>
+        <div className="inquiry-modal-header">
+          <span className="inquiry-modal-title">Anfrage senden</span>
+          <button type="button" className="inquiry-modal-close" aria-label="Schließen" onClick={onClose}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        {status === 'ok' ? (
+          <div className="inquiry-success">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <p>Danke! Wir melden uns bald.</p>
+          </div>
+        ) : (
+          <form className="inquiry-form" onSubmit={submit}>
+            {/* Product selector */}
+            <div className="inquiry-field">
+              <label htmlFor="inq-product">Produkt</label>
+              <select
+                id="inq-product"
+                className="inquiry-select"
+                value={selectedId}
+                onChange={e => setSelectedId(e.target.value)}
+              >
+                {products.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Variant selectors */}
+            {(selectedProduct?.variants?.length ?? 0) > 0 && (
+              <div className="inquiry-variants">
+                <div className="inquiry-variants-label">Sonderausführungen</div>
+                {selectedProduct!.variants!.map((v, i) => (
+                  <div key={i} className="inquiry-field">
+                    <label htmlFor={`inq-variant-${i}`}>{v.label}</label>
+                    <select
+                      id={`inq-variant-${i}`}
+                      className="inquiry-select"
+                      value={variantSelections[i] ?? v.options[0] ?? ''}
+                      onChange={e => setVariantSelections(prev => ({ ...prev, [i]: e.target.value }))}
+                    >
+                      {v.options.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Contact fields */}
+            <div className="inquiry-field">
+              <label htmlFor="inq-name">Name <span className="inquiry-required">*</span></label>
+              <input
+                id="inq-name"
+                type="text"
+                required
+                placeholder="Ihr Name"
+                value={form.name}
+                onChange={e => set('name', e.target.value)}
+              />
+            </div>
+
+            <div className="inquiry-field">
+              <label htmlFor="inq-phone">Telefon</label>
+              <input
+                id="inq-phone"
+                type="tel"
+                placeholder="+43 …"
+                value={form.phone}
+                onChange={e => set('phone', e.target.value)}
+              />
+            </div>
+
+            <div className="inquiry-field">
+              <label htmlFor="inq-email">E-Mail</label>
+              <input
+                id="inq-email"
+                type="email"
+                placeholder="ihre@email.at"
+                value={form.email}
+                onChange={e => set('email', e.target.value)}
+              />
+            </div>
+
+            <div className="inquiry-field">
+              <label htmlFor="inq-message">Nachricht</label>
+              <textarea
+                id="inq-message"
+                rows={3}
+                placeholder="Ihre Nachricht (optional) …"
+                value={form.message}
+                onChange={e => set('message', e.target.value)}
+              />
+            </div>
+
+            {status === 'err' && (
+              <p className="inquiry-error">Fehler beim Senden. Bitte versuchen Sie es erneut.</p>
+            )}
+
+            <button type="submit" className="inquiry-submit" disabled={status === 'sending'}>
+              {status === 'sending' ? 'Wird gesendet…' : 'Anfrage abschicken'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  )
+}

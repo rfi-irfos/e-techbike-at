@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Customer } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
+import { MCTopbarTrees, MCMobStrip } from './MCMobs'
 
 const CUSTOMERS_PATH = 'public/customers.json'
 
@@ -159,6 +160,9 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
 
   return (
     <div className={`crm-panel${mcMode ? ' crm-mc' : ''}`}>
+
+      {/* ── MC tree strip at top ── */}
+      {mcMode && <MCTopbarTrees />}
 
       {/* ── Topbar with back link ── */}
       <div className="crm-topbar">
@@ -421,6 +425,14 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
 
           </div>
         </div>
+      )}
+
+      {/* ── MC mob strip + ground at bottom ── */}
+      {mcMode && (
+        <>
+          <MCMobStrip />
+          <div className="lazi-ground" />
+        </>
       )}
 
     </div>

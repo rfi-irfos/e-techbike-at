@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "seed-bikely-wien",
+    "name": "Bikely Wien",
+    "phone": "",
+    "email": "wien@bikely.at",
+    "interest": "Partner",
+    "budget": "",
+    "status": "verkauft",
+    "notes": "Partnershop Wien — Gablenzgasse 17, 1150 Wien",
+    "createdAt": "2026-06-17T00:00:00Z",
+    "updatedAt": "2026-06-17T00:00:00Z"
+  }
+]

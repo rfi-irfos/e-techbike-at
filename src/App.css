@@ -2487,8 +2487,8 @@ button { cursor: pointer; font-family: inherit; }
 .builder-crm-btn { display:flex;align-items:center;gap:5px;padding:5px 12px;font-size:11px;font-weight:700;border:2px solid #45b0e0;border-radius:4px;background:#1a8ab5;color:#fff;cursor:pointer;letter-spacing:.04em;text-decoration:none; }
 .builder-crm-btn:hover { background:#1070a0;border-color:#70d0f0;color:#fff; }
 /* Red logout button */
-.builder-logout-btn { display:flex;align-items:center;justify-content:center;width:30px;height:28px;border:1.5px solid #cc3333;border-radius:4px;background:transparent;color:#cc3333;cursor:pointer; }
-.builder-logout-btn:hover { background:#cc3333;color:#fff; }
+.builder-logout-btn { display:flex;align-items:center;justify-content:center;width:30px;height:28px;border:2px solid #cc3333;border-radius:4px;background:#cc3333;color:#fff;cursor:pointer; }
+.builder-logout-btn:hover { background:#aa2222;border-color:#aa2222; }
 
 /* Lazi rechnungen toggle */
 .lazi-toggle-row { display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(255,255,255,.06);border:2px solid #5a4a2a;border-radius:4px;margin-bottom:16px; }
@@ -2527,4 +2527,144 @@ button { cursor: pointer; font-family: inherit; }
 /* CRM placeholder rows */
 .crm-row-placeholder { opacity: .45; pointer-events: none; }
 .crm-placeholder-text { filter: blur(2px); user-select: none; }
+
+/* ── Inquiry Modal ──────────────────────────────────────────────────────────── */
+.inquiry-modal {
+  background: var(--surface, #fff);
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.18);
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.inquiry-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.inquiry-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text, #111);
+}
+.inquiry-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted, #888);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: background .15s;
+}
+.inquiry-modal-close:hover { background: var(--border, #eee); color: var(--text, #111); }
+.inquiry-form { display: flex; flex-direction: column; gap: 14px; }
+.inquiry-variants { display: flex; flex-direction: column; gap: 10px; }
+.inquiry-variants-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted, #888);
+  margin-bottom: 2px;
+}
+.inquiry-field { display: flex; flex-direction: column; gap: 5px; }
+.inquiry-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text, #111);
+}
+.inquiry-required { color: var(--primary, #0099cc); }
+.inquiry-field input,
+.inquiry-field textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border, #ddd);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text, #111);
+  background: var(--surface, #fff);
+  outline: none;
+  transition: border-color .15s;
+  box-sizing: border-box;
+}
+.inquiry-field input:focus,
+.inquiry-field textarea:focus { border-color: var(--primary, #0099cc); }
+.inquiry-field textarea { resize: vertical; min-height: 72px; }
+.inquiry-select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border, #ddd);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text, #111);
+  background: var(--surface, #fff);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  transition: border-color .15s;
+  box-sizing: border-box;
+}
+.inquiry-select:focus { border-color: var(--primary, #0099cc); }
+.inquiry-submit {
+  width: 100%;
+  padding: 12px;
+  background: #3a8a3a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background .15s, opacity .15s;
+}
+.inquiry-submit:hover:not(:disabled) { background: #2e6e2e; }
+.inquiry-submit:disabled { opacity: .6; cursor: not-allowed; }
+.inquiry-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 16px;
+  color: #2e7d2e;
+  text-align: center;
+}
+.inquiry-success p { font-size: 16px; font-weight: 600; margin: 0; }
+.inquiry-error {
+  color: #c0392b;
+  font-size: 13px;
+  margin: 0;
+}
+/* Product page inquiry button */
+.prodpage-inquiry-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--primary, #0099cc);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background .15s;
+}
+.prodpage-inquiry-btn:hover { background: #007aaa; }
 .crm-empty-hint { font-size: 12px; margin-top: 8px; font-style: italic; }
+
+/* Partner badge */
+.site-partner-badge { display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5B8731;border:1.5px solid #5B8731;border-radius:3px;padding:2px 8px;margin-bottom:8px; }
