@@ -28,7 +28,7 @@ function emptyForm(): Omit<Customer, 'id' | 'createdAt' | 'updatedAt'> {
   return { name: '', phone: '', email: '', interest: '', budget: '', status: 'offen', notes: '' }
 }
 
-export function CrmPanel() {
+export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   const [customers, setCustomers]         = useState<Customer[]>([])
   const [loading, setLoading]             = useState(true)
   const [saving, setSaving]               = useState(false)
@@ -158,17 +158,35 @@ export function CrmPanel() {
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
 
   return (
-    <div className="crm-panel">
+    <div className={`crm-panel${mcMode ? ' crm-mc' : ''}`}>
+
+      {/* ── Topbar with back link ── */}
+      <div className="crm-topbar">
+        <a href="#admin" className="crm-back-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          {mcMode ? 'Zurueck zur Workbench' : 'Workbench'}
+        </a>
+        {mcMode && <span className="crm-mc-badge">Timi's Kundenliste</span>}
+      </div>
 
       {/* ── Header ── */}
       <div className="crm-header">
         <h2 className="crm-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+          {mcMode ? (
+            <svg viewBox="0 0 16 16" width="18" height="18" style={{ imageRendering: 'pixelated' }}>
+              <rect x="0" y="0" width="16" height="16" fill="#3A7D44"/>
+              <rect x="3" y="4" width="3" height="3" fill="#111"/>
+              <rect x="10" y="4" width="3" height="3" fill="#111"/>
+              <rect x="5" y="10" width="6" height="2" fill="#111"/>
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          )}
           Kunden
           <span className="crm-count">{customers.length}</span>
         </h2>

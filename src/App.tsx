@@ -51,18 +51,8 @@ export default function App() {
 
   if (route.isCrm) {
     if (!user) return <LoginPage onLogin={login} />
-    return (
-      <div style={{ minHeight: '100vh', background: 'var(--bg,#fff)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 20px', borderBottom: '1px solid var(--border,#e0e0e0)', background: 'var(--panel-bg,#f8f8f8)' }}>
-          <a href="#admin" style={{ fontSize: 13, color: 'var(--accent,#5b8731)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Workbench
-          </a>
-          <strong style={{ fontSize: 15 }}>Kundenverwaltung</strong>
-        </div>
-        <CrmPanel />
-      </div>
-    )
+    const mcMode = localStorage.getItem('mc-theme') !== 'false'
+    return <CrmPanel mcMode={mcMode} />
   }
 
   if (route.isAdmin) {
