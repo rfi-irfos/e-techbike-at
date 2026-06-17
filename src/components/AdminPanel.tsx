@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import type { SiteContent, SectionId, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
+import { CrmPanel } from './CrmPanel'
 
 interface Props {
   content: SiteContent
@@ -12,7 +13,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages'
+type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'kunden'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Minecraft Easter Eggs ──────────────────────────────────────────────────────
@@ -483,6 +484,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     { id: 'contact',    label: 'Kontakt' },
     { id: 'nav',        label: 'Navigation' },
     { id: 'style',      label: 'Stil' },
+    { id: 'kunden',     label: 'Kunden' },
   ]
 
   const editingProd = editingProduct ? draft.products?.items?.find(p => p.id === editingProduct) : null
@@ -1205,6 +1207,9 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                 </div>
               )
             })()}
+
+            {/* ── KUNDEN TAB ────────────────────────────────────────────── */}
+            {activeTab === 'kunden' && <CrmPanel />}
 
           </div>
 
