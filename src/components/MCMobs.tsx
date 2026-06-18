@@ -62,18 +62,19 @@ export function MCTopbarTrees() {
 
 export function PigMob() {
   return (
-    <div className="lazi-mob lazi-pig" title="Klick mich!">
-      <svg viewBox="0 0 20 16" width="40" height="32" style={{ imageRendering: 'pixelated', display: 'block' }}>
-        <rect x="2" y="4" width="14" height="10" fill="#ffbbaa"/>
-        <rect x="10" y="2" width="8" height="8" fill="#ffbbaa"/>
-        <rect x="14" y="5" width="4" height="3" fill="#ff9988"/>
-        <rect x="15" y="6" width="1" height="1" fill="#cc6655"/>
-        <rect x="17" y="6" width="1" height="1" fill="#cc6655"/>
-        <rect x="11" y="3" width="2" height="2" fill="#333"/>
-        <rect x="11" y="0" width="2" height="3" fill="#ffbbaa"/>
-        <rect x="15" y="0" width="2" height="3" fill="#ffbbaa"/>
-        <rect x="3" y="13" width="3" height="3" fill="#ffbbaa"/>
-        <rect x="10" y="13" width="3" height="3" fill="#ffbbaa"/>
+    <div className="lazi-mob lazi-pig" title="Oink!">
+      <svg viewBox="0 0 28 18" width={42} height={27} style={{ imageRendering: 'pixelated', display: 'block' }}>
+        <rect x="2" y="4" width="14" height="12" fill="#ffbbaa"/>
+        <rect x="16" y="0" width="12" height="12" fill="#ffbbaa"/>
+        {/* Shading/Spots */}
+        <rect x="4" y="6" width="3" height="3" fill="#ff99aa"/>
+        <rect x="18" y="2" width="4" height="4" fill="#ff99aa"/>
+        <rect x="22" y="4" width="6" height="4" fill="#ec4899"/>
+        <rect x="23" y="5" width="2" height="2" fill="#7f1d1d"/>
+        <rect x="27" y="5" width="2" height="2" fill="#7f1d1d"/>
+        <rect x="19" y="2" width="2" height="2" fill="#111"/>
+        <rect x="3" y="14" width="3" height="4" fill="#ffbbaa"/>
+        <rect x="10" y="14" width="3" height="4" fill="#ffbbaa"/>
       </svg>
     </div>
   )
@@ -82,17 +83,16 @@ export function PigMob() {
 export function SheepMob() {
   return (
     <div className="lazi-mob lazi-sheep" title="Baa!">
-      <svg viewBox="0 0 22 18" width="44" height="36" style={{ imageRendering: 'pixelated', display: 'block' }}>
-        <rect x="2" y="4" width="14" height="8" fill="#ffaadd"/>
-        <rect x="0" y="6" width="4" height="4" fill="#ffaadd"/>
-        <rect x="14" y="6" width="4" height="4" fill="#ffaadd"/>
-        <rect x="14" y="2" width="6" height="8" fill="#888"/>
-        <rect x="15" y="4" width="1" height="1" fill="#fff"/>
-        <rect x="18" y="4" width="1" height="1" fill="#fff"/>
-        <rect x="16" y="7" width="3" height="1" fill="#555"/>
-        <rect x="4" y="12" width="2" height="4" fill="#888"/>
-        <rect x="8" y="12" width="2" height="4" fill="#888"/>
-        <rect x="12" y="12" width="2" height="4" fill="#888"/>
+      <svg viewBox="0 0 22 18" width={44} height={36} style={{ imageRendering: 'pixelated', display: 'block' }}>
+        <rect x="2" y="4" width="14" height="8" fill="#fff"/>
+        <rect x="0" y="6" width="4" height="4" fill="#fff"/>
+        <rect x="14" y="6" width="4" height="4" fill="#fff"/>
+        <rect x="14" y="2" width="6" height="8" fill="#a0a0a0"/>
+        {/* Face/legs */}
+        <rect x="16" y="7" width="3" height="3" fill="#222"/>
+        <rect x="4" y="12" width="2" height="4" fill="#555"/>
+        <rect x="8" y="12" width="2" height="4" fill="#555"/>
+        <rect x="12" y="12" width="2" height="4" fill="#555"/>
       </svg>
     </div>
   )
@@ -101,20 +101,14 @@ export function SheepMob() {
 export function CowMob() {
   return (
     <div className="lazi-mob lazi-cow" title="Muh!">
-      <svg viewBox="0 0 22 18" width="44" height="36" style={{ imageRendering: 'pixelated', display: 'block' }}>
+      <svg viewBox="0 0 22 18" width={44} height={36} style={{ imageRendering: 'pixelated', display: 'block' }}>
         <rect x="2" y="4" width="14" height="10" fill="#fff"/>
-        <rect x="4" y="5" width="4" height="4" fill="#333"/>
-        <rect x="10" y="7" width="3" height="3" fill="#333"/>
+        <rect x="4" y="5" width="4" height="4" fill="#111"/>
+        <rect x="10" y="7" width="3" height="3" fill="#111"/>
         <rect x="14" y="2" width="7" height="9" fill="#fff"/>
-        <rect x="14" y="3" width="2" height="2" fill="#333"/>
         <rect x="19" y="5" width="3" height="3" fill="#ffbbaa"/>
-        <rect x="19" y="6" width="1" height="1" fill="#cc8877"/>
-        <rect x="21" y="6" width="1" height="1" fill="#cc8877"/>
-        <rect x="15" y="0" width="2" height="3" fill="#888"/>
-        <rect x="19" y="0" width="2" height="3" fill="#888"/>
-        <rect x="3" y="14" width="2" height="4" fill="#888"/>
-        <rect x="8" y="14" width="2" height="4" fill="#888"/>
-        <rect x="12" y="14" width="2" height="4" fill="#888"/>
+        <rect x="3" y="14" width="2" height="4" fill="#111"/>
+        <rect x="12" y="14" width="2" height="4" fill="#111"/>
       </svg>
     </div>
   )
