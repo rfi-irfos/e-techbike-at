@@ -250,39 +250,52 @@ type PR = { x: number; y: number; w: number; h: number; f: string }
 const pb = (x: number, y: number, w: number, h: number, f: string): PR => ({ x, y, w, h, f })
 
 function wolfWalkPx(tick: number, tamed: boolean, howling = false): PR[] {
-  const leg = Math.sin(tick * 0.45) * 3
-  const tailY = 6 + Math.abs(Math.sin(tick * 0.3)) * 4
+  const leg = Math.sin(tick * 0.45) * 2
   const collar = tamed ? '#0099CC' : 'transparent'
+  const w = '#d1d5db', d = '#9ca3af', e = '#111' // colors
+  
   if (howling) return [
-    pb(0, 8, 4, 10, '#6b7280'), pb(4, 7, 26, 14, '#9ca3af'),
-    ...(tamed ? [pb(26, 9, 8, 3, collar)] : []),
-    pb(28, 7, 6, 10, '#9ca3af'), pb(30, 0, 14, 11, '#9ca3af'),
-    pb(30, -1, 4, 5, '#6b7280'), pb(38, -1, 4, 5, '#6b7280'),
-    pb(40, 2, 3, 3, '#111'), pb(41, 2, 1, 1, '#fff'), pb(34, 7, 6, 2, '#111'),
-    pb(6, 21, 4, 9, '#6b7280'), pb(14, 21, 4, 9, '#6b7280'),
-    pb(22, 21, 4, 9, '#6b7280'), pb(28, 21, 4, 9, '#6b7280'),
+    pb(0, 8, 3, 7, d), // tail
+    pb(3, 7, 18, 10, w), // body
+    ...(tamed ? [pb(18, 9, 4, 2, collar)] : []),
+    pb(21, 6, 8, 8, w), // head
+    pb(29, 9, 3, 3, '#eee'), // snout
+    pb(31, 8, 2, 2, e), // nose
+    pb(25, 8, 2, 2, e), // eye
+    pb(22, 3, 2, 3, w), pb(27, 3, 2, 3, w), // ears
+    pb(5, 17, 3, 6, d), pb(11, 17, 3, 6, d), // legs
+    pb(15, 17, 3, 6, d), pb(21, 17, 3, 6, d),
   ]
+
   return [
-    pb(0, tailY, 4, 10, '#6b7280'), pb(4, 8, 26, 14, '#9ca3af'),
-    ...(tamed ? [pb(26, 10, 8, 3, collar)] : []),
-    pb(28, 8, 6, 10, '#9ca3af'), pb(30, 1, 16, 13, '#9ca3af'),
-    pb(30, 0, 4, 5, '#6b7280'), pb(38, 0, 4, 5, '#6b7280'),
-    pb(40, 4, 3, 3, '#111'), pb(41, 4, 1, 1, '#fff'), pb(44, 9, 3, 2, '#111'),
-    pb(6, 22, 4, 8 + leg, '#6b7280'), pb(14, 22, 4, 8 - leg, '#6b7280'),
-    pb(22, 22, 4, 8 - leg, '#6b7280'), pb(28, 22, 4, 8 + leg, '#6b7280'),
+    pb(0, 8, 3, 7, d), // tail
+    pb(3, 8, 18, 10, w), // body
+    ...(tamed ? [pb(18, 10, 4, 2, collar)] : []),
+    pb(21, 5, 8, 8, w), // head
+    pb(29, 9, 3, 3, '#eee'), // snout
+    pb(31, 8, 2, 2, e), // nose
+    pb(24, 7, 2, 2, e), // eye
+    pb(22, 2, 2, 3, w), pb(27, 2, 2, 3, w), // ears
+    pb(5, 18, 3, 6 + leg, d), pb(11, 18, 3, 6 - leg, d), // legs
+    pb(15, 18, 3, 6 - leg, d), pb(21, 18, 3, 6 + leg, d),
   ]
 }
 
 function wolfSitPx(tamed: boolean, eating = false): PR[] {
   const collar = tamed ? '#0099CC' : 'transparent'
+  const w = '#d1d5db', d = '#9ca3af', e = '#111'
   return [
-    pb(2, 16, 16, 12, '#9ca3af'), pb(14, 9, 16, 14, '#9ca3af'),
-    ...(tamed ? [pb(22, 11, 10, 3, collar)] : []),
-    pb(22, 1, 16, 13, '#9ca3af'), pb(22, 0, 4, 5, '#6b7280'), pb(30, 0, 4, 5, '#6b7280'),
-    pb(32, 4, 3, 3, '#111'), pb(33, 4, 1, 1, '#fff'), pb(36, 9, 3, 2, '#111'),
-    pb(16, 26, 4, 8, '#6b7280'), pb(22, 26, 4, 8, '#6b7280'),
-    pb(0, 8, 4, 12, '#6b7280'), pb(2, 4, 4, 6, '#6b7280'),
-    ...(eating ? [pb(36, 5, 6, 4, '#fbbf24'), pb(38, 7, 4, 2, '#92400e')] : []),
+    pb(2, 14, 14, 10, w), // body
+    ...(tamed ? [pb(16, 11, 4, 2, collar)] : []),
+    pb(16, 6, 8, 8, w), // head
+    pb(24, 10, 3, 3, '#eee'), // snout
+    pb(26, 9, 2, 2, e), // nose
+    pb(19, 8, 2, 2, e), // eye
+    pb(17, 3, 2, 3, w), pb(22, 3, 2, 3, w), // ears
+    pb(4, 24, 3, 6, d), pb(10, 24, 3, 6, d), // back legs
+    pb(16, 24, 3, 6, d), pb(21, 24, 3, 6, d), // front legs
+    pb(0, 6, 3, 10, d), // tail
+    ...(eating ? [pb(26, 7, 5, 4, '#fbbf24'), pb(28, 9, 3, 2, '#92400e')] : []),
   ]
 }
 
@@ -328,11 +341,15 @@ const HOUSE_PX: PR[] = [
 ]
 
 function creeperScenePx(scared: boolean): PR[] {
-  const c = scared ? '#86efac' : '#4ade80', d = '#166534'
+  const c = scared ? '#86efac' : '#4ade80', d = '#111' // dark for face
   return [
-    pb(4, 0, 20, 16, c), pb(6, 4, 4, 4, d), pb(16, 4, 4, 4, d),
-    pb(10, 10, 8, 2, d), pb(8, 12, 2, 4, d), pb(18, 12, 2, 4, d), pb(10, 12, 8, 6, d),
-    pb(8, 16, 12, 14, c), pb(4, 30, 8, 6, c), pb(16, 30, 8, 6, c),
+    pb(0, 0, 16, 16, c), // head
+    pb(2, 3, 4, 4, d), pb(10, 3, 4, 4, d), // eyes
+    pb(6, 7, 4, 4, d), // nose
+    pb(4, 9, 8, 4, d), // mouth top
+    pb(4, 13, 2, 3, d), pb(10, 13, 2, 3, d), // mouth drops
+    pb(2, 16, 12, 12, c), // body
+    pb(0, 28, 6, 6, c), pb(10, 28, 6, 6, c), // feet
   ]
 }
 
@@ -655,7 +672,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   const moodLabel = hunger > 60 ? 'Satt' : hunger > 30 ? 'Okay' : hunger > 10 ? 'Hungrig!' : 'Verhungert!'
   const isSitting = wolfState === 'sitting' || wolfState === 'eating'
   const wolfPx = isSitting ? wolfSitPx(tamed, wolfState === 'eating') : wolfWalkPx(tick, tamed, wolfState === 'howling')
-  const wolfVW = isSitting ? 40 : 52; const wolfVH = isSitting ? 36 : 32
+  const wolfVW = 40; const wolfVH = 40
 
   const hourNow = new Date().getHours()
   const isNight = hourNow >= 21 || hourNow < 6
@@ -769,7 +786,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
               background: 'rgba(250,204,21,0.2)', filter: 'blur(4px)',
             }} />
           )}
-          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={2}
+          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={1.4}
             flip={wolfDir === 'l' && !isSitting} />
         </div>
 
@@ -778,7 +795,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
             position: 'absolute', left: creeperX, bottom: 20,
             animation: creeperScared ? 'lazi-shake 0.1s infinite' : undefined,
           }}>
-            <Sprite px={creeperScenePx(creeperScared)} vw={28} vh={36} scale={1.35} />
+            <Sprite px={creeperScenePx(creeperScared)} vw={16} vh={34} scale={1.8} />
           </div>
         )}
 

@@ -497,7 +497,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       )}
 
       {/* ── Gamified MC scene at bottom ── */}
-      {mcMode && <CrmScene onAchUnlock={handleAchUnlock} />}
+      {mcMode && crmTab === 'kunden' && <CrmScene onAchUnlock={handleAchUnlock} />}
 
     </div>
   )
