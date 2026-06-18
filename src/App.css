@@ -2822,6 +2822,20 @@ button { cursor: pointer; font-family: inherit; }
 .crm-mc-tab.active { background:#3d2b1a;color:#FFFF55;border-color:#7DC845; }
 .crm-mc-tab-count { font-size:10px;background:#3A7D44;color:#FFFF55;padding:1px 5px;border-radius:2px; }
 
-/* Wolf mob animation */
-.lazi-wolf { animation: lazi-walk 2.8s steps(1) infinite; }
-@keyframes lazi-walk { 0%,100% { transform: scaleX(1) } 50% { transform: scaleX(-1) } }
+/* MC Theme Overrides for Finance Tab */
+.crm-mc .crm-fin-card {
+  background: #333 !important;
+  border-color: #555 !important;
+}
+.crm-mc .crm-fin-card label { color: #aaa !important; }
+.crm-mc .crm-fin-val { color: #fff !important; }
+.crm-mc .crm-list {
+  background: #222 !important;
+  border-color: #555 !important;
+}
+.crm-mc .crm-row--fin {
+  border-bottom-color: #444 !important;
+}
+.crm-mc .crm-row-desc { color: #ddd !important; }
+.crm-mc .crm-add-btn { background: #555 !important; }
+.crm-mc .crm-empty { color: #888 !important; }
