@@ -162,6 +162,21 @@ export function EndermanMob() {
   )
 }
 
+export function HorseMob() {
+  return (
+    <div className="lazi-mob lazi-horse" title="Hihihi!">
+      <svg viewBox="0 0 24 20" width="48" height="40" style={{ imageRendering: 'pixelated', display: 'block' }}>
+        <rect x="4" y="2" width="16" height="10" fill="#a57a52"/>
+        <rect x="18" y="0" width="6" height="6" fill="#a57a52"/>
+        <rect x="20" y="1" width="2" height="2" fill="#fff"/>
+        <rect x="20" y="8" width="4" height="2" fill="#7a5230"/>
+        <rect x="4" y="12" width="4" height="8" fill="#a57a52"/>
+        <rect x="14" y="12" width="4" height="8" fill="#a57a52"/>
+      </svg>
+    </div>
+  )
+}
+
 export function CreeperMob() {
   return (
     <div className="lazi-mob lazi-creeper" title="Ssss...">
@@ -226,38 +241,18 @@ export function WolfMob({ tamed, bones }: { tamed: boolean; bones: number }) {
   )
 }
 
-export function CowMob() {
-  return (
-    <div className="lazi-mob lazi-cow" title="Muh!">
-      <svg viewBox="0 0 22 18" width="44" height="36" style={{ imageRendering: 'pixelated', display: 'block' }}>
-        <rect x="2" y="4" width="14" height="10" fill="#fff"/>
-        <rect x="4" y="5" width="4" height="4" fill="#333"/>
-        <rect x="10" y="7" width="3" height="3" fill="#333"/>
-        <rect x="14" y="2" width="7" height="9" fill="#fff"/>
-        <rect x="14" y="3" width="2" height="2" fill="#333"/>
-        <rect x="19" y="5" width="3" height="3" fill="#ffbbaa"/>
-        <rect x="19" y="6" width="1" height="1" fill="#cc8877"/>
-        <rect x="21" y="6" width="1" height="1" fill="#cc8877"/>
-        <rect x="15" y="0" width="2" height="3" fill="#888"/>
-        <rect x="19" y="0" width="2" height="3" fill="#888"/>
-        <rect x="3" y="14" width="2" height="4" fill="#888"/>
-        <rect x="8" y="14" width="2" height="4" fill="#888"/>
-        <rect x="12" y="14" width="2" height="4" fill="#888"/>
-      </svg>
-    </div>
-  )
-}
-
-export function CrmMobStrip({ onWolfClick, wolfBones, wolfTamed }: {
+export function CrmMobStrip({ onWolfClick, wolfBones, wolfTamed, feedAnimal }: {
   onWolfClick?: () => void
   wolfBones?: number
   wolfTamed?: boolean
+  feedAnimal: (type: 'pig' | 'sheep' | 'cow') => void
 }) {
   return (
     <div className="lazi-mob-area">
       <div className="lazi-mob-wrap" onClick={() => feedAnimal('pig')}><PigMob /></div>
       <div className="lazi-mob-wrap" onClick={() => feedAnimal('sheep')}><SheepMob /></div>
-      <div className="lazi-mob-wrap"><CowMob /></div>
+      <div className="lazi-mob-wrap" onClick={() => feedAnimal('cow')}><CowMob /></div>
+      <div className="lazi-mob-wrap"><HorseMob /></div>
       <div className="lazi-mob-wrap lazi-mob-creeper"><CreeperMob /></div>
       <div className="lazi-mob-wrap lazi-mob-creeper"><EndermanMob /></div>
       <div className="lazi-mob-wrap" onClick={onWolfClick} style={{ cursor: 'pointer' }}>
@@ -267,48 +262,44 @@ export function CrmMobStrip({ onWolfClick, wolfBones, wolfTamed }: {
   )
 }
 
-function wolfWalkPx(tick: number, tamed: boolean, howling = false): PR[] {
-  const leg = Math.sin(tick * 0.45) * 2
-  const tailX = Math.sin(tick * 0.8) * 2 // wagging
-  const collar = tamed ? '#0099CC' : 'transparent'
-  const w = '#d1d5db', d = '#9ca3af', e = '#111'
-  const yO = 4
-  
-  if (howling) return [
-    pb(tailX, 8+yO, 3, 7, d), pb(3, 7+yO, 18, 10, w),
-    ...(tamed ? [pb(18, 9+yO, 4, 2, collar)] : []),
-    pb(21, 6+yO, 8, 8, w), pb(29, 9+yO, 3, 3, '#eee'),
-    pb(31, 8+yO, 2, 2, e), pb(25, 8+yO, 2, 2, e),
-    pb(22, 3+yO, 2, 3, w), pb(27, 3+yO, 2, 3, w),
-    pb(5, 17+yO, 3, 6, d), pb(11, 17+yO, 3, 6, d),
-    pb(15, 17+yO, 3, 6, d), pb(21, 17+yO, 3, 6, d),
-  ]
+// ── Pixel sprite helpers ──────────────────────────────────────────────────────
+type PR = { x: number; y: number; w: number; h: number; f: string }
+const pb = (x: number, y: number, w: number, h: number, f: string): PR => ({ x, y, w, h, f })
 
+function wolfWalkPx(tick: number, tamed: boolean, howling = false): PR[] {
+  const leg = Math.sin(tick * 0.45) * 3
+  const tailY = 6 + Math.abs(Math.sin(tick * 0.3)) * 4
+  const collar = tamed ? '#0099CC' : 'transparent'
+  if (howling) return [
+    pb(0, 8, 4, 10, '#6b7280'), pb(4, 7, 26, 14, '#9ca3af'),
+    ...(tamed ? [pb(26, 9, 8, 3, collar)] : []),
+    pb(28, 7, 6, 10, '#9ca3af'), pb(30, 0, 14, 11, '#9ca3af'),
+    pb(30, -1, 4, 5, '#6b7280'), pb(38, -1, 4, 5, '#6b7280'),
+    pb(40, 2, 3, 3, '#111'), pb(41, 2, 1, 1, '#fff'), pb(34, 7, 6, 2, '#111'),
+    pb(6, 21, 4, 9, '#6b7280'), pb(14, 21, 4, 9, '#6b7280'),
+    pb(22, 21, 4, 9, '#6b7280'), pb(28, 21, 4, 9, '#6b7280'),
+  ]
   return [
-    pb(tailX, 8+yO, 3, 7, d), pb(3, 8+yO, 18, 10, w),
-    ...(tamed ? [pb(18, 10+yO, 4, 2, collar)] : []),
-    pb(21, 5+yO, 8, 8, w), pb(29, 9+yO, 3, 3, '#eee'),
-    pb(31, 8+yO, 2, 2, e), pb(24, 7+yO, 2, 2, e),
-    pb(22, 2+yO, 2, 3, w), pb(27, 2+yO, 2, 3, w),
-    pb(5, 18+yO, 3, 6 + leg, d), pb(11, 18+yO, 3, 6 - leg, d),
-    pb(15, 18+yO, 3, 6 - leg, d), pb(21, 18+yO, 3, 6 + leg, d),
+    pb(0, tailY, 4, 10, '#6b7280'), pb(4, 8, 26, 14, '#9ca3af'),
+    ...(tamed ? [pb(26, 10, 8, 3, collar)] : []),
+    pb(28, 8, 6, 10, '#9ca3af'), pb(30, 1, 16, 13, '#9ca3af'),
+    pb(30, 0, 4, 5, '#6b7280'), pb(38, 0, 4, 5, '#6b7280'),
+    pb(40, 4, 3, 3, '#111'), pb(41, 4, 1, 1, '#fff'), pb(44, 9, 3, 2, '#111'),
+    pb(6, 22, 4, 8 + leg, '#6b7280'), pb(14, 22, 4, 8 - leg, '#6b7280'),
+    pb(22, 22, 4, 8 - leg, '#6b7280'), pb(28, 22, 4, 8 + leg, '#6b7280'),
   ]
 }
 
 function wolfSitPx(tamed: boolean, eating = false): PR[] {
   const collar = tamed ? '#0099CC' : 'transparent'
-  const w = '#d1d5db', d = '#9ca3af', e = '#111'
-  const yO = 2
   return [
-    pb(2, 14+yO, 14, 10, w),
-    ...(tamed ? [pb(16, 11+yO, 4, 2, collar)] : []),
-    pb(16, 6+yO, 8, 8, w), pb(24, 10+yO, 3, 3, '#eee'),
-    pb(26, 9+yO, 2, 2, e), pb(19, 8+yO, 2, 2, e),
-    pb(17, 3+yO, 2, 3, w), pb(22, 3+yO, 2, 3, w),
-    pb(4, 24+yO, 3, 6, d), pb(10, 24+yO, 3, 6, d),
-    pb(16, 24+yO, 3, 6, d), pb(21, 24+yO, 3, 6, d),
-    pb(0, 6+yO, 3, 10, d),
-    ...(eating ? [pb(26, 7+yO, 5, 4, '#fbbf24'), pb(28, 9+yO, 3, 2, '#92400e')] : []),
+    pb(2, 16, 16, 12, '#9ca3af'), pb(14, 9, 16, 14, '#9ca3af'),
+    ...(tamed ? [pb(22, 11, 10, 3, collar)] : []),
+    pb(22, 1, 16, 13, '#9ca3af'), pb(22, 0, 4, 5, '#6b7280'), pb(30, 0, 4, 5, '#6b7280'),
+    pb(32, 4, 3, 3, '#111'), pb(33, 4, 1, 1, '#fff'), pb(36, 9, 3, 2, '#111'),
+    pb(16, 26, 4, 8, '#6b7280'), pb(22, 26, 4, 8, '#6b7280'),
+    pb(0, 8, 4, 12, '#6b7280'), pb(2, 4, 4, 6, '#6b7280'),
+    ...(eating ? [pb(36, 5, 6, 4, '#fbbf24'), pb(38, 7, 4, 2, '#92400e')] : []),
   ]
 }
 
@@ -334,20 +325,11 @@ const CHEST_PX: PR[] = [
   pb(10, 6, 4, 4, '#ca8a04'),  // lock
 ]
 
-const CAMPFIRE_LOGS_PX: PR[] = [
+const CAMPFIRE_PX: PR[] = [
   pb(4, 16, 16, 4, '#5a3010'), // logs
   pb(2, 14, 20, 2, '#451a03'), // logs
-]
-
-const CAMPFIRE_FLAME_PX: PR[] = [
   pb(8, 4, 8, 10, '#f97316'),  // flame
   pb(10, 0, 4, 8, '#fbbf24'),  // inner flame
-]
-
-const MOUNTAIN_PX: PR[] = [
-  pb(40, 0, 80, 80, '#374151'), // peak
-  pb(0, 40, 160, 40, '#1f2937'), // base
-  pb(65, 0, 30, 15, '#f9fafb'), // snow cap
 ]
 
 const HOUSE_PX: PR[] = [
@@ -363,15 +345,11 @@ const HOUSE_PX: PR[] = [
 ]
 
 function creeperScenePx(scared: boolean): PR[] {
-  const c = scared ? '#86efac' : '#4ade80', d = '#111' // dark for face
+  const c = scared ? '#86efac' : '#4ade80', d = '#166534'
   return [
-    pb(0, 0, 16, 16, c), // head
-    pb(2, 3, 4, 4, d), pb(10, 3, 4, 4, d), // eyes
-    pb(6, 7, 4, 4, d), // nose
-    pb(4, 9, 8, 4, d), // mouth top
-    pb(4, 13, 2, 3, d), pb(10, 13, 2, 3, d), // mouth drops
-    pb(2, 16, 12, 12, c), // body
-    pb(0, 28, 6, 6, c), pb(10, 28, 6, 6, c), // feet
+    pb(4, 0, 20, 16, c), pb(6, 4, 4, 4, d), pb(16, 4, 4, 4, d),
+    pb(10, 10, 8, 2, d), pb(8, 12, 2, 4, d), pb(18, 12, 2, 4, d), pb(10, 12, 8, 6, d),
+    pb(8, 16, 12, 14, c), pb(4, 30, 8, 6, c), pb(16, 30, 8, 6, c),
   ]
 }
 
@@ -671,14 +649,6 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
   const [chestOpen, setChestOpen] = useState(false)
   const [campfireOn, setCampfireOn] = useState(true)
-  const [holdingBone, setHoldingBone] = useState(false)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return
-    const rect = containerRef.current.getBoundingClientRect()
-    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-  }
 
   const handleName = (n: string) => {
     setWolfName(n); lsSet(WK.name, n)
@@ -689,49 +659,20 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   }
 
   const toggleChest = () => {
-    const next = !chestOpen
-    setChestOpen(next)
-    if (next) {
-      const loot = ['&#x1F48E;', '&#x1F4B0;', '&#x1F34E;', '&#x1F9B4;', '&#x1F52E;']
-      const char = loot[Math.floor(Math.random() * loot.length)]
-      spawnPt(W - 120, char, '#fbbf24')
-    }
+    setChestOpen(!chestOpen)
+    spawnPt(W - 120, chestOpen ? '&#x1F512;' : '&#x2728;', '#fbbf24')
   }
 
   const toggleCampfire = () => {
     setCampfireOn(!campfireOn)
-    if (!campfireOn) spawnPt(W/2, '&#x1F525;', '#ef4444')
+    if (!campfireOn) spawnPt(130, '&#x1F525;', '#ef4444')
   }
-
-  const feedAnimal = (type: 'pig' | 'sheep') => {
-    const x = type === 'pig' ? pigX : sheepX
-    spawnPts(x + 15, [['&#x2665;', '#f472b6'], ['&#x2665;', '#f472b6']])
-    if (type === 'pig') unlock('ach-ferkel', 'Ferkel-Königin')
-    else unlock('ach-schaf', 'Schaf-Flüsterin')
-  }
-
-  // Follow the bone AI
-  useEffect(() => {
-    if (!holdingBone || wsRef.current === 'eating' || wsRef.current === 'fetching') return
-    const t = setInterval(() => {
-      const targetX = mousePos.x - 20
-      const dist = targetX - wxRef.current
-      if (Math.abs(dist) > 10) {
-        setWolfDir(dist > 0 ? 'r' : 'l')
-        setWolfState('walking')
-        setWolfX(x => x + (dist > 0 ? 3 : -3))
-      } else {
-        setWolfState('idle')
-      }
-    }, 50)
-    return () => clearInterval(t)
-  }, [holdingBone, mousePos])
 
   const moodColor = hunger > 60 ? '#4ade80' : hunger > 30 ? '#fbbf24' : '#ef4444'
   const moodLabel = hunger > 60 ? 'Satt' : hunger > 30 ? 'Okay' : hunger > 10 ? 'Hungrig!' : 'Verhungert!'
   const isSitting = wolfState === 'sitting' || wolfState === 'eating'
   const wolfPx = isSitting ? wolfSitPx(tamed, wolfState === 'eating') : wolfWalkPx(tick, tamed, wolfState === 'howling')
-  const wolfVW = 40; const wolfVH = 40
+  const wolfVW = isSitting ? 40 : 52; const wolfVH = isSitting ? 36 : 32
 
   const hourNow = new Date().getHours()
   const isNight = hourNow >= 21 || hourNow < 6
@@ -744,7 +685,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
       {showNameDialog && <WolfNameDialog onName={handleName} />}
       {achToast && <AchievementToast title={achToast.title} onDone={() => setAchToast(null)} />}
 
-      <div ref={containerRef} onMouseMove={handleMouseMove} onMouseLeave={() => setHoldingBone(false)} style={{
+      <div ref={containerRef} style={{
         position: 'relative', overflow: 'hidden', height: 120,
         background: skyBg, userSelect: 'none', borderTop: '2px solid #5D9E2E',
       }}>
@@ -761,45 +702,39 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           }} />
         )}
 
-        <div style={{ position: 'absolute', left: -20, bottom: 20, opacity: 0.4 }}>
-          <Sprite px={MOUNTAIN_PX} vw={160} vh={80} scale={1.5} />
-        </div>
-        <div style={{ position: 'absolute', right: 100, bottom: 20, opacity: 0.3 }}>
-          <Sprite px={MOUNTAIN_PX} vw={160} vh={80} scale={1.2} flip />
-        </div>
-
         <div style={{ position: 'absolute', left: 30, bottom: 20 }}>
           <Sprite px={TREE_PX} vw={30} vh={50} />
         </div>
         <div style={{ position: 'absolute', left: 185, bottom: 20 }}>
           <Sprite px={TREE_PX} vw={30} vh={50} scale={0.8} />
         </div>
-        <div style={{ position: 'absolute', left: 400, bottom: 20 }}>
-          <Sprite px={TREE_PX} vw={30} vh={50} scale={0.9} />
-        </div>
         <div style={{ position: 'absolute', right: 6, bottom: 20 }}>
           <Sprite px={HOUSE_PX} vw={72} vh={80} />
+        </div>
+        {/* Leashed Horse */}
+        <div style={{ position: 'absolute', right: 50, bottom: 20 }}>
+          <HorseMob />
+          <div style={{ position: 'absolute', top: 5, left: 10, width: 30, height: 2, background: '#555', transform: 'rotate(-20deg)', transformOrigin: 'left' }} />
         </div>
         <div style={{ position: 'absolute', right: 85, bottom: 20, cursor: 'pointer' }} onClick={() => spawnPt(W-85, '&#x2692;', '#aaa')}>
           <Sprite px={CRAFTING_TABLE_PX} vw={24} vh={24} scale={1.2} />
         </div>
         <div style={{ position: 'absolute', right: 125, bottom: 20, cursor: 'pointer' }} onClick={toggleChest}>
-          <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'translateY(2px) scaleY(0.9)' : undefined }} />
+          <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
         </div>
         <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: 20, cursor: 'pointer', zIndex: 5 }} onClick={toggleCampfire}>
-          <Sprite px={CAMPFIRE_LOGS_PX} vw={24} vh={20} scale={2} />
           {campfireOn && (
-            <div style={{ position: 'absolute', inset: 0, animation: 'lazi-flicker 0.15s infinite alternate' }}>
-              <Sprite px={CAMPFIRE_FLAME_PX} vw={24} vh={20} scale={2} />
+            <div style={{ animation: 'lazi-flicker 0.15s infinite alternate' }}>
+              <Sprite px={CAMPFIRE_PX} vw={24} vh={20} scale={2} />
             </div>
           )}
-          {!campfireOn && <div style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', width: 40, height: 2, background: '#451a03', opacity: 0.5 }} />}
+          {!campfireOn && <div style={{ width: 40, height: 8, background: '#451a03', borderRadius: 2 }} />}
         </div>
 
         <div style={{
           position: 'absolute', left: sheepX, bottom: 20, cursor: 'pointer',
           transform: sheepBob ? 'translateY(-3px)' : 'translateY(0)', transition: 'transform 0.2s',
-        }} onClick={() => feedAnimal('sheep')} title="Baa!">
+        }} onClick={() => unlock('ach-schaf', 'Schaf-Flüsterin')} title="Baa!">
           <svg viewBox="0 0 22 18" width={33} height={27}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: sheepDir === 'l' ? 'scaleX(-1)' : undefined }}>
@@ -817,7 +752,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         </div>
 
         <div style={{ position: 'absolute', left: pigX, bottom: 20, cursor: 'pointer' }}
-          onClick={() => feedAnimal('pig')} title="Oink!">
+          onClick={() => unlock('ach-ferkel', 'Ferkel-Königin')} title="Oink!">
           <svg viewBox="0 0 28 18" width={36} height={23}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: pigDir === 'l' ? 'scaleX(-1)' : undefined }}>
@@ -841,13 +776,6 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           }} />
         )}
 
-        {holdingBone && (
-          <div style={{
-            position: 'absolute', left: mousePos.x, top: mousePos.y, pointerEvents: 'none',
-            fontSize: 20, transform: 'translate(-50%, -50%)', zIndex: 100,
-          }}>&#x1F9B4;</div>
-        )}
-
         <div style={{ position: 'absolute', left: wolfX, bottom: 20, cursor: 'pointer' }}
           onClick={petWolf} title={tamed ? `${wolfName} streicheln!` : 'Klick zum Zähmen!'}>
           {tamed && (
@@ -863,7 +791,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
               background: 'rgba(250,204,21,0.2)', filter: 'blur(4px)',
             }} />
           )}
-          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={1.4}
+          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={2}
             flip={wolfDir === 'l' && !isSitting} />
         </div>
 
@@ -872,7 +800,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
             position: 'absolute', left: creeperX, bottom: 20,
             animation: creeperScared ? 'lazi-shake 0.1s infinite' : undefined,
           }}>
-            <Sprite px={creeperScenePx(creeperScared)} vw={16} vh={34} scale={1.8} />
+            <Sprite px={creeperScenePx(creeperScared)} vw={28} vh={36} scale={1.35} />
           </div>
         )}
 
@@ -945,18 +873,17 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           {[
-            { emoji: '&#x1F9B4;', label: 'Knochen (Halten)', action: () => setHoldingBone(!holdingBone), active: holdingBone, alwaysEnabled: true },
+            { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, alwaysEnabled: true },
             { emoji: '&#x1F34E;', label: 'Apfel', action: feedApple },
             { emoji: '&#x26BD;', label: 'Ball werfen', action: throwBall },
           ].map(item => (
             <button key={item.label} onClick={item.action}
               title={!item.alwaysEnabled && !tamed ? 'Wolf erst zähmen!' : item.label}
               style={{
-                background: item.active ? '#5D9E2E' : '#2a2010', border: '2px solid #5D9E2E', borderRadius: 4,
+                background: '#2a2010', border: '2px solid #5D9E2E', borderRadius: 4,
                 color: '#fff', fontSize: 16, width: 34, height: 34, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 opacity: !item.alwaysEnabled && !tamed ? 0.35 : 1,
-                boxShadow: item.active ? '0 0 10px #5D9E2E' : 'none',
               }}
               dangerouslySetInnerHTML={{ __html: item.emoji }} />
           ))}

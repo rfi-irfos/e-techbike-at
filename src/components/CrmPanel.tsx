@@ -205,7 +205,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       <div className="crm-topbar">
         <a href="#admin" className="crm-back-btn">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-          {mcMode ? 'Zurück zur Workbench' : 'Workbench'}
+          {mcMode ? 'Zurueck zur Workbench' : 'Workbench'}
         </a>
         {mcMode && <span className="crm-mc-badge">Timi's Kundenliste</span>}
       </div>
@@ -217,7 +217,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
           <button className={`crm-mc-tab${crmTab === 'finanzen' ? ' active' : ''}`} onClick={() => setCrmTab('finanzen')}>Finanzen</button>
           <button className={`crm-mc-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
             Achievements
-            <span className="crm-mc-tab-count">{unlocked.size}/50</span>
+            <span className="crm-mc-tab-count">{unlocked.size}/11</span>
           </button>
         </div>
       )}
@@ -269,23 +269,23 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
 
       {/* ── Achievements grid (MC only) ── */}
       {mcMode && crmTab === 'achievements' && (
-        <div className="lazi-ach-grid" style={{ padding: '20px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '12px' }}>
+        <div className="lazi-grid" style={{ padding: '20px 24px' }}>
           {ACHIEVEMENTS.map(a => {
             const isUnlocked = unlocked.has(a.id)
             return (
-              <div key={a.id} className={`lazi-ach-tile${isUnlocked ? ' unlocked' : ''}`} title={a.desc}>
-                <div className="lazi-ach-tile-icon">{isUnlocked ? '🏆' : '🔒'}</div>
-                <div className="lazi-ach-tile-title" style={{ fontSize: '10px', textAlign: 'center' }}>{a.title}</div>
+              <div
+                key={a.id}
+                className={`lazi-ach-slot${isUnlocked ? ' unlocked' : ''}`}
+                title={isUnlocked ? a.desc : '???'}
+              >
+                <div className="lazi-ach-icon">
+                  {isUnlocked ? '★' : '?'}
+                </div>
+                <div className="lazi-ach-title">{isUnlocked ? a.title : '???'}</div>
+                <div className="lazi-ach-desc">{isUnlocked ? a.desc : '???'}</div>
               </div>
             )
           })}
-          {/* Fill remaining slots to reach 50 */}
-          {Array.from({ length: 50 - ACHIEVEMENTS.length }).map((_, i) => (
-            <div key={`empty-${i}`} className="lazi-ach-tile locked" style={{ background: '#222', border: '1px solid #444', padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
-              <div className="lazi-ach-tile-icon">🔒</div>
-              <div className="lazi-ach-tile-title" style={{ fontSize: '10px', color: '#666' }}>???</div>
-            </div>
-          ))}
         </div>
       )}
 
