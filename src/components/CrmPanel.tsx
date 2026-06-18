@@ -387,7 +387,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
 
       {/* ── Modals ── */}
       {modalType === 'customer' && (
-        <div className="pem-overlay" onClick={() => setModalType(null)}>
+        <div className={`pem-overlay${mcMode ? ' crm-mc' : ''}`} onClick={() => setModalType(null)}>
           <div className="pem" style={{ maxWidth: 600 }} onClick={e => e.stopPropagation()}>
             <div className="pem-header">
               <span className="pem-title">{editId ? 'Kunden-Akte' : 'Neuer Kunde'}</span>
@@ -459,7 +459,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       )}
 
       {modalType === 'transaction' && (
-        <div className="pem-overlay" onClick={() => setModalType(null)}>
+        <div className={`pem-overlay${mcMode ? ' crm-mc' : ''}`} onClick={() => setModalType(null)}>
           <div className="pem" style={{ maxWidth: 400 }} onClick={e => e.stopPropagation()}>
             <div className="pem-header">
               <span className="pem-title">Beleg / Buchung</span>
