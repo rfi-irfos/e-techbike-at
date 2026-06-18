@@ -499,7 +499,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       </div>
 
       {mcMode && crmTab === 'kunden' && (
-        <div className="crm-minigame-footer">
+        <div className="minigame-container">
           <CrmScene onAchUnlock={handleAchUnlock} />
         </div>
       )}

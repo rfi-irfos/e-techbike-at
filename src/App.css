@@ -2843,13 +2843,35 @@ button { cursor: pointer; font-family: inherit; }
   position: relative;
 }
 
-.crm-minigame-stage {
+/* ── Strict MC-Mode Minigame Layering ── */
+.minigame-container {
   position: relative;
-  height: 100%;
   width: 100%;
+  height: 250px;
   overflow: hidden;
-  background: #1a3a6a;
   border-top: 4px solid #3A7D44;
+}
+
+.environment-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.minigame-ui-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none; /* Let clicks pass through to the environment layer */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Align HUD to bottom */
+}
+
+/* Re-enable pointer events for specific UI controls */
+.minigame-ui-layer button, 
+.minigame-ui-layer .lazi-mob-wrap {
+  pointer-events: auto;
 }
 
 /* MC Theme Overrides for Finanzen */
