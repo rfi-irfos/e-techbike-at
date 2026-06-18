@@ -222,45 +222,43 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
         </div>
       )}
 
-      {/* ── Finanzen (Austrian KMU specialized) ── */}
+      {/* ── Finanzen (Professional KMU dashboard) ── */}
       {crmTab === 'finanzen' && (
-        <div className="crm-finanzen" style={{ padding: '24px' }}>
-          <div className="crm-fin-dash">
-            <div className="crm-fin-card">
-              <label>Einnahmen</label>
-              <div className="crm-fin-val crm-fin-val--ein">€ {totals.ein.toLocaleString('de-AT')}</div>
+        <div className="crm-finanzen" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div className="crm-fin-dash" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            <div className="crm-fin-card" style={{ background: '#fff', border: '1px solid #e0e0e0', padding: '20px', borderRadius: '12px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#666', marginBottom: '8px' }}>Einnahmen</label>
+              <div className="crm-fin-val crm-fin-val--ein" style={{ fontSize: '28px', fontWeight: 800, color: '#059669' }}>€ {totals.ein.toLocaleString('de-AT')}</div>
             </div>
-            <div className="crm-fin-card">
-              <label>Ausgaben</label>
-              <div className="crm-fin-val crm-fin-val--aus">€ {totals.aus.toLocaleString('de-AT')}</div>
+            <div className="crm-fin-card" style={{ background: '#fff', border: '1px solid #e0e0e0', padding: '20px', borderRadius: '12px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#666', marginBottom: '8px' }}>Ausgaben</label>
+              <div className="crm-fin-val crm-fin-val--aus" style={{ fontSize: '28px', fontWeight: 800, color: '#dc2626' }}>€ {totals.aus.toLocaleString('de-AT')}</div>
             </div>
-            <div className="crm-fin-card crm-fin-card--saldo">
-              <label>Saldo</label>
-              <div className={`crm-fin-val ${totals.saldo >= 0 ? 'crm-fin-val--ein' : 'crm-fin-val--aus'}`}>
+            <div className="crm-fin-card" style={{ background: '#fff', border: '1px solid #e0e0e0', padding: '20px', borderRadius: '12px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#666', marginBottom: '8px' }}>Saldo</label>
+              <div className={`crm-fin-val ${totals.saldo >= 0 ? 'crm-fin-val--ein' : 'crm-fin-val--aus'}`} style={{ fontSize: '28px', fontWeight: 800 }}>
                 € {totals.saldo.toLocaleString('de-AT')}
               </div>
             </div>
           </div>
 
-          <div className="crm-header-row" style={{ marginTop: '24px' }}>
-            <h3 className="crm-section-title">Buchungen</h3>
-            <button className="crm-add-btn" onClick={openAddTransaction}>
-              + Neue Buchung
-            </button>
-          </div>
-
-          <div className="crm-list">
-            {data.transactions.length === 0 && <div className="crm-empty">Noch keine Buchungen erfasst.</div>}
+          <div className="crm-list" style={{ background: '#fff', border: '1px solid #e0e0e0', borderRadius: '12px', overflow: 'hidden' }}>
+            <div className="crm-header-row" style={{ padding: '20px', borderBottom: '1px solid #e0e0e0' }}>
+              <h3 className="crm-section-title" style={{ fontSize: '18px', fontWeight: 700 }}>Buchungen</h3>
+              <button className="crm-add-btn" onClick={openAddTransaction} style={{ padding: '8px 16px', background: '#0099CC', color: '#fff', borderRadius: '6px', border: 'none', fontWeight: 600 }}>
+                + Neue Buchung
+              </button>
+            </div>
+            {data.transactions.length === 0 && <div className="crm-empty" style={{ padding: '40px', textAlign: 'center', color: '#888' }}>Noch keine Buchungen erfasst.</div>}
             {data.transactions.slice().reverse().map(t => (
-              <div key={t.id} className="crm-row crm-row--fin">
-                <div className="crm-row-main">
-                  <span className="crm-row-date">{t.date.slice(0, 10)}</span>
-                  <span className="crm-row-desc">{t.description || t.category}</span>
-                  <span className={`crm-fin-badge crm-fin-badge--${t.type}`}>
+              <div key={t.id} className="crm-row crm-row--fin" style={{ padding: '16px 20px', borderBottom: '1px solid #f0f0f0' }}>
+                <div className="crm-row-main" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="crm-row-date" style={{ fontSize: '13px', color: '#666', width: '100px' }}>{t.date.slice(0, 10)}</span>
+                  <span className="crm-row-desc" style={{ flex: 1, fontWeight: 500 }}>{t.description || t.category}</span>
+                  <span className={`crm-fin-badge crm-fin-badge--${t.type}`} style={{ fontWeight: 700, color: t.type === 'einnahme' ? '#059669' : '#dc2626' }}>
                     {t.type === 'einnahme' ? '+' : '-'} € {t.amount.toLocaleString('de-AT')}
                   </span>
                 </div>
-                {t.invoiceNumber && <div className="crm-row-detail">Rechnung: {t.invoiceNumber}</div>}
               </div>
             ))}
           </div>
