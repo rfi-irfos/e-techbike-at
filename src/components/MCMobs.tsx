@@ -311,13 +311,6 @@ const CHEST_PX: PR[] = [
   pb(10, 6, 4, 4, '#ca8a04'),  // lock
 ]
 
-const CAMPFIRE_PX: PR[] = [
-  pb(4, 16, 16, 4, '#5a3010'), // logs
-  pb(2, 14, 20, 2, '#451a03'), // logs
-  pb(8, 4, 8, 10, '#f97316'),  // flame
-  pb(10, 0, 4, 8, '#fbbf24'),  // inner flame
-]
-
 const HOUSE_PX: PR[] = [
   pb(0, 26, 72, 8, '#dc2626'), pb(4, 18, 64, 12, '#dc2626'),
   pb(8, 10, 56, 12, '#ef4444'), pb(14, 4, 44, 10, '#ef4444'), pb(20, 0, 32, 8, '#fca5a5'),
@@ -633,8 +626,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
     }
   }
 
+
   const [chestOpen, setChestOpen] = useState(false)
-  const [campfireOn, setCampfireOn] = useState(true)
 
   const handleName = (n: string) => {
     setWolfName(n); lsSet(WK.name, n)
@@ -649,10 +642,6 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
     spawnPt(W - 120, chestOpen ? '&#x1F512;' : '&#x2728;', '#fbbf24')
   }
 
-  const toggleCampfire = () => {
-    setCampfireOn(!campfireOn)
-    if (!campfireOn) spawnPt(130, '&#x1F525;', '#ef4444')
-  }
 
   const moodColor = hunger > 60 ? '#4ade80' : hunger > 30 ? '#fbbf24' : '#ef4444'
   const moodLabel = hunger > 60 ? 'Satt' : hunger > 30 ? 'Okay' : hunger > 10 ? 'Hungrig!' : 'Verhungert!'
@@ -706,14 +695,6 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         </div>
         <div style={{ position: 'absolute', right: 125, bottom: 20, cursor: 'pointer' }} onClick={toggleChest}>
           <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
-        </div>
-        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: 20, cursor: 'pointer', zIndex: 5 }} onClick={toggleCampfire}>
-          {campfireOn && (
-            <div style={{ animation: 'lazi-flicker 0.15s infinite alternate' }}>
-              <Sprite px={CAMPFIRE_PX} vw={24} vh={20} scale={2} />
-            </div>
-          )}
-          {!campfireOn && <div style={{ width: 40, height: 8, background: '#451a03', borderRadius: 2 }} />}
         </div>
 
         <div style={{
@@ -776,8 +757,9 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
               background: 'rgba(250,204,21,0.2)', filter: 'blur(4px)',
             }} />
           )}
-          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={2}
+          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={0.7}
             flip={wolfDir === 'l' && !isSitting} />
+
         </div>
 
         {creeperVisible && (
