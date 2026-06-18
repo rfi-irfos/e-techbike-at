@@ -162,21 +162,6 @@ export function EndermanMob() {
   )
 }
 
-export function HorseMob() {
-  return (
-    <div className="lazi-mob lazi-horse" title="Hihihi!">
-      <svg viewBox="0 0 24 20" width="48" height="40" style={{ imageRendering: 'pixelated', display: 'block' }}>
-        <rect x="4" y="2" width="16" height="10" fill="#a57a52"/>
-        <rect x="18" y="0" width="6" height="6" fill="#a57a52"/>
-        <rect x="20" y="1" width="2" height="2" fill="#fff"/>
-        <rect x="20" y="8" width="4" height="2" fill="#7a5230"/>
-        <rect x="4" y="12" width="4" height="8" fill="#a57a52"/>
-        <rect x="14" y="12" width="4" height="8" fill="#a57a52"/>
-      </svg>
-    </div>
-  )
-}
-
 export function CreeperMob() {
   return (
     <div className="lazi-mob lazi-creeper" title="Ssss...">
@@ -196,12 +181,30 @@ export function CreeperMob() {
   )
 }
 
+export function HorseMob() {
+  return (
+    <div className="lazi-mob lazi-horse" title="Hihihi!">
+      <svg viewBox="0 0 24 20" width="48" height="40" style={{ imageRendering: 'pixelated', display: 'block' }}>
+        <rect x="4" y="2" width="16" height="10" fill="#a57a52"/>
+        <rect x="18" y="0" width="6" height="6" fill="#a57a52"/>
+        <rect x="20" y="1" width="2" height="2" fill="#fff"/>
+        <rect x="20" y="8" width="4" height="2" fill="#7a5230"/>
+        <rect x="4" y="12" width="4" height="8" fill="#a57a52"/>
+        <rect x="14" y="12" width="4" height="8" fill="#a57a52"/>
+      </svg>
+    </div>
+  )
+}
+
+// ... (Rest of file) ...
+
 export function MCMobStrip({ onMobClick }: { onMobClick?: (mob: string) => void }) {
   return (
     <div className="lazi-mob-area">
       <div className="lazi-mob-wrap" onClick={() => onMobClick?.('pig')}><PigMob /></div>
       <div className="lazi-mob-wrap" onClick={() => onMobClick?.('sheep')}><SheepMob /></div>
       <div className="lazi-mob-wrap" onClick={() => onMobClick?.('cow')}><CowMob /></div>
+      <div className="lazi-mob-wrap" onClick={() => onMobClick?.('horse')}><HorseMob /></div>
       <div className="lazi-mob-wrap lazi-mob-dragon" onClick={() => onMobClick?.('dragon')}><DragonMob /></div>
       <div className="lazi-mob-wrap lazi-mob-creeper" onClick={() => onMobClick?.('enderman')}><EndermanMob /></div>
     </div>
