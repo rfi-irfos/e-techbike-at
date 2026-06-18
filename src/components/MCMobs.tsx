@@ -226,6 +226,28 @@ export function WolfMob({ tamed, bones }: { tamed: boolean; bones: number }) {
   )
 }
 
+export function CowMob() {
+  return (
+    <div className="lazi-mob lazi-cow" title="Muh!">
+      <svg viewBox="0 0 22 18" width="44" height="36" style={{ imageRendering: 'pixelated', display: 'block' }}>
+        <rect x="2" y="4" width="14" height="10" fill="#fff"/>
+        <rect x="4" y="5" width="4" height="4" fill="#333"/>
+        <rect x="10" y="7" width="3" height="3" fill="#333"/>
+        <rect x="14" y="2" width="7" height="9" fill="#fff"/>
+        <rect x="14" y="3" width="2" height="2" fill="#333"/>
+        <rect x="19" y="5" width="3" height="3" fill="#ffbbaa"/>
+        <rect x="19" y="6" width="1" height="1" fill="#cc8877"/>
+        <rect x="21" y="6" width="1" height="1" fill="#cc8877"/>
+        <rect x="15" y="0" width="2" height="3" fill="#888"/>
+        <rect x="19" y="0" width="2" height="3" fill="#888"/>
+        <rect x="3" y="14" width="2" height="4" fill="#888"/>
+        <rect x="8" y="14" width="2" height="4" fill="#888"/>
+        <rect x="12" y="14" width="2" height="4" fill="#888"/>
+      </svg>
+    </div>
+  )
+}
+
 export function CrmMobStrip({ onWolfClick, wolfBones, wolfTamed }: {
   onWolfClick?: () => void
   wolfBones?: number
@@ -233,8 +255,8 @@ export function CrmMobStrip({ onWolfClick, wolfBones, wolfTamed }: {
 }) {
   return (
     <div className="lazi-mob-area">
-      <div className="lazi-mob-wrap"><PigMob /></div>
-      <div className="lazi-mob-wrap"><SheepMob /></div>
+      <div className="lazi-mob-wrap" onClick={() => feedAnimal('pig')}><PigMob /></div>
+      <div className="lazi-mob-wrap" onClick={() => feedAnimal('sheep')}><SheepMob /></div>
       <div className="lazi-mob-wrap"><CowMob /></div>
       <div className="lazi-mob-wrap lazi-mob-creeper"><CreeperMob /></div>
       <div className="lazi-mob-wrap lazi-mob-creeper"><EndermanMob /></div>
@@ -245,57 +267,48 @@ export function CrmMobStrip({ onWolfClick, wolfBones, wolfTamed }: {
   )
 }
 
-// ── Pixel sprite helpers ──────────────────────────────────────────────────────
-type PR = { x: number; y: number; w: number; h: number; f: string }
-const pb = (x: number, y: number, w: number, h: number, f: string): PR => ({ x, y, w, h, f })
-
 function wolfWalkPx(tick: number, tamed: boolean, howling = false): PR[] {
   const leg = Math.sin(tick * 0.45) * 2
+  const tailX = Math.sin(tick * 0.8) * 2 // wagging
   const collar = tamed ? '#0099CC' : 'transparent'
-  const w = '#d1d5db', d = '#9ca3af', e = '#111' // colors
+  const w = '#d1d5db', d = '#9ca3af', e = '#111'
+  const yO = 4
   
   if (howling) return [
-    pb(0, 8, 3, 7, d), // tail
-    pb(3, 7, 18, 10, w), // body
-    ...(tamed ? [pb(18, 9, 4, 2, collar)] : []),
-    pb(21, 6, 8, 8, w), // head
-    pb(29, 9, 3, 3, '#eee'), // snout
-    pb(31, 8, 2, 2, e), // nose
-    pb(25, 8, 2, 2, e), // eye
-    pb(22, 3, 2, 3, w), pb(27, 3, 2, 3, w), // ears
-    pb(5, 17, 3, 6, d), pb(11, 17, 3, 6, d), // legs
-    pb(15, 17, 3, 6, d), pb(21, 17, 3, 6, d),
+    pb(tailX, 8+yO, 3, 7, d), pb(3, 7+yO, 18, 10, w),
+    ...(tamed ? [pb(18, 9+yO, 4, 2, collar)] : []),
+    pb(21, 6+yO, 8, 8, w), pb(29, 9+yO, 3, 3, '#eee'),
+    pb(31, 8+yO, 2, 2, e), pb(25, 8+yO, 2, 2, e),
+    pb(22, 3+yO, 2, 3, w), pb(27, 3+yO, 2, 3, w),
+    pb(5, 17+yO, 3, 6, d), pb(11, 17+yO, 3, 6, d),
+    pb(15, 17+yO, 3, 6, d), pb(21, 17+yO, 3, 6, d),
   ]
 
   return [
-    pb(0, 8, 3, 7, d), // tail
-    pb(3, 8, 18, 10, w), // body
-    ...(tamed ? [pb(18, 10, 4, 2, collar)] : []),
-    pb(21, 5, 8, 8, w), // head
-    pb(29, 9, 3, 3, '#eee'), // snout
-    pb(31, 8, 2, 2, e), // nose
-    pb(24, 7, 2, 2, e), // eye
-    pb(22, 2, 2, 3, w), pb(27, 2, 2, 3, w), // ears
-    pb(5, 18, 3, 6 + leg, d), pb(11, 18, 3, 6 - leg, d), // legs
-    pb(15, 18, 3, 6 - leg, d), pb(21, 18, 3, 6 + leg, d),
+    pb(tailX, 8+yO, 3, 7, d), pb(3, 8+yO, 18, 10, w),
+    ...(tamed ? [pb(18, 10+yO, 4, 2, collar)] : []),
+    pb(21, 5+yO, 8, 8, w), pb(29, 9+yO, 3, 3, '#eee'),
+    pb(31, 8+yO, 2, 2, e), pb(24, 7+yO, 2, 2, e),
+    pb(22, 2+yO, 2, 3, w), pb(27, 2+yO, 2, 3, w),
+    pb(5, 18+yO, 3, 6 + leg, d), pb(11, 18+yO, 3, 6 - leg, d),
+    pb(15, 18+yO, 3, 6 - leg, d), pb(21, 18+yO, 3, 6 + leg, d),
   ]
 }
 
 function wolfSitPx(tamed: boolean, eating = false): PR[] {
   const collar = tamed ? '#0099CC' : 'transparent'
   const w = '#d1d5db', d = '#9ca3af', e = '#111'
+  const yO = 2
   return [
-    pb(2, 14, 14, 10, w), // body
-    ...(tamed ? [pb(16, 11, 4, 2, collar)] : []),
-    pb(16, 6, 8, 8, w), // head
-    pb(24, 10, 3, 3, '#eee'), // snout
-    pb(26, 9, 2, 2, e), // nose
-    pb(19, 8, 2, 2, e), // eye
-    pb(17, 3, 2, 3, w), pb(22, 3, 2, 3, w), // ears
-    pb(4, 24, 3, 6, d), pb(10, 24, 3, 6, d), // back legs
-    pb(16, 24, 3, 6, d), pb(21, 24, 3, 6, d), // front legs
-    pb(0, 6, 3, 10, d), // tail
-    ...(eating ? [pb(26, 7, 5, 4, '#fbbf24'), pb(28, 9, 3, 2, '#92400e')] : []),
+    pb(2, 14+yO, 14, 10, w),
+    ...(tamed ? [pb(16, 11+yO, 4, 2, collar)] : []),
+    pb(16, 6+yO, 8, 8, w), pb(24, 10+yO, 3, 3, '#eee'),
+    pb(26, 9+yO, 2, 2, e), pb(19, 8+yO, 2, 2, e),
+    pb(17, 3+yO, 2, 3, w), pb(22, 3+yO, 2, 3, w),
+    pb(4, 24+yO, 3, 6, d), pb(10, 24+yO, 3, 6, d),
+    pb(16, 24+yO, 3, 6, d), pb(21, 24+yO, 3, 6, d),
+    pb(0, 6+yO, 3, 10, d),
+    ...(eating ? [pb(26, 7+yO, 5, 4, '#fbbf24'), pb(28, 9+yO, 3, 2, '#92400e')] : []),
   ]
 }
 
@@ -321,11 +334,20 @@ const CHEST_PX: PR[] = [
   pb(10, 6, 4, 4, '#ca8a04'),  // lock
 ]
 
-const CAMPFIRE_PX: PR[] = [
+const CAMPFIRE_LOGS_PX: PR[] = [
   pb(4, 16, 16, 4, '#5a3010'), // logs
   pb(2, 14, 20, 2, '#451a03'), // logs
+]
+
+const CAMPFIRE_FLAME_PX: PR[] = [
   pb(8, 4, 8, 10, '#f97316'),  // flame
   pb(10, 0, 4, 8, '#fbbf24'),  // inner flame
+]
+
+const MOUNTAIN_PX: PR[] = [
+  pb(40, 0, 80, 80, '#374151'), // peak
+  pb(0, 40, 160, 40, '#1f2937'), // base
+  pb(65, 0, 30, 15, '#f9fafb'), // snow cap
 ]
 
 const HOUSE_PX: PR[] = [
@@ -649,6 +671,14 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
   const [chestOpen, setChestOpen] = useState(false)
   const [campfireOn, setCampfireOn] = useState(true)
+  const [holdingBone, setHoldingBone] = useState(false)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+  }
 
   const handleName = (n: string) => {
     setWolfName(n); lsSet(WK.name, n)
@@ -659,14 +689,43 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   }
 
   const toggleChest = () => {
-    setChestOpen(!chestOpen)
-    spawnPt(W - 120, chestOpen ? '&#x1F512;' : '&#x2728;', '#fbbf24')
+    const next = !chestOpen
+    setChestOpen(next)
+    if (next) {
+      const loot = ['&#x1F48E;', '&#x1F4B0;', '&#x1F34E;', '&#x1F9B4;', '&#x1F52E;']
+      const char = loot[Math.floor(Math.random() * loot.length)]
+      spawnPt(W - 120, char, '#fbbf24')
+    }
   }
 
   const toggleCampfire = () => {
     setCampfireOn(!campfireOn)
-    if (!campfireOn) spawnPt(130, '&#x1F525;', '#ef4444')
+    if (!campfireOn) spawnPt(W/2, '&#x1F525;', '#ef4444')
   }
+
+  const feedAnimal = (type: 'pig' | 'sheep') => {
+    const x = type === 'pig' ? pigX : sheepX
+    spawnPts(x + 15, [['&#x2665;', '#f472b6'], ['&#x2665;', '#f472b6']])
+    if (type === 'pig') unlock('ach-ferkel', 'Ferkel-Königin')
+    else unlock('ach-schaf', 'Schaf-Flüsterin')
+  }
+
+  // Follow the bone AI
+  useEffect(() => {
+    if (!holdingBone || wsRef.current === 'eating' || wsRef.current === 'fetching') return
+    const t = setInterval(() => {
+      const targetX = mousePos.x - 20
+      const dist = targetX - wxRef.current
+      if (Math.abs(dist) > 10) {
+        setWolfDir(dist > 0 ? 'r' : 'l')
+        setWolfState('walking')
+        setWolfX(x => x + (dist > 0 ? 3 : -3))
+      } else {
+        setWolfState('idle')
+      }
+    }, 50)
+    return () => clearInterval(t)
+  }, [holdingBone, mousePos])
 
   const moodColor = hunger > 60 ? '#4ade80' : hunger > 30 ? '#fbbf24' : '#ef4444'
   const moodLabel = hunger > 60 ? 'Satt' : hunger > 30 ? 'Okay' : hunger > 10 ? 'Hungrig!' : 'Verhungert!'
@@ -685,7 +744,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
       {showNameDialog && <WolfNameDialog onName={handleName} />}
       {achToast && <AchievementToast title={achToast.title} onDone={() => setAchToast(null)} />}
 
-      <div ref={containerRef} style={{
+      <div ref={containerRef} onMouseMove={handleMouseMove} onMouseLeave={() => setHoldingBone(false)} style={{
         position: 'relative', overflow: 'hidden', height: 120,
         background: skyBg, userSelect: 'none', borderTop: '2px solid #5D9E2E',
       }}>
@@ -702,11 +761,21 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           }} />
         )}
 
+        <div style={{ position: 'absolute', left: -20, bottom: 20, opacity: 0.4 }}>
+          <Sprite px={MOUNTAIN_PX} vw={160} vh={80} scale={1.5} />
+        </div>
+        <div style={{ position: 'absolute', right: 100, bottom: 20, opacity: 0.3 }}>
+          <Sprite px={MOUNTAIN_PX} vw={160} vh={80} scale={1.2} flip />
+        </div>
+
         <div style={{ position: 'absolute', left: 30, bottom: 20 }}>
           <Sprite px={TREE_PX} vw={30} vh={50} />
         </div>
         <div style={{ position: 'absolute', left: 185, bottom: 20 }}>
           <Sprite px={TREE_PX} vw={30} vh={50} scale={0.8} />
+        </div>
+        <div style={{ position: 'absolute', left: 400, bottom: 20 }}>
+          <Sprite px={TREE_PX} vw={30} vh={50} scale={0.9} />
         </div>
         <div style={{ position: 'absolute', right: 6, bottom: 20 }}>
           <Sprite px={HOUSE_PX} vw={72} vh={80} />
@@ -715,21 +784,22 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           <Sprite px={CRAFTING_TABLE_PX} vw={24} vh={24} scale={1.2} />
         </div>
         <div style={{ position: 'absolute', right: 125, bottom: 20, cursor: 'pointer' }} onClick={toggleChest}>
-          <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
+          <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'translateY(2px) scaleY(0.9)' : undefined }} />
         </div>
         <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: 20, cursor: 'pointer', zIndex: 5 }} onClick={toggleCampfire}>
+          <Sprite px={CAMPFIRE_LOGS_PX} vw={24} vh={20} scale={2} />
           {campfireOn && (
-            <div style={{ animation: 'lazi-flicker 0.15s infinite alternate' }}>
-              <Sprite px={CAMPFIRE_PX} vw={24} vh={20} scale={2} />
+            <div style={{ position: 'absolute', inset: 0, animation: 'lazi-flicker 0.15s infinite alternate' }}>
+              <Sprite px={CAMPFIRE_FLAME_PX} vw={24} vh={20} scale={2} />
             </div>
           )}
-          {!campfireOn && <div style={{ width: 40, height: 8, background: '#451a03', borderRadius: 2 }} />}
+          {!campfireOn && <div style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', width: 40, height: 2, background: '#451a03', opacity: 0.5 }} />}
         </div>
 
         <div style={{
           position: 'absolute', left: sheepX, bottom: 20, cursor: 'pointer',
           transform: sheepBob ? 'translateY(-3px)' : 'translateY(0)', transition: 'transform 0.2s',
-        }} onClick={() => unlock('ach-schaf', 'Schaf-Flüsterin')} title="Baa!">
+        }} onClick={() => feedAnimal('sheep')} title="Baa!">
           <svg viewBox="0 0 22 18" width={33} height={27}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: sheepDir === 'l' ? 'scaleX(-1)' : undefined }}>
@@ -747,7 +817,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         </div>
 
         <div style={{ position: 'absolute', left: pigX, bottom: 20, cursor: 'pointer' }}
-          onClick={() => unlock('ach-ferkel', 'Ferkel-Königin')} title="Oink!">
+          onClick={() => feedAnimal('pig')} title="Oink!">
           <svg viewBox="0 0 28 18" width={36} height={23}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: pigDir === 'l' ? 'scaleX(-1)' : undefined }}>
@@ -769,6 +839,13 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
             position: 'absolute', left: ballX, bottom: 48, width: 10, height: 10,
             borderRadius: '50%', background: '#fff', border: '2px solid #555',
           }} />
+        )}
+
+        {holdingBone && (
+          <div style={{
+            position: 'absolute', left: mousePos.x, top: mousePos.y, pointerEvents: 'none',
+            fontSize: 20, transform: 'translate(-50%, -50%)', zIndex: 100,
+          }}>&#x1F9B4;</div>
         )}
 
         <div style={{ position: 'absolute', left: wolfX, bottom: 20, cursor: 'pointer' }}
@@ -868,17 +945,18 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           {[
-            { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, alwaysEnabled: true },
+            { emoji: '&#x1F9B4;', label: 'Knochen (Halten)', action: () => setHoldingBone(!holdingBone), active: holdingBone, alwaysEnabled: true },
             { emoji: '&#x1F34E;', label: 'Apfel', action: feedApple },
             { emoji: '&#x26BD;', label: 'Ball werfen', action: throwBall },
           ].map(item => (
             <button key={item.label} onClick={item.action}
               title={!item.alwaysEnabled && !tamed ? 'Wolf erst zähmen!' : item.label}
               style={{
-                background: '#2a2010', border: '2px solid #5D9E2E', borderRadius: 4,
+                background: item.active ? '#5D9E2E' : '#2a2010', border: '2px solid #5D9E2E', borderRadius: 4,
                 color: '#fff', fontSize: 16, width: 34, height: 34, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 opacity: !item.alwaysEnabled && !tamed ? 0.35 : 1,
+                boxShadow: item.active ? '0 0 10px #5D9E2E' : 'none',
               }}
               dangerouslySetInnerHTML={{ __html: item.emoji }} />
           ))}

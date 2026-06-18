@@ -378,13 +378,29 @@ button { cursor: pointer; font-family: inherit; }
   font-weight: 600;
 }
 
-/* MC Finanzen Overrides */
-.crm-mc .crm-fin-card {
-  background: #1a1a1a;
-  border: 2px solid #555;
-  box-shadow: 2px 2px 0 #000;
-  border-radius: 0;
+.lazi-ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  padding: 16px;
 }
+.lazi-ach-tile {
+  background: #2a2a2a;
+  border: 2px solid #444;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: default;
+}
+.lazi-ach-tile.unlocked {
+  background: #1a2e1a;
+  border-color: #5D9E2E;
+}
+.lazi-ach-tile-icon { font-size: 20px; }
+.lazi-ach-tile-title { font-size: 9px; color: #ccc; text-align: center; }
+.lazi-ach-tile.unlocked .lazi-ach-tile-title { color: #fff; }
 .crm-mc .crm-fin-val {
   text-shadow: 1px 1px 0 #000;
 }
