@@ -304,8 +304,92 @@ button { cursor: pointer; font-family: inherit; }
 }
 .site-pcard:hover { box-shadow: 0 18px 48px var(--shadow); transform: translateY(-6px); }
 
-/* Admin click mode */
-.site-pcard--admin { cursor: pointer; }
+/* ── Finanzen Dashboard ── */
+.crm-fin-dash {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.crm-fin-card {
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.crm-fin-card label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  letter-spacing: .05em;
+}
+.crm-fin-val {
+  font-size: 24px;
+  font-weight: 900;
+  font-family: 'Courier New', monospace;
+}
+.crm-fin-val--ein { color: #22c55e; }
+.crm-fin-val--aus { color: #ef4444; }
+
+.crm-row--fin {
+  border-left: 4px solid var(--border);
+}
+.crm-row--fin:has(.crm-fin-badge--einnahme) { border-left-color: #22c55e; }
+.crm-row-body-summary {
+  display: flex;
+  gap: 12px;
+  margin: 4px 0;
+}
+.crm-row-detail--highlight {
+  color: var(--primary);
+  font-weight: 700;
+  background: var(--surface-sunken);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 4px 0;
+}
+.crm-mc .crm-row-detail--highlight {
+  background: #1a1a1a;
+  color: #FFFF55;
+  border: 1px solid #555;
+  border-radius: 0;
+}
+
+.crm-fin-badge {
+  font-weight: 800;
+  font-family: 'Courier New', monospace;
+}
+.crm-fin-badge--einnahme { color: #22c55e; }
+.crm-fin-badge--ausgabe { color: #ef4444; }
+
+.crm-row-date {
+  font-size: 11px;
+  color: var(--text-soft);
+  font-weight: 700;
+  margin-right: 8px;
+}
+.crm-row-desc {
+  flex: 1;
+  font-weight: 600;
+}
+
+/* MC Finanzen Overrides */
+.crm-mc .crm-fin-card {
+  background: #1a1a1a;
+  border: 2px solid #555;
+  box-shadow: 2px 2px 0 #000;
+  border-radius: 0;
+}
+.crm-mc .crm-fin-val {
+  text-shadow: 1px 1px 0 #000;
+}
+.crm-mc .crm-fin-val--ein { color: #55ff55; }
+.crm-mc .crm-fin-val--aus { color: #ff5555; }
 .site-pcard--admin:hover { outline: 2px dashed rgba(0,153,204,.4); outline-offset: 2px; }
 .site-pcard--selected { outline: 2.5px solid #0099CC !important; outline-offset: 2px; box-shadow: 0 0 0 5px rgba(0,153,204,.12) !important; transform: none !important; }
 .site-pcard-img {

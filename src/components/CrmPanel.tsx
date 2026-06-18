@@ -1,38 +1,24 @@
-import { useState, useEffect, useRef } from 'react'
-import type { Customer } from '../types/crm'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import type { Customer, Transaction, CRMData } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
 import { MCTopbarTrees, CrmScene } from './MCMobs'
-// eslint-disable-next-line
 
-// ── Achievements (shared storage with LaziPanel) ──────────────────────────────
+// ── Achievements (shared storage) ───────────────────────────────────────────
 const ACH_KEY = 'lazi_achievements'
-const FIRST_THREE = ['ach-erste-schritte', 'ach-baumeisterin', 'ach-haendlerin']
+const FIRST_THREE = ['ach-erste-schritte']
 
 const ACHIEVEMENTS = [
-  { id: 'ach-erste-schritte',   title: 'Erste Schritte',          desc: 'Website zum ersten Mal besucht' },
-  { id: 'ach-baumeisterin',     title: 'Baumeisterin',             desc: 'Erste Änderung im Builder gespeichert' },
-  { id: 'ach-haendlerin',       title: 'Händlerin',                desc: 'Erstes Produkt hinzugefügt' },
-  { id: 'ach-fotografin',       title: 'Fotografin',               desc: 'Erstes Bild hochgeladen' },
-  { id: 'ach-schreiberin',      title: 'Schreiberin',              desc: 'Erste Seite erstellt' },
-  { id: 'ach-kontaktmeisterin', title: 'Kontaktmeisterin',         desc: 'Kontaktformular ausgefüllt' },
-  { id: 'ach-diamant',          title: 'Diamant-Tier',             desc: '10 Produkte im Shop' },
-  { id: 'ach-nether',           title: 'Nether-Portal',            desc: 'Zu spät nachts noch am Arbeiten' },
-  { id: 'ach-enderdrachen',     title: 'Enderdrachen-Bezwingerin', desc: 'Alles auf der Website fertig' },
-  { id: 'ach-schaf',            title: 'Schaf-Flüsterin',          desc: 'Schaf entdeckt' },
-  { id: 'ach-ferkel',           title: 'Ferkel-Königin',           desc: 'Schwein gestreichelt' },
-  { id: 'ach-kuh',              title: 'Kuh-Baronin',              desc: 'Kuh gemolken' },
-  { id: 'ach-wolf',             title: 'Wolfsbändigerin',          desc: 'Wolf mit 3 Knochen gezähmt' },
-  { id: 'ach-wolf-name',        title: 'Namensgabe',               desc: 'Wolf einen Namen gegeben' },
-  { id: 'ach-wolf-pet',         title: 'Gestreichelt!',            desc: 'Wolf gestreichelt' },
-  { id: 'ach-wolf-bone',        title: 'Großzügig!',               desc: 'Wolf einen Knochen gegeben' },
-  { id: 'ach-wolf-apple',       title: 'Apfelliebe!',              desc: 'Wolf einen Apfel gegeben' },
-  { id: 'ach-wolf-fetch',       title: 'Apport!',                  desc: 'Ball für Wolf geworfen' },
-  { id: 'ach-wolf-trick',       title: 'Braver Wolf!',             desc: 'Wolf einen Trick beigebracht' },
-  { id: 'ach-wolf-howl',        title: 'Mondgeheul!',              desc: 'Wolf nachts heulen lassen' },
-  { id: 'ach-wolf-lv5',         title: 'Wolf-Level 5',             desc: 'Wolf auf Level 5 gebracht' },
-  { id: 'ach-wolf-lv10',        title: 'Wolf-Level 10 — Legende!', desc: 'Wolf auf Level 10 gebracht' },
-  { id: 'ach-wolf-hunger',      title: 'Hungernot!',               desc: 'Wolf war am Verhungern' },
+  { id: 'ach-erste-schritte',   title: 'Erste Schritte',          desc: 'Minecraft-Mode im CRM entdeckt' },
+  { id: 'ach-wolf',             title: 'Wolfsbändigerin',          desc: 'Wolf gezähmt und Namen gegeben' },
+  { id: 'ach-wolf-bone-first',  title: 'Großzügig!',               desc: 'Den allerersten Knochen gegeben' },
+  { id: 'ach-wolf-pet-10',      title: 'Tierlieb',                 desc: 'Den Wolf 10x gestreichelt' },
+  { id: 'ach-wolf-pet-50',      title: 'Bester Freund',            desc: 'Den Wolf 50x gestreichelt' },
+  { id: 'ach-wolf-bone-5',      title: 'Futtermeister',            desc: '5 Knochen verfüttert' },
+  { id: 'ach-wolf-bone-20',     title: 'Leitwolf',                 desc: '20 Knochen verfüttert' },
   { id: 'ach-creeper',          title: 'Das War Knapp!',           desc: 'Creeper-Explosion überlebt' },
+  { id: 'ach-night-owl',        title: 'Nacht-Eule',               desc: 'Spät nachts am CRM gearbeitet' },
+  { id: 'ach-early-bird',       title: 'Früher Vogel',             desc: 'Früh morgens schon aktiv' },
+  { id: 'ach-adventurer',       title: 'Adventurer',               desc: 'Den Wolf ganz nach rechts geführt' },
 ]
 
 function loadAchievements(): Set<string> {
@@ -49,17 +35,6 @@ function loadAchievements(): Set<string> {
 
 const CUSTOMERS_PATH = 'public/customers.json'
 
-const INTEREST_SUGGESTIONS = [
-  'E-Scooter 25km/h',
-  'E-Scooter 45km/h',
-  'E-Moped',
-  'E-Fahrrad',
-  'E-Klapprad',
-  'E-Mountainbike',
-  'Akku',
-  'Sonstiges',
-]
-
 const STATUS_LABELS: Record<Customer['status'], string> = {
   offen:     'Offen',
   angeboten: 'Angeboten',
@@ -69,21 +44,28 @@ const STATUS_LABELS: Record<Customer['status'], string> = {
 
 type StatusFilter = Customer['status'] | 'alle'
 
-function emptyForm(): Omit<Customer, 'id' | 'createdAt' | 'updatedAt'> {
-  return { name: '', phone: '', email: '', interest: '', budget: '', status: 'offen', notes: '' }
+function emptyCustomer(): Omit<Customer, 'id' | 'createdAt' | 'updatedAt'> {
+  return { name: '', phone: '', email: '', address: '', interest: '', budget: '', status: 'offen', notes: '' }
+}
+
+function emptyTransaction(): Omit<Transaction, 'id' | 'date'> {
+  return { type: 'einnahme', amount: 0, category: 'Verkauf', description: '', invoiceNumber: '' }
 }
 
 export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
-  const [customers, setCustomers]         = useState<Customer[]>([])
+  const [data, setData]                   = useState<CRMData>({ customers: [], transactions: [] })
   const [loading, setLoading]             = useState(true)
   const [saving, setSaving]               = useState(false)
   const [saveMsg, setSaveMsg]             = useState<'ok' | 'err' | null>(null)
   const [search, setSearch]               = useState('')
   const [statusFilter, setStatusFilter]   = useState<StatusFilter>('alle')
-  const [modalOpen, setModalOpen]         = useState(false)
+  
+  const [modalType, setModalType]         = useState<'customer' | 'transaction' | null>(null)
   const [editId, setEditId]               = useState<string | null>(null)
-  const [form, setForm]                   = useState(emptyForm())
-  const [crmTab, setCrmTab]               = useState<'kunden' | 'achievements'>('kunden')
+  const [customerForm, setCustomerForm]   = useState(emptyCustomer())
+  const [transactionForm, setTransactionForm] = useState(emptyTransaction())
+  
+  const [crmTab, setCrmTab]               = useState<'kunden' | 'finanzen' | 'achievements'>('kunden')
   const [unlocked, setUnlocked]           = useState<Set<string>>(() => mcMode ? loadAchievements() : new Set())
   const shaRef = useRef<string | null>(null)
 
@@ -96,30 +78,36 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
     })
   }
 
-  useEffect(() => { loadCustomers() }, [])
+  useEffect(() => { loadData() }, [])
 
-  async function loadCustomers() {
+  async function loadData() {
     setLoading(true)
     try {
       const file = await ghRead(CUSTOMERS_PATH)
       shaRef.current = file.sha
       const json = b64Decode(file.content)
-      setCustomers(JSON.parse(json))
+      const parsed = JSON.parse(json)
+      // Migration for old structure
+      if (Array.isArray(parsed)) {
+        setData({ customers: parsed, transactions: [] })
+      } else {
+        setData(parsed)
+      }
     } catch {
-      setCustomers([])
+      setData({ customers: [], transactions: [] })
       shaRef.current = null
     } finally {
       setLoading(false)
     }
   }
 
-  async function persistCustomers(updated: Customer[]): Promise<boolean> {
+  async function persistData(updated: CRMData): Promise<boolean> {
     setSaving(true)
     try {
       const b64 = b64Encode(JSON.stringify(updated, null, 2))
-      const file = await ghWrite(CUSTOMERS_PATH, b64, shaRef.current, 'crm: update customers')
+      const file = await ghWrite(CUSTOMERS_PATH, b64, shaRef.current, 'crm: update data')
       shaRef.current = file?.sha ?? null
-      setCustomers(updated)
+      setData(updated)
       return true
     } catch (e) {
       console.error('CRM save failed:', e)
@@ -134,84 +122,78 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
     setTimeout(() => setSaveMsg(null), result === 'ok' ? 2500 : 3500)
   }
 
-  function openAdd() {
+  // --- Customer Handlers ---
+  function openAddCustomer() {
     setEditId(null)
-    setForm(emptyForm())
-    setModalOpen(true)
+    setCustomerForm(emptyCustomer())
+    setModalType('customer')
   }
 
-  function openEdit(c: Customer) {
+  function openEditCustomer(c: Customer) {
     setEditId(c.id)
-    setForm({
-      name:     c.name,
-      phone:    c.phone,
-      email:    c.email,
-      interest: c.interest,
-      budget:   c.budget,
-      status:   c.status,
-      notes:    c.notes,
-    })
-    setModalOpen(true)
+    setCustomerForm({ ...c })
+    setModalType('customer')
   }
 
-  async function handleSave() {
-    if (!form.name.trim()) return
+  async function handleSaveCustomer() {
+    if (!customerForm.name.trim()) return
     const now = new Date().toISOString()
-    let updated: Customer[]
+    let updatedCustomers: Customer[]
     if (editId) {
-      updated = customers.map(c =>
-        c.id === editId ? { ...c, ...form, updatedAt: now } : c
+      updatedCustomers = data.customers.map(c =>
+        c.id === editId ? { ...c, ...customerForm, updatedAt: now } : c
       )
     } else {
       const newC: Customer = {
         id:        `c${Date.now()}`,
-        ...form,
+        ...customerForm,
         createdAt: now,
         updatedAt: now,
       }
-      updated = [...customers, newC]
+      updatedCustomers = [...data.customers, newC]
     }
-    const ok = await persistCustomers(updated)
-    if (ok) {
-      setModalOpen(false)
-      flash('ok')
-    } else {
-      flash('err')
-    }
+    const ok = await persistData({ ...data, customers: updatedCustomers })
+    if (ok) { setModalType(null); flash('ok') } else flash('err')
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Diesen Kontakt wirklich löschen?')) return
-    const updated = customers.filter(c => c.id !== id)
-    const ok = await persistCustomers(updated)
-    if (!ok) flash('err')
+  // --- Transaction Handlers ---
+  function openAddTransaction() {
+    setEditId(null)
+    setTransactionForm(emptyTransaction())
+    setModalType('transaction')
   }
 
-  async function handleDeleteFromModal(id: string) {
-    if (!confirm('Diesen Kontakt wirklich löschen?')) return
-    const updated = customers.filter(c => c.id !== id)
-    const ok = await persistCustomers(updated)
-    if (ok) {
-      setModalOpen(false)
-      flash('ok')
-    } else {
-      flash('err')
+  async function handleSaveTransaction() {
+    if (transactionForm.amount <= 0) return
+    const now = new Date().toISOString()
+    const newT: Transaction = {
+      id: `t${Date.now()}`,
+      date: now,
+      ...transactionForm
     }
+    const ok = await persistData({ ...data, transactions: [...data.transactions, newT] })
+    if (ok) { setModalType(null); flash('ok') } else flash('err')
   }
 
-  const filtered = customers
+  const filteredCustomers = data.customers
     .filter(c => statusFilter === 'alle' || c.status === statusFilter)
     .filter(c => {
       if (!search.trim()) return true
       const q = search.toLowerCase()
       return (
         c.name.toLowerCase().includes(q) ||
-        c.phone.toLowerCase().includes(q) ||
-        c.email.toLowerCase().includes(q) ||
-        c.interest.toLowerCase().includes(q)
+        (c.phone && c.phone.toLowerCase().includes(q)) ||
+        (c.email && c.email.toLowerCase().includes(q)) ||
+        (c.interest && c.interest.toLowerCase().includes(q))
       )
     })
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+
+  const totals = useMemo(() => {
+    const ein = data.transactions.filter(t => t.type === 'einnahme').reduce((sum, t) => sum + t.amount, 0)
+    const aus = data.transactions.filter(t => t.type === 'ausgabe').reduce((sum, t) => sum + t.amount, 0)
+    return { ein, aus, saldo: ein - aus }
+  }, [data.transactions])
 
   return (
     <div className={`crm-panel${mcMode ? ' crm-mc' : ''}`}>
@@ -232,10 +214,56 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       {mcMode && (
         <div className="crm-mc-tabs">
           <button className={`crm-mc-tab${crmTab === 'kunden' ? ' active' : ''}`} onClick={() => setCrmTab('kunden')}>Kunden</button>
+          <button className={`crm-mc-tab${crmTab === 'finanzen' ? ' active' : ''}`} onClick={() => setCrmTab('finanzen')}>Finanzen</button>
           <button className={`crm-mc-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
             Achievements
-            <span className="crm-mc-tab-count">{unlocked.size}/13</span>
+            <span className="crm-mc-tab-count">{unlocked.size}/11</span>
           </button>
+        </div>
+      )}
+
+      {/* ── Finanzen (Austrian KMU specialized) ── */}
+      {crmTab === 'finanzen' && (
+        <div className="crm-finanzen" style={{ padding: '24px' }}>
+          <div className="crm-fin-dash">
+            <div className="crm-fin-card">
+              <label>Einnahmen</label>
+              <div className="crm-fin-val crm-fin-val--ein">€ {totals.ein.toLocaleString('de-AT')}</div>
+            </div>
+            <div className="crm-fin-card">
+              <label>Ausgaben</label>
+              <div className="crm-fin-val crm-fin-val--aus">€ {totals.aus.toLocaleString('de-AT')}</div>
+            </div>
+            <div className="crm-fin-card crm-fin-card--saldo">
+              <label>Saldo</label>
+              <div className={`crm-fin-val ${totals.saldo >= 0 ? 'crm-fin-val--ein' : 'crm-fin-val--aus'}`}>
+                € {totals.saldo.toLocaleString('de-AT')}
+              </div>
+            </div>
+          </div>
+
+          <div className="crm-header-row" style={{ marginTop: '24px' }}>
+            <h3 className="crm-section-title">Buchungen</h3>
+            <button className="crm-add-btn" onClick={openAddTransaction}>
+              + Neue Buchung
+            </button>
+          </div>
+
+          <div className="crm-list">
+            {data.transactions.length === 0 && <div className="crm-empty">Noch keine Buchungen erfasst.</div>}
+            {data.transactions.slice().reverse().map(t => (
+              <div key={t.id} className="crm-row crm-row--fin">
+                <div className="crm-row-main">
+                  <span className="crm-row-date">{t.date.slice(0, 10)}</span>
+                  <span className="crm-row-desc">{t.description || t.category}</span>
+                  <span className={`crm-fin-badge crm-fin-badge--${t.type}`}>
+                    {t.type === 'einnahme' ? '+' : '-'} € {t.amount.toLocaleString('de-AT')}
+                  </span>
+                </div>
+                {t.invoiceNumber && <div className="crm-row-detail">Rechnung: {t.invoiceNumber}</div>}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -249,9 +277,6 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
                 key={a.id}
                 className={`lazi-ach-slot${isUnlocked ? ' unlocked' : ''}`}
                 title={isUnlocked ? a.desc : '???'}
-                onClick={() => {
-                  if (!isUnlocked) return
-                }}
               >
                 <div className="lazi-ach-icon">
                   {isUnlocked ? '★' : '?'}
@@ -264,8 +289,8 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
         </div>
       )}
 
-      {/* ── Header ── */}
-      {(!mcMode || crmTab === 'kunden') && <div className="crm-header">
+      {/* ── Kunden Liste (Header) ── */}
+      {crmTab === 'kunden' && <div className="crm-header">
         <h2 className="crm-title">
           {mcMode ? (
             <svg viewBox="0 0 16 16" width="18" height="18" style={{ imageRendering: 'pixelated' }}>
@@ -283,7 +308,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
             </svg>
           )}
           Kunden
-          <span className="crm-count">{customers.length}</span>
+          <span className="crm-count">{data.customers.length}</span>
         </h2>
 
         <div className="crm-header-row">
@@ -294,7 +319,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="crm-add-btn" onClick={openAdd}>
+          <button className="crm-add-btn" onClick={openAddCustomer}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
               <line x1="12" y1="5" x2="12" y2="19"/>
               <line x1="5" y1="12" x2="19" y2="12"/>
@@ -317,71 +342,40 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       </div>}
 
       {/* ── Feedback ── */}
-      {(!mcMode || crmTab === 'kunden') && saveMsg === 'ok'  && <div className="crm-feedback crm-feedback--ok">Gespeichert.</div>}
-      {(!mcMode || crmTab === 'kunden') && saveMsg === 'err' && <div className="crm-feedback crm-feedback--err">Fehler beim Speichern.</div>}
+      {crmTab === 'kunden' && saveMsg === 'ok'  && <div className="crm-feedback crm-feedback--ok">Gespeichert.</div>}
+      {crmTab === 'kunden' && saveMsg === 'err' && <div className="crm-feedback crm-feedback--err">Fehler beim Speichern.</div>}
 
-      {/* ── List ── */}
-      {(!mcMode || crmTab === 'kunden') && loading ? (
+      {/* ── Kunden List ── */}
+      {crmTab === 'kunden' && (loading ? (
         <div className="crm-empty">Wird geladen…</div>
       ) : (
         <div className="crm-list">
-          {filtered.length === 0 && customers.length === 0 && (
-            <>
-              {(['Max Mustermann', 'Anna Beispiel', 'Thomas K.'] as const).map((name, i) => (
-                <div key={i} className="crm-row crm-row-placeholder">
-                  <div className="crm-row-main">
-                    <span className="crm-row-name crm-placeholder-text">{name}</span>
-                    <span className={`crm-status-badge crm-status-badge--${(['offen','angeboten','verkauft'] as const)[i]}`}>
-                      {(['Offen','Angeboten','Verkauft'] as const)[i]}
-                    </span>
-                  </div>
-                  <div className="crm-row-detail crm-placeholder-text">{['+43 664 …','…','…'][i]}</div>
-                  <div className="crm-row-detail crm-placeholder-text">{['E-Scooter 45km/h · €1.200','E-Fahrrad · €850','E-Moped'][i]}</div>
-                </div>
-              ))}
-              <div className="crm-empty crm-empty-hint">So sehen Ihre Kontakte aus — klick auf + Neuer Kontakt um zu starten.</div>
-            </>
-          )}
-          {filtered.length === 0 && customers.length > 0 && (
+          {filteredCustomers.length === 0 && data.customers.length > 0 && (
             <div className="crm-empty">Keine Treffer für diese Filter.</div>
           )}
-          {filtered.map(c => (
-            <div key={c.id} className="crm-row">
+          {filteredCustomers.map(c => (
+            <div key={c.id} className="crm-row" onClick={() => openEditCustomer(c)} style={{ cursor: 'pointer', position: 'relative' }}>
               <div className="crm-row-main">
                 <span className="crm-row-name">{c.name}</span>
                 <span className={`crm-status-badge crm-status-badge--${c.status}`}>
                   {STATUS_LABELS[c.status]}
                 </span>
               </div>
-              {c.phone && (
-                <div className="crm-row-detail">{c.phone}</div>
-              )}
+              <div className="crm-row-body-summary">
+                {c.phone && <span className="crm-row-detail">{c.phone}</span>}
+                {c.email && <span className="crm-row-detail">{c.email}</span>}
+              </div>
               {(c.interest || c.budget) && (
-                <div className="crm-row-detail">
+                <div className="crm-row-detail crm-row-detail--highlight">
                   {c.interest}{c.interest && c.budget ? ' · ' : ''}{c.budget}
                 </div>
               )}
               <div className="crm-row-foot">
-                <span className="crm-row-meta">{c.updatedAt.slice(0, 10)}</span>
+                <span className="crm-row-meta">Zuletzt: {c.updatedAt.slice(0, 10)}</span>
                 <div className="crm-row-actions">
-                  <button
-                    className="crm-action-btn"
-                    onClick={() => openEdit(c)}
-                    title="Bearbeiten"
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 20h9"/>
-                      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>
-                    </svg>
-                  </button>
-                  <button
-                    className="crm-action-btn crm-action-btn--del"
-                    onClick={() => handleDelete(c.id)}
-                    title="Löschen"
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <polyline points="3 6 5 6 21 6"/>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                  <button className="crm-action-btn" title="Details öffnen">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                     </svg>
                   </button>
                 </div>
@@ -389,131 +383,115 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
             </div>
           ))}
         </div>
-      )}
+      ))}
 
-      {/* ── Add / Edit Modal ── */}
-      {modalOpen && (
-        <div className="pem-overlay" onClick={() => setModalOpen(false)}>
-          <div className="pem" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
-
+      {/* ── Modals ── */}
+      {modalType === 'customer' && (
+        <div className="pem-overlay" onClick={() => setModalType(null)}>
+          <div className="pem" style={{ maxWidth: 600 }} onClick={e => e.stopPropagation()}>
             <div className="pem-header">
-              <span className="pem-title">{editId ? 'Kontakt bearbeiten' : 'Neuer Kontakt'}</span>
-              <button className="pem-close" onClick={() => setModalOpen(false)} title="Schliessen">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
+              <span className="pem-title">{editId ? 'Kunden-Akte' : 'Neuer Kunde'}</span>
+              <button className="pem-close" onClick={() => setModalType(null)}>×</button>
             </div>
-
             <div className="pem-body">
               <div className="crm-modal-grid">
-
                 <div className="pem-field crm-modal-full">
-                  <label>Name *</label>
-                  <input
-                    value={form.name}
-                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    placeholder="Vorname Nachname"
-                    autoFocus
-                  />
+                  <label>Name / Firma</label>
+                  <input value={customerForm.name} onChange={e => setCustomerForm({ ...customerForm, name: e.target.value })} />
                 </div>
-
                 <div className="pem-field">
                   <label>Telefon</label>
-                  <input
-                    value={form.phone}
-                    onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                    placeholder="+43 664 …"
-                  />
+                  <input value={customerForm.phone} onChange={e => setCustomerForm({ ...customerForm, phone: e.target.value })} />
                 </div>
-
                 <div className="pem-field">
                   <label>E-Mail</label>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    placeholder="name@beispiel.at"
-                  />
+                  <input value={customerForm.email} onChange={e => setCustomerForm({ ...customerForm, email: e.target.value })} />
                 </div>
-
+                <div className="pem-field crm-modal-full">
+                  <label>Adresse (AT)</label>
+                  <textarea rows={2} value={customerForm.address || ''} onChange={e => setCustomerForm({ ...customerForm, address: e.target.value })} placeholder="Strasse, PLZ Ort" />
+                </div>
                 <div className="pem-field">
                   <label>Interesse</label>
-                  <input
-                    list="crm-interest-list"
-                    value={form.interest}
-                    onChange={e => setForm(f => ({ ...f, interest: e.target.value }))}
-                    placeholder="z.B. E-Scooter 45km/h"
-                  />
-                  <datalist id="crm-interest-list">
-                    {INTEREST_SUGGESTIONS.map(s => <option key={s} value={s} />)}
-                  </datalist>
+                  <input list="crm-interest-list" value={customerForm.interest} onChange={e => setCustomerForm({ ...customerForm, interest: e.target.value })} />
                 </div>
-
                 <div className="pem-field">
                   <label>Budget</label>
-                  <input
-                    value={form.budget}
-                    onChange={e => setForm(f => ({ ...f, budget: e.target.value }))}
-                    placeholder="z.B. €1.200"
-                  />
+                  <input value={customerForm.budget} onChange={e => setCustomerForm({ ...customerForm, budget: e.target.value })} />
                 </div>
-
                 <div className="pem-field crm-modal-full">
                   <label>Status</label>
-                  <select
-                    value={form.status}
-                    onChange={e => setForm(f => ({ ...f, status: e.target.value as Customer['status'] }))}
-                  >
+                  <select value={customerForm.status} onChange={e => setCustomerForm({ ...customerForm, status: e.target.value as Customer['status'] })}>
                     <option value="offen">Offen</option>
                     <option value="angeboten">Angeboten</option>
                     <option value="verkauft">Verkauft</option>
                     <option value="abgesagt">Abgesagt</option>
                   </select>
                 </div>
-
                 <div className="pem-field crm-modal-full">
                   <label>Notizen</label>
-                  <textarea
-                    rows={3}
-                    value={form.notes}
-                    onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                    placeholder="Interne Notizen…"
-                  />
+                  <textarea rows={4} value={customerForm.notes} onChange={e => setCustomerForm({ ...customerForm, notes: e.target.value })} />
                 </div>
-
               </div>
             </div>
-
             <div className="pem-footer">
               {editId ? (
                 <button
                   className="pem-btn-danger"
-                  onClick={() => editId && handleDeleteFromModal(editId)}
+                  onClick={async () => {
+                    if (!confirm('Diesen Kunden wirklich löschen?')) return
+                    const updated = data.customers.filter(c => c.id !== editId)
+                    const ok = await persistData({ ...data, customers: updated })
+                    if (ok) { setModalType(null); flash('ok') } else flash('err')
+                  }}
                   disabled={saving}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="3 6 5 6 21 6"/>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                  </svg>
                   Löschen
                 </button>
               ) : <span />}
               <div className="pem-footer-right">
-                <button className="pem-btn-ghost" onClick={() => setModalOpen(false)}>
-                  Abbrechen
-                </button>
-                <button
-                  className="pem-btn-primary"
-                  onClick={handleSave}
-                  disabled={saving || !form.name.trim()}
-                >
-                  {saving ? 'Speichern…' : 'Speichern'}
-                </button>
+                <button className="pem-btn-ghost" onClick={() => setModalType(null)}>Abbrechen</button>
+                <button className="pem-btn-primary" onClick={handleSaveCustomer} disabled={saving}>{saving ? '...' : 'Speichern'}</button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
 
+      {modalType === 'transaction' && (
+        <div className="pem-overlay" onClick={() => setModalType(null)}>
+          <div className="pem" style={{ maxWidth: 400 }} onClick={e => e.stopPropagation()}>
+            <div className="pem-header">
+              <span className="pem-title">Beleg / Buchung</span>
+              <button className="pem-close" onClick={() => setModalType(null)}>×</button>
+            </div>
+            <div className="pem-body">
+              <div className="crm-modal-grid">
+                <div className="pem-field crm-modal-full">
+                  <label>Typ</label>
+                  <select value={transactionForm.type} onChange={e => setTransactionForm({ ...transactionForm, type: e.target.value as any })}>
+                    <option value="einnahme">Einnahme (+)</option>
+                    <option value="ausgabe">Ausgabe (-)</option>
+                  </select>
+                </div>
+                <div className="pem-field crm-modal-full">
+                  <label>Betrag (€)</label>
+                  <input type="number" value={transactionForm.amount} onChange={e => setTransactionForm({ ...transactionForm, amount: parseFloat(e.target.value) || 0 })} />
+                </div>
+                <div className="pem-field crm-modal-full">
+                  <label>Rechnungsnummer</label>
+                  <input value={transactionForm.invoiceNumber || ''} onChange={e => setTransactionForm({ ...transactionForm, invoiceNumber: e.target.value })} placeholder="z.B. RE-2024-001" />
+                </div>
+                <div className="pem-field crm-modal-full">
+                  <label>Beschreibung</label>
+                  <textarea rows={2} value={transactionForm.description} onChange={e => setTransactionForm({ ...transactionForm, description: e.target.value })} />
+                </div>
+              </div>
+            </div>
+            <div className="pem-footer">
+              <button className="pem-btn-ghost" onClick={() => setModalType(null)}>Abbrechen</button>
+              <button className="pem-btn-primary" onClick={handleSaveTransaction}>Buchen</button>
+            </div>
           </div>
         </div>
       )}

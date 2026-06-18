@@ -218,7 +218,7 @@ export function WolfMob({ tamed, bones }: { tamed: boolean; bones: number }) {
         <rect x="10" y="14" width="3" height="4" fill={tamed ? '#999' : '#777'}/>
         <rect x="14" y="14" width="3" height="4" fill={tamed ? '#999' : '#777'}/>
         {/* collar when tamed */}
-        {tamed && <rect x="14" y="7" width="5" height="2" fill="#cc2222"/>}
+        {tamed && <rect x="14" y="7" width="5" height="2" fill="#0099CC"/>}
         {/* bone if feeding */}
         {!tamed && bones > 0 && <rect x="18" y="10" width="6" height="2" fill="#eee"/>}
       </svg>
@@ -252,7 +252,7 @@ const pb = (x: number, y: number, w: number, h: number, f: string): PR => ({ x, 
 function wolfWalkPx(tick: number, tamed: boolean, howling = false): PR[] {
   const leg = Math.sin(tick * 0.45) * 3
   const tailY = 6 + Math.abs(Math.sin(tick * 0.3)) * 4
-  const collar = tamed ? '#cc2222' : 'transparent'
+  const collar = tamed ? '#0099CC' : 'transparent'
   if (howling) return [
     pb(0, 8, 4, 10, '#6b7280'), pb(4, 7, 26, 14, '#9ca3af'),
     ...(tamed ? [pb(26, 9, 8, 3, collar)] : []),
@@ -274,7 +274,7 @@ function wolfWalkPx(tick: number, tamed: boolean, howling = false): PR[] {
 }
 
 function wolfSitPx(tamed: boolean, eating = false): PR[] {
-  const collar = tamed ? '#cc2222' : 'transparent'
+  const collar = tamed ? '#0099CC' : 'transparent'
   return [
     pb(2, 16, 16, 12, '#9ca3af'), pb(14, 9, 16, 14, '#9ca3af'),
     ...(tamed ? [pb(22, 11, 10, 3, collar)] : []),
@@ -291,6 +291,28 @@ const TREE_PX: PR[] = [
   pb(5, 20, 20, 14, '#15803d'), pb(1, 12, 28, 12, '#16a34a'),
   pb(5, 4, 20, 12, '#15803d'), pb(9, 0, 12, 8, '#166534'),
   pb(3, 14, 4, 4, '#166534'), pb(23, 14, 4, 4, '#166534'),
+]
+
+const CRAFTING_TABLE_PX: PR[] = [
+  pb(0, 4, 24, 20, '#78350f'), // body
+  pb(0, 0, 24, 4, '#92400e'),  // top
+  pb(2, 2, 2, 2, '#451a03'),   // top dot
+  pb(20, 2, 2, 2, '#451a03'),  // top dot
+  pb(2, 6, 6, 6, '#451a03'),   // side tool
+  pb(16, 8, 4, 12, '#451a03'), // side tool
+]
+
+const CHEST_PX: PR[] = [
+  pb(2, 4, 20, 16, '#78350f'), // body
+  pb(0, 2, 24, 4, '#5d3a1a'),  // lid
+  pb(10, 6, 4, 4, '#ca8a04'),  // lock
+]
+
+const CAMPFIRE_PX: PR[] = [
+  pb(4, 16, 16, 4, '#5a3010'), // logs
+  pb(2, 14, 20, 2, '#451a03'), // logs
+  pb(8, 4, 8, 10, '#f97316'),  // flame
+  pb(10, 0, 4, 8, '#fbbf24'),  // inner flame
 ]
 
 const HOUSE_PX: PR[] = [
@@ -379,7 +401,7 @@ function AchievementToast({ title, onDone }: { title: string; onDone: () => void
 }
 
 // ── CrmScene — full gamified scene ────────────────────────────────────────────
-const WK = { name: 'lazi_w_name', xp: 'lazi_w_xp', hunger: 'lazi_w_hunger', bones: 'lazi_w_bones' }
+const WK = { name: 'lazi_w_name', xp: 'lazi_w_xp', hunger: 'lazi_w_hunger', bones: 'lazi_w_bones', tp: 'lazi_w_tp', tb: 'lazi_w_tb' }
 const lsGet = (k: string, fb = '') => { try { return localStorage.getItem(k) ?? fb } catch { return fb } }
 const lsNum = (k: string, fb = 0) => { const v = parseInt(lsGet(k)); return isNaN(v) ? fb : v }
 const lsSet = (k: string, v: string) => { try { localStorage.setItem(k, v) } catch {} }
@@ -393,6 +415,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   const [wolfBones, setWolfBones] = useState(() => lsNum(WK.bones))
   const [xp, setXp] = useState(() => lsNum(WK.xp))
   const [hunger, setHunger] = useState(() => Math.max(20, lsNum(WK.hunger, 80)))
+  const [totalPets, setTotalPets] = useState(() => lsNum(WK.tp))
+  const [totalBones, setTotalBones] = useState(() => lsNum(WK.tb))
 
   const [wolfX, setWolfX] = useState(80)
   const [wolfDir, setWolfDir] = useState<'r' | 'l'>('r')
@@ -433,6 +457,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
   useEffect(() => { lsSet(WK.xp, String(xp)) }, [xp])
   useEffect(() => { lsSet(WK.hunger, String(Math.round(hunger))) }, [hunger])
+  useEffect(() => { lsSet(WK.tp, String(totalPets)) }, [totalPets])
+  useEffect(() => { lsSet(WK.tb, String(totalBones)) }, [totalBones])
 
   const unlock = useCallback((id: string, title: string) => {
     onAchUnlock(id, title)
@@ -445,9 +471,14 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   const xpToNext = Math.max(1, xpForLv(level + 1) - xpForLv(level))
 
   useEffect(() => {
-    if (tamed && level >= 5) unlock('ach-wolf-lv5', 'Wolf-Level 5')
-    if (tamed && level >= 10) unlock('ach-wolf-lv10', 'Wolf-Level 10 — Legende!')
-  }, [level, tamed, unlock])
+    const h = new Date().getHours()
+    if (h >= 23 || h < 4) unlock('ach-night-owl', 'Nacht-Eule')
+    if (h >= 5 && h < 8) unlock('ach-early-bird', 'Früher Vogel')
+  }, [unlock])
+
+  useEffect(() => {
+    if (wolfX > W - 100) unlock('ach-adventurer', 'Adventurer')
+  }, [wolfX, W, unlock])
 
   const spawnPt = useCallback((x: number, char: string, color: string) => {
     const id = ++pidRef.current
@@ -501,8 +532,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
       }
       animalT++
       if (animalT % 5 === 0) {
-        if (Math.random() < 0.3) setPigDir(d => Math.random() < 0.5 ? 'r' : 'l')
-        if (Math.random() < 0.25) setSheepDir(d => Math.random() < 0.5 ? 'r' : 'l')
+        if (Math.random() < 0.3) setPigDir(() => Math.random() < 0.5 ? 'r' : 'l')
+        if (Math.random() < 0.25) setSheepDir(() => Math.random() < 0.5 ? 'r' : 'l')
         setPigX(px => Math.max(50, Math.min(W * 0.38, px + (pdRef.current === 'r' ? 0.55 : -0.55))))
         setSheepX(sx => Math.max(30, Math.min(W * 0.32, sx + (sdRef.current === 'r' ? 0.4 : -0.4))))
       }
@@ -515,11 +546,10 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   // Hunger drain
   useEffect(() => {
     const t = setInterval(() => setHunger(h => {
-      if (h <= 0) { unlock('ach-wolf-hunger', 'Am Verhungern!'); return 0 }
-      return h - 0.5
+      return Math.max(0, h - 0.5)
     }), 30_000)
     return () => clearInterval(t)
-  }, [unlock])
+  }, [])
 
   // Creeper spawn + explosion
   useEffect(() => {
@@ -532,7 +562,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         setCreeperX(cx => { setBoom(cx); return cx })
         setCreeperVisible(false)
         unlock('ach-creeper', 'Das War Knapp!')
-        setTimeout(() => { setBoom(null); spawn() }, 4200)
+        setTimeout(() => { setBoom(null); spawn() }, 5000)
       }, 1500)
     }, 180_000)
     return () => { clearInterval(walk); clearInterval(explode) }
@@ -541,15 +571,24 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   // Interactions
   const petWolf = () => {
     if (!tamed) { setShowNameDialog(true); return }
+    const next = totalPets + 1
+    setTotalPets(next)
     setWolfState('happy'); setTimeout(() => setWolfState('idle'), 1400)
     spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x2661;', '#f9a8d4'], ['&#x2605;', '#fbbf24']])
     gainXp(5)
-    unlock('ach-wolf-pet', 'Gestreichelt!')
+    if (next >= 10) unlock('ach-wolf-pet-10', 'Tierlieb')
+    if (next >= 50) unlock('ach-wolf-pet-50', 'Bester Freund')
   }
 
   const feedBone = () => {
-    const next = wolfBones + 1
+    const nextB = totalBones + 1
+    setTotalBones(nextB)
+    if (nextB === 1) unlock('ach-wolf-bone-first', 'Großzügig!')
+    if (nextB >= 5) unlock('ach-wolf-bone-5', 'Futtermeister')
+    if (nextB >= 20) unlock('ach-wolf-bone-20', 'Leitwolf')
+
     if (!tamed) {
+      const next = wolfBones + 1
       setWolfBones(next); lsSet(WK.bones, String(next))
       spawnPt(wolfX + 24, '&#x1F9B4;', '#fff')
       if (next >= 3) setShowNameDialog(true)
@@ -557,9 +596,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
     }
     setWolfState('eating'); setTimeout(() => setWolfState('idle'), 2500)
     setHunger(h => Math.min(100, h + 30))
-    spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x2605;', '#fbbf24']])
+    spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x1F9B4;', '#fff'], ['&#x2605;', '#fbbf24']])
     gainXp(12)
-    unlock('ach-wolf-bone', 'Großzügig!')
   }
 
   const feedApple = () => {
@@ -567,7 +605,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
     setWolfState('eating'); setTimeout(() => setWolfState('idle'), 2000)
     setHunger(h => Math.min(100, h + 20))
     spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x1F34E;', '#ef4444']])
-    gainXp(8); unlock('ach-wolf-apple', 'Apfelliebe!')
+    gainXp(8)
   }
 
   const throwBall = () => {
@@ -575,33 +613,42 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
     const target = Math.min(W - 80, wolfX + 140 + Math.random() * 80)
     fetchTargetRef.current = target
     setBallX(wolfX + 30); setWolfDir('r'); setWolfState('fetching')
-    gainXp(10); unlock('ach-wolf-fetch', 'Apport!')
+    gainXp(10)
   }
 
   const doTrick = (trick: 'sit' | 'howl' | 'spin') => {
     if (!tamed || wsRef.current !== 'idle') return
-    unlock('ach-wolf-trick', 'Braver Wolf!')
     if (trick === 'sit') {
       setWolfState('sitting'); setTimeout(() => setWolfState('idle'), 2000)
       spawnPts(wolfX + 24, [['&#x2605;', '#fbbf24'], ['&#x2665;', '#f472b6']]); gainXp(12)
     } else if (trick === 'howl') {
       setWolfState('howling'); setTimeout(() => setWolfState('idle'), 2500)
       spawnPts(wolfX + 24, [['&#x266A;', '#a78bfa'], ['&#x2605;', '#fbbf24']]); gainXp(15)
-      const h = new Date().getHours()
-      if (h >= 20 || h < 6) unlock('ach-wolf-howl', 'Mondgeheul!')
     } else {
       setWolfState('happy'); setTimeout(() => setWolfState('idle'), 1200)
       spawnPts(wolfX + 24, [['&#x2605;', '#fbbf24'], ['&#x2665;', '#f472b6']]); gainXp(10)
     }
   }
 
+  const [chestOpen, setChestOpen] = useState(false)
+  const [campfireOn, setCampfireOn] = useState(true)
+
   const handleName = (n: string) => {
     setWolfName(n); lsSet(WK.name, n)
     setWolfBones(3); lsSet(WK.bones, '3')
     setShowNameDialog(false)
     unlock('ach-wolf', 'Wolfsbändigerin')
-    unlock('ach-wolf-name', `${n} — für immer!`)
     spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x2605;', '#fbbf24'], ['&#x2665;', '#f472b6']])
+  }
+
+  const toggleChest = () => {
+    setChestOpen(!chestOpen)
+    spawnPt(W - 120, chestOpen ? '&#x1F512;' : '&#x2728;', '#fbbf24')
+  }
+
+  const toggleCampfire = () => {
+    setCampfireOn(!campfireOn)
+    if (!campfireOn) spawnPt(130, '&#x1F525;', '#ef4444')
   }
 
   const moodColor = hunger > 60 ? '#4ade80' : hunger > 30 ? '#fbbf24' : '#ef4444'
@@ -646,6 +693,16 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         </div>
         <div style={{ position: 'absolute', right: 6, bottom: 20 }}>
           <Sprite px={HOUSE_PX} vw={72} vh={80} />
+        </div>
+        <div style={{ position: 'absolute', right: 85, bottom: 20, cursor: 'pointer' }} onClick={() => spawnPt(W-85, '&#x2692;', '#aaa')}>
+          <Sprite px={CRAFTING_TABLE_PX} vw={24} vh={24} scale={1.2} />
+        </div>
+        <div style={{ position: 'absolute', right: 125, bottom: 20, cursor: 'pointer' }} onClick={toggleChest}>
+          <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
+        </div>
+        <div style={{ position: 'absolute', left: 120, bottom: 20, cursor: 'pointer' }} onClick={toggleCampfire}>
+          {campfireOn && <Sprite px={CAMPFIRE_PX} vw={24} vh={20} scale={1.5} style={{ animation: 'lazi-shake 0.2s infinite' }} />}
+          {!campfireOn && <div style={{ width: 36, height: 6, background: '#451a03', borderRadius: 2 }} />}
         </div>
 
         <div style={{
