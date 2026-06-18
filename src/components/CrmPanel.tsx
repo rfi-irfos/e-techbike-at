@@ -196,11 +196,14 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   }, [data.transactions])
 
   return (
-    <div className={`crm-panel${mcMode ? ' crm-mc' : ''}`}>
+    <div className={`crm-panel${mcMode ? ' crm-mc' : ''} crm-shell`}>
 
-      {/* ── MC tree strip at top ── */}
-      {mcMode && <MCTopbarTrees />}
+      {/* Content Viewport */}
+      <div className="crm-viewport">
+        {/* MC tree strip (only if MC mode active) ── */}
+        {mcMode && <MCTopbarTrees />}
 
+        {/* ... Rest of existing component ... */}
       {/* ── Topbar with back link ── */}
       <div className="crm-topbar">
         <a href="#admin" className="crm-back-btn">
@@ -223,38 +226,38 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       </div>
       {/* ── Finanzen (Professional KMU dashboard) ── */}
       {crmTab === 'finanzen' && (
-        <div className="crm-finanzen" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <div className="crm-fin-dash" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            <div className="crm-fin-card" style={{ background: '#fff', border: '1px solid #e0e0e0', padding: '20px', borderRadius: '12px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#666', marginBottom: '8px' }}>Einnahmen</label>
-              <div className="crm-fin-val crm-fin-val--ein" style={{ fontSize: '28px', fontWeight: 800, color: '#059669' }}>€ {totals.ein.toLocaleString('de-AT')}</div>
+        <div className="crm-finanzen-wrapper">
+          <div className="crm-fin-dash">
+            <div className="crm-fin-card">
+              <label>Einnahmen</label>
+              <div className="crm-fin-val crm-fin-val--ein">€ {totals.ein.toLocaleString('de-AT')}</div>
             </div>
-            <div className="crm-fin-card" style={{ background: '#fff', border: '1px solid #e0e0e0', padding: '20px', borderRadius: '12px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#666', marginBottom: '8px' }}>Ausgaben</label>
-              <div className="crm-fin-val crm-fin-val--aus" style={{ fontSize: '28px', fontWeight: 800, color: '#dc2626' }}>€ {totals.aus.toLocaleString('de-AT')}</div>
+            <div className="crm-fin-card">
+              <label>Ausgaben</label>
+              <div className="crm-fin-val crm-fin-val--aus">€ {totals.aus.toLocaleString('de-AT')}</div>
             </div>
-            <div className="crm-fin-card" style={{ background: '#fff', border: '1px solid #e0e0e0', padding: '20px', borderRadius: '12px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#666', marginBottom: '8px' }}>Saldo</label>
-              <div className={`crm-fin-val ${totals.saldo >= 0 ? 'crm-fin-val--ein' : 'crm-fin-val--aus'}`} style={{ fontSize: '28px', fontWeight: 800 }}>
+            <div className="crm-fin-card">
+              <label>Saldo</label>
+              <div className={`crm-fin-val ${totals.saldo >= 0 ? 'crm-fin-val--ein' : 'crm-fin-val--aus'}`}>
                 € {totals.saldo.toLocaleString('de-AT')}
               </div>
             </div>
           </div>
 
-          <div className="crm-list" style={{ background: '#fff', border: '1px solid #e0e0e0', borderRadius: '12px', overflow: 'hidden' }}>
-            <div className="crm-header-row" style={{ padding: '20px', borderBottom: '1px solid #e0e0e0' }}>
-              <h3 className="crm-section-title" style={{ fontSize: '18px', fontWeight: 700 }}>Buchungen</h3>
-              <button className="crm-add-btn" onClick={openAddTransaction} style={{ padding: '8px 16px', background: '#0099CC', color: '#fff', borderRadius: '6px', border: 'none', fontWeight: 600 }}>
+          <div className="crm-list">
+            <div className="crm-list-header">
+              <h3 className="crm-section-title">Buchungen</h3>
+              <button className="crm-add-btn" onClick={openAddTransaction}>
                 + Neue Buchung
               </button>
             </div>
-            {data.transactions.length === 0 && <div className="crm-empty" style={{ padding: '40px', textAlign: 'center', color: '#888' }}>Noch keine Buchungen erfasst.</div>}
+            {data.transactions.length === 0 && <div className="crm-empty">Noch keine Buchungen erfasst.</div>}
             {data.transactions.slice().reverse().map(t => (
-              <div key={t.id} className="crm-row crm-row--fin" style={{ padding: '16px 20px', borderBottom: '1px solid #f0f0f0' }}>
-                <div className="crm-row-main" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="crm-row-date" style={{ fontSize: '13px', color: '#666', width: '100px' }}>{t.date.slice(0, 10)}</span>
-                  <span className="crm-row-desc" style={{ flex: 1, fontWeight: 500 }}>{t.description || t.category}</span>
-                  <span className={`crm-fin-badge crm-fin-badge--${t.type}`} style={{ fontWeight: 700, color: t.type === 'einnahme' ? '#059669' : '#dc2626' }}>
+              <div key={t.id} className="crm-row crm-row--fin">
+                <div className="crm-row-main">
+                  <span className="crm-row-date">{t.date.slice(0, 10)}</span>
+                  <span className="crm-row-desc">{t.description || t.category}</span>
+                  <span className={`crm-fin-badge crm-fin-badge--${t.type}`}>
                     {t.type === 'einnahme' ? '+' : '-'} € {t.amount.toLocaleString('de-AT')}
                   </span>
                 </div>
@@ -263,7 +266,6 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
           </div>
         </div>
       )}
-
       {/* ── Achievements grid (MC only) ── */}
       {mcMode && crmTab === 'achievements' && (
         <div className="lazi-ach-grid">
@@ -494,7 +496,13 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       )}
 
       {/* ── Gamified MC scene at bottom ── */}
-      {mcMode && crmTab === 'kunden' && <CrmScene onAchUnlock={handleAchUnlock} />}
+      </div>
+
+      {mcMode && crmTab === 'kunden' && (
+        <div className="crm-minigame-footer">
+          <CrmScene onAchUnlock={handleAchUnlock} />
+        </div>
+      )}
 
     </div>
   )
