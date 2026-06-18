@@ -1,26 +1,29 @@
-[
-  {
-    "id": "seed-bikely-wien",
-    "name": "Bikely Wien",
-    "phone": "",
-    "email": "wien@bikely.at",
-    "interest": "Partner",
-    "budget": "",
-    "status": "verkauft",
-    "notes": "Partnershop Wien — Gablenzgasse 17, 1150 Wien",
-    "createdAt": "2026-06-17T00:00:00Z",
-    "updatedAt": "2026-06-17T00:00:00Z"
-  },
-  {
-    "id": "c1781762743692",
-    "name": "RFI-IRFOS (Simeon Kepp)",
-    "phone": "+436706564885",
-    "email": "rfi.irfos@gmail.com",
-    "interest": "",
-    "budget": "",
-    "status": "verkauft",
-    "notes": "Webdesign",
-    "createdAt": "2026-06-18T06:05:43.692Z",
-    "updatedAt": "2026-06-18T06:06:00.030Z"
-  }
-]
+{
+  "customers": [
+    {
+      "id": "seed-bikely-wien",
+      "name": "Bikely Wien",
+      "phone": "",
+      "email": "wien@bikely.at",
+      "interest": "Partner",
+      "budget": "",
+      "status": "verkauft",
+      "notes": "Partnershop Wien — Gablenzgasse 17, 1150 Wien",
+      "createdAt": "2026-06-17T00:00:00Z",
+      "updatedAt": "2026-06-17T00:00:00Z"
+    },
+    {
+      "id": "c1781762743692",
+      "name": "RFI-IRFOS (Simeon Kepp)",
+      "phone": "+436706564885",
+      "email": "rfi.irfos@gmail.com",
+      "interest": "",
+      "budget": "",
+      "status": "offen",
+      "notes": "Webdesign",
+      "createdAt": "2026-06-18T06:05:43.692Z",
+      "updatedAt": "2026-06-18T08:00:55.343Z"
+    }
+  ],
+  "transactions": []
+}
