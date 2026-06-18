@@ -210,18 +210,17 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
         {mcMode && <span className="crm-mc-badge">Timi's Kundenliste</span>}
       </div>
 
-      {/* ── MC tab bar ── */}
-      {mcMode && (
-        <div className="crm-mc-tabs">
-          <button className={`crm-mc-tab${crmTab === 'kunden' ? ' active' : ''}`} onClick={() => setCrmTab('kunden')}>Kunden</button>
-          <button className={`crm-mc-tab${crmTab === 'finanzen' ? ' active' : ''}`} onClick={() => setCrmTab('finanzen')}>Finanzen</button>
-          <button className={`crm-mc-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
+      {/* ── Tab bar (Always visible, themed if MC mode) ── */}
+      <div className={`crm-tabs ${mcMode ? 'crm-mc-tabs' : 'crm-clean-tabs'}`}>
+        <button className={`crm-tab${crmTab === 'kunden' ? ' active' : ''}`} onClick={() => setCrmTab('kunden')}>Kunden</button>
+        <button className={`crm-tab${crmTab === 'finanzen' ? ' active' : ''}`} onClick={() => setCrmTab('finanzen')}>Finanzen</button>
+        {mcMode && (
+          <button className={`crm-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
             Achievements
-            <span className="crm-mc-tab-count">{unlocked.size}/50</span>
+            <span className="crm-tab-count">{unlocked.size}/50</span>
           </button>
-        </div>
-      )}
-
+        )}
+      </div>
       {/* ── Finanzen (Professional KMU dashboard) ── */}
       {crmTab === 'finanzen' && (
         <div className="crm-finanzen" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>

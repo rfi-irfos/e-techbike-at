@@ -2816,13 +2816,43 @@ button { cursor: pointer; font-family: inherit; }
 /* Partner badge */
 .site-partner-badge { display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5B8731;border:1.5px solid #5B8731;border-radius:3px;padding:2px 8px;margin-bottom:8px; }
 
-/* CRM MC tab bar */
-.crm-mc-tabs { display:flex;gap:2px;padding:6px 10px 0;background:#2a1d10;border-bottom:2px solid #5a4020; }
-.crm-mc-tab { padding:6px 14px;font-family:monospace;font-size:12px;font-weight:700;letter-spacing:.05em;border:2px solid #5a4020;border-bottom:none;border-radius:3px 3px 0 0;background:#1a100a;color:#b09070;cursor:pointer;display:flex;align-items:center;gap:6px; }
-.crm-mc-tab.active { background:#3d2b1a;color:#FFFF55;border-color:#7DC845; }
-.crm-mc-tab-count { font-size:10px;background:#3A7D44;color:#FFFF55;padding:1px 5px;border-radius:2px; }
+/* CRM Tabs */
+.crm-tabs { display:flex; gap:8px; padding:10px 24px; border-bottom:1px solid var(--border); background: var(--surface); }
+.crm-tab { padding:8px 16px; font-weight:600; cursor:pointer; background:none; border:none; color:var(--text-soft); }
+.crm-tab.active { color:var(--primary); border-bottom:2px solid var(--primary); }
+.crm-tab-count { margin-left: 6px; background:var(--surface-sunken); padding:2px 6px; border-radius:10px; font-size:11px; }
 
-/* MC Theme Overrides for Finance Tab */
+/* MC Theme Tab Overrides */
+.crm-mc .crm-tabs { background:#2a1d10; border-bottom:2px solid #5a4020; }
+.crm-mc .crm-tab { color:#b09070; }
+.crm-mc .crm-tab.active { color:#FFFF55; border-bottom-color:#7DC845; }
+.crm-mc .crm-tab-count { background:#3A7D44; color:#FFFF55; }
+
+/* ── CRM Grid Layout ── */
+.crm-panel {
+  display: grid;
+  grid-template-rows: 85% 15%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.crm-content-viewport {
+  overflow-y: auto;
+  background: var(--surface);
+  position: relative;
+}
+
+.crm-minigame-stage {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #1a3a6a;
+  border-top: 4px solid #3A7D44;
+}
+
+/* MC Theme Overrides for Finanzen */
 .crm-mc .crm-fin-dash .crm-fin-card {
   background: #2a2010 !important;
   border: 2px solid #5D9E2E !important;
