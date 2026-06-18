@@ -700,9 +700,13 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         <div style={{ position: 'absolute', right: 125, bottom: 20, cursor: 'pointer' }} onClick={toggleChest}>
           <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
         </div>
-        <div style={{ position: 'absolute', left: 120, bottom: 20, cursor: 'pointer' }} onClick={toggleCampfire}>
-          {campfireOn && <Sprite px={CAMPFIRE_PX} vw={24} vh={20} scale={1.5} style={{ animation: 'lazi-shake 0.2s infinite' }} />}
-          {!campfireOn && <div style={{ width: 36, height: 6, background: '#451a03', borderRadius: 2 }} />}
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: 20, cursor: 'pointer', zIndex: 5 }} onClick={toggleCampfire}>
+          {campfireOn && (
+            <div style={{ animation: 'lazi-flicker 0.15s infinite alternate' }}>
+              <Sprite px={CAMPFIRE_PX} vw={24} vh={20} scale={2} />
+            </div>
+          )}
+          {!campfireOn && <div style={{ width: 40, height: 8, background: '#451a03', borderRadius: 2 }} />}
         </div>
 
         <div style={{
@@ -888,6 +892,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         @keyframes lazi-float-up { 0%{transform:translateY(0) scale(1);opacity:1} 100%{transform:translateY(-48px) scale(1.3);opacity:0} }
         @keyframes lazi-boom { 0%{transform:scale(0);opacity:1} 60%{transform:scale(1);opacity:.9} 100%{transform:scale(1.6);opacity:0} }
         @keyframes lazi-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+        @keyframes lazi-flicker { 0%{transform:scale(1) translateY(0);opacity:1} 100%{transform:scale(1.05) translateY(-2px);opacity:0.9} }
         @keyframes lazi-slide-up { from{transform:translateX(-50%) translateY(14px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
       `}</style>
     </>
