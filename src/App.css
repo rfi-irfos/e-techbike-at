@@ -1560,6 +1560,7 @@ button { cursor: pointer; font-family: inherit; }
 .prod-modal-thumb:hover { border-color: var(--text-muted, #aaa); }
 
 /* ── Product Edit Modal (pem) ─────────────────────────────────────────────── */
+/* ── Product Edit Modal (pem) ── */
 .pem-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,.52);
   display: flex; align-items: center; justify-content: center;
@@ -1570,6 +1571,52 @@ button { cursor: pointer; font-family: inherit; }
   display: flex; flex-direction: column; width: 100%; max-width: 720px;
   max-height: calc(100vh - 32px); overflow: hidden;
 }
+
+/* MC Theme Overrides for Modals */
+.crm-mc .pem {
+  background: #1a1206;
+  border: 4px solid #5D9E2E;
+  border-radius: 0;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  color: #fff;
+}
+.crm-mc .pem-header {
+  border-bottom: 2px solid #5D9E2E;
+  background: #2a2010;
+}
+.crm-mc .pem-title { color: #FFD700; }
+.crm-mc .pem-close { color: #aaa; }
+.crm-mc .pem-close:hover { background: #3a3020; color: #fff; }
+.crm-mc .pem-field label { color: #aaa; }
+.crm-mc .pem-field input, .crm-mc .pem-field select, .crm-mc .pem-field textarea {
+  background: #2a2010;
+  border: 2px solid #5D9E2E;
+  color: #fff;
+}
+.crm-mc .pem-field input:focus, .crm-mc .pem-field select:focus, .crm-mc .pem-field textarea:focus {
+  border-color: #7aC444;
+  box-shadow: 0 0 0 3px rgba(93, 158, 46, 0.3);
+}
+.crm-mc .pem-footer {
+  border-top: 2px solid #5D9E2E;
+  background: #2a2010;
+  padding: 12px 22px;
+}
+.crm-mc .pem-btn-ghost { color: #aaa; }
+.crm-mc .pem-btn-ghost:hover { color: #fff; }
+.crm-mc .pem-btn-primary {
+  background: #5D9E2E;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+}
+.crm-mc .pem-btn-primary:hover { background: #7aC444; }
+.crm-mc .pem-btn-danger {
+  background: #991b1b;
+  color: #fff;
+  border: none;
+}
+.crm-mc .pem-btn-danger:hover { background: #b91c1c; }
 .pem-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 22px 14px; border-bottom: 1px solid #eee; flex-shrink: 0;
