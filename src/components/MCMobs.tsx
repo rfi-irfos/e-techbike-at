@@ -714,11 +714,10 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         <div style={{ position: 'absolute', right: 6, bottom: 20 }}>
           <Sprite px={HOUSE_PX} vw={72} vh={80} />
         </div>
-        {/* Leashed Horse */}
-        <div style={{ position: 'absolute', right: 50, bottom: 20 }}>
-          <HorseMob />
-          <div style={{ position: 'absolute', top: 5, left: 10, width: 30, height: 2, background: '#555', transform: 'rotate(-20deg)', transformOrigin: 'left' }} />
-        </div>
+        {/* ... (Existing scene elements: Trees, House, Crafting Table, Chest, Campfire) */}
+        
+        {/* Removed leashed horse */}
+        
         <div style={{ position: 'absolute', right: 85, bottom: 20, cursor: 'pointer' }} onClick={() => spawnPt(W-85, '&#x2692;', '#aaa')}>
           <Sprite px={CRAFTING_TABLE_PX} vw={24} vh={24} scale={1.2} />
         </div>
