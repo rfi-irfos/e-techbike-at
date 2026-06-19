@@ -2866,10 +2866,9 @@ button { cursor: pointer; font-family: inherit; }
 .crm-mc .crm-viewport {
   position: relative;
   z-index: 1;
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
   overflow-y: auto;
-  background: rgba(14, 9, 2, 0.75);
+  background: #0e0902;
 }
 
 .environment-layer {
