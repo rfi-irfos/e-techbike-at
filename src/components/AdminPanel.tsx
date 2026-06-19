@@ -13,7 +13,10 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'kunden'
+type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'kunden' | 'inbox'
+
+interface ContactInboxItem { name: string; email: string; phone?: string; message: string; ts: string }
+function loadInbox(): ContactInboxItem[] { try { return JSON.parse(localStorage.getItem('rfi_contact_inbox') || '[]') } catch { return [] } }
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Minecraft Easter Eggs ──────────────────────────────────────────────────────
@@ -202,6 +205,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [specsInput, setSpecsInput] = useState('')
   const [panelWidth, setPanelWidth] = useState(340)
   const [editingPage, setEditingPage] = useState<string | null>(null)
+  const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(() => loadInbox())
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
   const [saveError, setSaveError] = useState(false)
@@ -463,6 +467,13 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     update('pages', (draft.pages ?? []).map(p => p.id === id ? { ...p, [field]: value } : p))
   }
 
+  // ── Inbox helpers ─────────────────────────────────────────────────────────
+  const dismissInboxItem = (ts: string) => {
+    const next = contactInbox.filter(i => i.ts !== ts)
+    setContactInbox(next)
+    localStorage.setItem('rfi_contact_inbox', JSON.stringify(next))
+  }
+
   // ── Quick-add handler ─────────────────────────────────────────────────────
 
   const handleQuickAdd = (action: string) => {
@@ -474,7 +485,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     else if (action === 'navlink') { addNavLink(); setActiveTab('nav') }
   }
 
-  const tabs: Array<{ id: PanelTab; label: string }> = [
+  const tabs: Array<{ id: PanelTab; label: string; badge?: number }> = [
+    { id: 'inbox',      label: 'Inbox', badge: contactInbox.length },
     { id: 'products',   label: 'Produkte' },
     { id: 'categories', label: 'Kategorien' },
     { id: 'hero',       label: 'Hero' },
@@ -634,8 +646,11 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           {/* Tab bar */}
           <div className="builder-tabs">
             {tabs.map(t => (
-              <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
+              <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)} style={{ position: 'relative' }}>
                 {t.label}
+                {(t.badge ?? 0) > 0 && (
+                  <span style={{ position: 'absolute', top: 2, right: 2, background: '#c53030', color: '#fff', borderRadius: '50%', fontSize: 9, fontWeight: 700, minWidth: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 2px' }}>{t.badge}</span>
+                )}
               </button>
             ))}
           </div>
@@ -1234,6 +1249,35 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 </div>
               )
             })()}
+
+            {/* ── INBOX TAB ─────────────────────────────────────────────── */}
+            {activeTab === 'inbox' && (
+              <div style={{ padding: 14 }}>
+                {contactInbox.length === 0 ? (
+                  <div style={{ padding: '24px 0', textAlign: 'center', color: '#aaa', fontSize: 13 }}>
+                    Keine neuen Anfragen.
+                  </div>
+                ) : (
+                  contactInbox.map(item => (
+                    <div key={item.ts} style={{ background: 'var(--panel-surface, #f8f8f8)', borderRadius: 10, padding: 14, marginBottom: 12, border: '1px solid var(--panel-border, #e8e8e8)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: 13 }}>{item.name}</div>
+                          <a href={`mailto:${item.email}`} style={{ fontSize: 12, color: '#0099CC' }}>{item.email}</a>
+                          {item.phone && <div style={{ fontSize: 12, color: '#666' }}>{item.phone}</div>}
+                        </div>
+                        <div style={{ fontSize: 10, color: '#aaa', whiteSpace: 'nowrap' }}>{new Date(item.ts).toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
+                      </div>
+                      {item.message && <p style={{ fontSize: 12, margin: '8px 0 10px', color: '#444', lineHeight: 1.5 }}>{item.message}</p>}
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <a href={`mailto:${item.email}?subject=Re: Ihre Anfrage`} className="panel-add-btn" style={{ fontSize: 11, padding: '4px 10px', textDecoration: 'none' }}>Antworten</a>
+                        <button className="panel-delete-btn" style={{ fontSize: 11, padding: '4px 10px' }} onClick={() => dismissInboxItem(item.ts)}>Erledigt</button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
 
             {/* ── KUNDEN TAB ────────────────────────────────────────────── */}
             {activeTab === 'kunden' && <CrmPanel />}

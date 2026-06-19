@@ -265,6 +265,13 @@ function ContactForm() {
         }),
       })
       const data = await res.json()
+      if (data.success) {
+        try {
+          const inbox = JSON.parse(localStorage.getItem('rfi_contact_inbox') || '[]')
+          inbox.unshift({ ...form, ts: new Date().toISOString() })
+          localStorage.setItem('rfi_contact_inbox', JSON.stringify(inbox))
+        } catch { /* non-critical */ }
+      }
       setStatus(data.success ? 'ok' : 'err')
     } catch {
       setStatus('err')
