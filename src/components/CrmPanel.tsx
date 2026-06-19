@@ -57,7 +57,8 @@ function loadAchievements(): Set<string> {
   }
 }
 
-const CUSTOMERS_PATH = 'public/customers.json'
+// Out of the deployed public/ dir on purpose — CRM PII must not be served on Pages.
+const CUSTOMERS_PATH = 'data/customers.json'
 
 const STATUS_LABELS: Record<Customer['status'], string> = {
   offen:     'Offen',
