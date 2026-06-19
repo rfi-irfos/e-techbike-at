@@ -658,18 +658,31 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
         position: 'relative', overflow: 'hidden', width: '100%', height: '100%',
         background: skyBg, userSelect: 'none', borderTop: '2px solid #5D9E2E',
       }}>
+        {/* Stars */}
         {isNight && [20, 90, 190, 310, 420, 540, 650].map((sx, i) => (
           <div key={i} style={{
             position: 'absolute', left: sx, top: 4 + (i % 3) * 5, width: 2, height: 2,
             borderRadius: '50%', background: '#fff', opacity: 0.5 + (i % 3) * 0.2,
           }} />
         ))}
-        {isNight && (
-          <div style={{
-            position: 'absolute', right: 50, top: 8, width: 18, height: 18,
-            borderRadius: '50%', background: '#fef9c3', border: '2px solid #fef08a',
-          }} />
-        )}
+        {/* Sun / Moon — moves across the top of the scene based on tick */}
+        {(() => {
+          const bodyX = W > 0 ? ((tick * 0.15) % (W + 40)) - 20 : 80
+          const bodyY = 10 + Math.sin((bodyX / Math.max(W, 1)) * Math.PI) * 22
+          return isNight ? (
+            <div style={{
+              position: 'absolute', left: bodyX, top: bodyY, width: 20, height: 20,
+              borderRadius: '50%', background: '#fef9c3', border: '2px solid #fef08a',
+              boxShadow: '0 0 8px #fef08a88',
+            }} />
+          ) : (
+            <div style={{
+              position: 'absolute', left: bodyX, top: bodyY, width: 22, height: 22,
+              borderRadius: '50%', background: '#FFD700', border: '3px solid #FFA500',
+              boxShadow: '0 0 14px #FFD70099',
+            }} />
+          )
+        })()}
 
         <div style={{ position: 'absolute', left: 30, bottom: 20 }}>
           <Sprite px={TREE_PX} vw={30} vh={50} />
