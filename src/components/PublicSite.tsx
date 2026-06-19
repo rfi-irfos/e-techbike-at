@@ -1257,7 +1257,12 @@ export function PublicSite({
           {(footer?.cols?.length ?? 0) > 0 && (
             <div className="site-footer-grid">
               <div className="site-footer-brand">
-                {nav.logo && <img src={nav.logo} alt={footer?.brand} className="site-footer-logo" onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />}
+                {nav.logo
+                  ? <img src={nav.logo} alt={footer?.brand} className="site-footer-logo"
+                      style={{ display: 'none' }}
+                      onLoad={e => { (e.target as HTMLImageElement).style.display = '' }}
+                      onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                  : null}
                 <E field="footer.brand" value={footer?.brand ?? ''} as="strong" className="site-footer-brand-name" />
                 {footer?.description && <E field="footer.description" value={footer.description} as="p" className="site-footer-brand-desc" />}
                 {(contact.facebook || contact.instagram || contact.whatsapp) && (

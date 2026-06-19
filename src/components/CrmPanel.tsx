@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import type { Customer, Transaction, CRMData } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
-import { MCTopbarTrees, CrmScene } from './MCMobs'
+import { McBackdrop } from './MCMobs'
 
 // ── Achievements (shared storage) ───────────────────────────────────────────
 const ACH_KEY = 'lazi_achievements'
@@ -240,10 +240,10 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   return (
     <div className={`crm-panel${mcMode ? ' crm-mc' : ''} crm-shell`}>
 
-      {/* MC scene — rendered first = behind everything (DOM order) */}
+      {/* Backdrop — pure visual, rendered first so it's behind everything */}
       {mcMode && (
         <div className="minigame-bg">
-          <CrmScene onAchUnlock={handleAchUnlock} />
+          <McBackdrop />
         </div>
       )}
 
