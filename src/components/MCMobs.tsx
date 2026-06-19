@@ -18,18 +18,17 @@ export function McBackdrop() {
     return () => clearInterval(id)
   }, [])
 
-  // Day/night cycle tied to arc animation (~25 min day + 25 min night = 50 min full cycle)
-  const CYCLE = Math.max(W + 60, 200)
-  const totalPhase = (tick * 0.12) % (CYCLE * 2)
-  const isDayPhase = totalPhase < CYCLE
-  const arcTick = totalPhase % CYCLE
-  const arcPct = W > 0 ? Math.max(0, Math.min(1, (arcTick - 30) / W)) : 0.5
-  // arc: left% across screen, bottom% above ground (peaks at 55% from bottom at noon)
+  // Day/night cycle: 2 min day + 2 min night = 4 min total
+  // tick every 120ms → 500 ticks/min → 1000 ticks per half-cycle
+  const HALF = 1000
+  const totalPhase = tick % (HALF * 2)
+  const isDayPhase = totalPhase < HALF
+  const arcPct = (totalPhase % HALF) / HALF  // 0→1 across each half
   const sunLeft = `${arcPct * 100}%`
-  const sunBottom = `${Math.sin(arcPct * Math.PI) * 55 + 2}%`
+  const sunBottom = `${Math.sin(arcPct * Math.PI) * 80 + 2}%`
 
   const isNight = !isDayPhase
-  const isTransition = isDayPhase && (arcPct < 0.13 || arcPct > 0.87)
+  const isTransition = isDayPhase && (arcPct < 0.12 || arcPct > 0.88)
 
   const skyBg = isNight
     ? 'linear-gradient(180deg,#05091a 0%,#0d1a3a 50%,#0f2a0f 80%,#1a3d1a 100%)'
@@ -82,22 +81,22 @@ export function McBackdrop() {
           filter: 'blur(7px)',
         }} />
       ))}
-      {/* Far mountains */}
+      {/* Far mountains — blocky pixel steps */}
       {W > 0 && (
-        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '40%' }}
-          viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
-          <polygon points={`0,120 0,70 ${W*0.08},40 ${W*0.18},65 ${W*0.28},25 ${W*0.4},55 ${W*0.52},15 ${W*0.62},50 ${W*0.72},30 ${W*0.83},60 ${W*0.92},20 ${W},45 ${W},120`}
+        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '40%', imageRendering: 'pixelated' }}
+          viewBox={`0 0 ${W} 120`} preserveAspectRatio="none" shapeRendering="crispEdges">
+          <path d={`M0,120 L0,70 L${W*0.06},70 L${W*0.06},45 L${W*0.13},45 L${W*0.13},68 L${W*0.18},68 L${W*0.18},28 L${W*0.27},28 L${W*0.27},55 L${W*0.33},55 L${W*0.33},18 L${W*0.43},18 L${W*0.43},50 L${W*0.48},50 L${W*0.48},12 L${W*0.57},12 L${W*0.57},48 L${W*0.63},48 L${W*0.63},28 L${W*0.72},28 L${W*0.72},58 L${W*0.79},58 L${W*0.79},22 L${W*0.9},22 L${W*0.9},48 L${W},48 L${W},120 Z`}
             fill={mtFill} opacity={0.7} />
-          <polygon points={`0,120 0,85 ${W*0.1},65 ${W*0.22},80 ${W*0.35},50 ${W*0.46},70 ${W*0.58},40 ${W*0.68},65 ${W*0.79},48 ${W*0.88},70 ${W},55 ${W},120`}
-            fill={mt2Fill} opacity={0.8} />
+          <path d={`M0,120 L0,88 L${W*0.08},88 L${W*0.08},68 L${W*0.16},68 L${W*0.16},82 L${W*0.24},82 L${W*0.24},52 L${W*0.34},52 L${W*0.34},70 L${W*0.42},70 L${W*0.42},42 L${W*0.52},42 L${W*0.52},65 L${W*0.6},65 L${W*0.6},50 L${W*0.69},50 L${W*0.69},68 L${W*0.77},68 L${W*0.77},48 L${W*0.86},48 L${W*0.86},70 L${W},70 L${W},120 Z`}
+            fill={mt2Fill} opacity={0.85} />
         </svg>
       )}
-      {/* Near hills */}
+      {/* Near hills — blocky pixel steps */}
       {W > 0 && (
-        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '25%' }}
-          viewBox={`0 0 ${W} 80`} preserveAspectRatio="none">
-          <path d={`M0,80 Q${W*0.15},20 ${W*0.3},55 Q${W*0.45},10 ${W*0.6},50 Q${W*0.75},15 ${W*0.9},45 Q${W*0.95},35 ${W},40 L${W},80 Z`}
-            fill={hillFill} opacity={0.9} />
+        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '25%', imageRendering: 'pixelated' }}
+          viewBox={`0 0 ${W} 80`} preserveAspectRatio="none" shapeRendering="crispEdges">
+          <path d={`M0,80 L0,55 L${W*0.07},55 L${W*0.07},42 L${W*0.15},42 L${W*0.15},62 L${W*0.23},62 L${W*0.23},35 L${W*0.33},35 L${W*0.33},55 L${W*0.41},55 L${W*0.41},22 L${W*0.52},22 L${W*0.52},50 L${W*0.61},50 L${W*0.61},32 L${W*0.71},32 L${W*0.71},55 L${W*0.81},55 L${W*0.81},40 L${W*0.9},40 L${W*0.9},48 L${W},48 L${W},80 Z`}
+            fill={hillFill} opacity={0.95} />
         </svg>
       )}
       {/* Ground */}
@@ -546,6 +545,14 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   const [sheepX, setSheepX] = useState(150)
   const [sheepDir, setSheepDir] = useState<'r' | 'l'>('l')
   const [sheepBob, setSheepBob] = useState(false)
+  const [cowX, setCowX] = useState(350)
+  const [cowDir, setCowDir] = useState<'r' | 'l'>('l')
+  const [chickenX, setChickenX] = useState(280)
+  const [chickenDir, setChickenDir] = useState<'r' | 'l'>('r')
+  const [chickenBob, setChickenBob] = useState(false)
+  const [egg, setEgg] = useState<number | null>(null)
+  const cdRef = useRef(cowDir); cdRef.current = cowDir
+  const ckdRef = useRef(chickenDir); ckdRef.current = chickenDir
 
   const [creeperX, setCreeperX] = useState(W + 30)
   const [creeperVisible, setCreeperVisible] = useState(false)
@@ -650,13 +657,23 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
       }
       animalT++
       if (animalT % 5 === 0) {
-        if (Math.random() < 0.3) setPigDir(() => Math.random() < 0.5 ? 'r' : 'l')
+        if (Math.random() < 0.3)  setPigDir(() => Math.random() < 0.5 ? 'r' : 'l')
         if (Math.random() < 0.25) setSheepDir(() => Math.random() < 0.5 ? 'r' : 'l')
+        if (Math.random() < 0.2)  setCowDir(() => Math.random() < 0.5 ? 'r' : 'l')
+        if (Math.random() < 0.35) setChickenDir(() => Math.random() < 0.5 ? 'r' : 'l')
         setPigX(px => Math.max(50, Math.min(W * 0.38, px + (pdRef.current === 'r' ? 0.55 : -0.55))))
         setSheepX(sx => Math.max(30, Math.min(W * 0.32, sx + (sdRef.current === 'r' ? 0.4 : -0.4))))
+        setCowX(cx => Math.max(W * 0.35, Math.min(W * 0.70, cx + (cdRef.current === 'r' ? 0.45 : -0.45))))
+        setChickenX(ck => Math.max(W * 0.20, Math.min(W * 0.55, ck + (ckdRef.current === 'r' ? 0.7 : -0.7))))
       }
       bobT++
       if (bobT % 9 === 0) setSheepBob(b => !b)
+      if (bobT % 7 === 0) setChickenBob(b => !b)
+      // chicken lays egg occasionally
+      if (bobT % 180 === 0 && Math.random() < 0.4) {
+        setEgg(chickenX)
+        setTimeout(() => setEgg(null), 3000)
+      }
     }, 80)
     return () => clearInterval(loop)
   }, [W])
@@ -833,31 +850,31 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           }} />
         ))}
 
-        {/* ── Far mountains (backdrop mode) ── */}
+        {/* ── Far mountains — blocky pixel steps ── */}
         {!noBackdrop && W > 0 && (
-          <svg style={{ position: 'absolute', bottom: 55, left: 0, width: '100%', height: '35%' }}
-            viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
-            <polygon
-              points={`0,120 0,70 ${W*0.08},40 ${W*0.18},65 ${W*0.28},25 ${W*0.4},55 ${W*0.52},15 ${W*0.62},50 ${W*0.72},30 ${W*0.83},60 ${W*0.92},20 ${W},45 ${W},120`}
+          <svg style={{ position: 'absolute', bottom: 55, left: 0, width: '100%', height: '35%', imageRendering: 'pixelated' }}
+            viewBox={`0 0 ${W} 120`} preserveAspectRatio="none" shapeRendering="crispEdges">
+            <path
+              d={`M0,120 L0,70 L${W*0.06},70 L${W*0.06},45 L${W*0.13},45 L${W*0.13},68 L${W*0.18},68 L${W*0.18},28 L${W*0.27},28 L${W*0.27},55 L${W*0.33},55 L${W*0.33},18 L${W*0.43},18 L${W*0.43},50 L${W*0.48},50 L${W*0.48},12 L${W*0.57},12 L${W*0.57},48 L${W*0.63},48 L${W*0.63},28 L${W*0.72},28 L${W*0.72},58 L${W*0.79},58 L${W*0.79},22 L${W*0.9},22 L${W*0.9},48 L${W},48 L${W},120 Z`}
               fill={isNight ? '#0d1f0d' : isSunset ? '#3d1a4a' : '#2d6b3a'}
               opacity={0.7}
             />
-            <polygon
-              points={`0,120 0,85 ${W*0.1},65 ${W*0.22},80 ${W*0.35},50 ${W*0.46},70 ${W*0.58},40 ${W*0.68},65 ${W*0.79},48 ${W*0.88},70 ${W},55 ${W},120`}
+            <path
+              d={`M0,120 L0,88 L${W*0.08},88 L${W*0.08},68 L${W*0.16},68 L${W*0.16},82 L${W*0.24},82 L${W*0.24},52 L${W*0.34},52 L${W*0.34},70 L${W*0.42},70 L${W*0.42},42 L${W*0.52},42 L${W*0.52},65 L${W*0.6},65 L${W*0.6},50 L${W*0.69},50 L${W*0.69},68 L${W*0.77},68 L${W*0.77},48 L${W*0.86},48 L${W*0.86},70 L${W},70 L${W},120 Z`}
               fill={isNight ? '#1a2e1a' : isSunset ? '#5c2d6b' : '#3a7a48'}
-              opacity={0.8}
+              opacity={0.85}
             />
           </svg>
         )}
 
-        {/* ── Near hills (backdrop mode) ── */}
+        {/* ── Near hills — blocky pixel steps ── */}
         {!noBackdrop && W > 0 && (
-          <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '22%' }}
-            viewBox={`0 0 ${W} 80`} preserveAspectRatio="none">
+          <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '22%', imageRendering: 'pixelated' }}
+            viewBox={`0 0 ${W} 80`} preserveAspectRatio="none" shapeRendering="crispEdges">
             <path
-              d={`M0,80 Q${W*0.15},20 ${W*0.3},55 Q${W*0.45},10 ${W*0.6},50 Q${W*0.75},15 ${W*0.9},45 Q${W*0.95},35 ${W},40 L${W},80 Z`}
+              d={`M0,80 L0,55 L${W*0.07},55 L${W*0.07},42 L${W*0.15},42 L${W*0.15},62 L${W*0.23},62 L${W*0.23},35 L${W*0.33},35 L${W*0.33},55 L${W*0.41},55 L${W*0.41},22 L${W*0.52},22 L${W*0.52},50 L${W*0.61},50 L${W*0.61},32 L${W*0.71},32 L${W*0.71},55 L${W*0.81},55 L${W*0.81},40 L${W*0.9},40 L${W*0.9},48 L${W},48 L${W},80 Z`}
               fill={isNight ? '#1e3d1e' : '#4a8c3f'}
-              opacity={0.9}
+              opacity={0.95}
             />
           </svg>
         )}
@@ -954,6 +971,91 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           </svg>
         </div>
 
+        {/* ── Cow (cute blocky) ── */}
+        <div style={{ position: 'absolute', left: cowX, bottom: 20, cursor: 'pointer' }}
+          onClick={() => { spawnPt(cowX + 28, '&#x1F95B;', '#fff'); unlock('ach-kuh', 'Milch-Meisterin') }}
+          title="Muh!">
+          <svg viewBox="0 0 44 30" width={66} height={45}
+            style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
+              transform: cowDir === 'l' ? 'scaleX(-1)' : undefined }}>
+            {/* Body */}
+            <rect x="4" y="8" width="24" height="14" fill="#f5f5f5"/>
+            {/* Spots */}
+            <rect x="7" y="10" width="5" height="4" fill="#1f2937"/>
+            <rect x="18" y="13" width="4" height="5" fill="#1f2937"/>
+            <rect x="12" y="8" width="3" height="3" fill="#1f2937"/>
+            {/* Udder */}
+            <rect x="10" y="22" width="10" height="4" fill="#fda4af"/>
+            {/* Head */}
+            <rect x="26" y="4" width="16" height="14" fill="#f5f5f5"/>
+            {/* Snout */}
+            <rect x="36" y="9" width="8" height="6" fill="#fda4af"/>
+            <rect x="37" y="10" width="2" height="2" fill="#9f1239"/>
+            <rect x="41" y="10" width="2" height="2" fill="#9f1239"/>
+            {/* Eyes */}
+            <rect x="28" y="6" width="3" height="3" fill="#1f2937"/>
+            <rect x="28" y="6" width="1" height="1" fill="#fff"/>
+            {/* Horns */}
+            <rect x="28" y="1" width="2" height="4" fill="#d4a017"/>
+            <rect x="36" y="1" width="2" height="4" fill="#d4a017"/>
+            {/* Ears */}
+            <rect x="27" y="4" width="3" height="3" fill="#fda4af"/>
+            {/* Legs */}
+            <rect x="6"  y="22" width="4" height="8" fill="#d1d5db"/>
+            <rect x="12" y="22" width="4" height="8" fill="#d1d5db"/>
+            <rect x="18" y="22" width="4" height="8" fill="#d1d5db"/>
+            <rect x="24" y="22" width="3" height="6" fill="#d1d5db"/>
+            {/* Tail */}
+            <rect x="2" y="10" width="3" height="2" fill="#9ca3af"/>
+            <rect x="1" y="11" width="2" height="3" fill="#6b7280"/>
+          </svg>
+        </div>
+
+        {/* ── Chicken (cute little) ── */}
+        <div style={{
+          position: 'absolute', left: chickenX, bottom: 20, cursor: 'pointer',
+          transform: chickenBob ? 'translateY(-2px)' : 'translateY(0)', transition: 'transform 0.1s',
+        }} onClick={() => { spawnPt(chickenX + 8, '&#x1F95A;', '#fbbf24'); unlock('ach-huhn', 'Hühner-Flüsterin') }}
+          title="Gak!">
+          <svg viewBox="0 0 18 22" width={27} height={33}
+            style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
+              transform: chickenDir === 'l' ? 'scaleX(-1)' : undefined }}>
+            {/* Body */}
+            <rect x="2" y="8" width="13" height="10" fill="#fef9c3"/>
+            {/* Wing */}
+            <rect x="3" y="9" width="5" height="6" fill="#fde68a"/>
+            {/* Head */}
+            <rect x="8" y="2" width="8" height="7" fill="#fef9c3"/>
+            {/* Comb */}
+            <rect x="9" y="0" width="2" height="3" fill="#ef4444"/>
+            <rect x="12" y="1" width="2" height="2" fill="#ef4444"/>
+            {/* Wattle */}
+            <rect x="14" y="5" width="3" height="3" fill="#ef4444"/>
+            {/* Beak */}
+            <rect x="15" y="4" width="3" height="2" fill="#f59e0b"/>
+            {/* Eye */}
+            <rect x="10" y="3" width="2" height="2" fill="#1f2937"/>
+            <rect x="10" y="3" width="1" height="1" fill="#fff"/>
+            {/* Tail feathers */}
+            <rect x="0" y="7" width="3" height="2" fill="#fde68a"/>
+            <rect x="0" y="6" width="2" height="2" fill="#fef9c3"/>
+            {/* Legs */}
+            <rect x="5" y="18" width="2" height="4" fill="#f59e0b"/>
+            <rect x="5" y="22" width="4" height="1" fill="#f59e0b"/>
+            <rect x="9" y="18" width="2" height="4" fill="#f59e0b"/>
+            <rect x="9" y="22" width="4" height="1" fill="#f59e0b"/>
+          </svg>
+        </div>
+
+        {/* Egg */}
+        {egg !== null && (
+          <div style={{
+            position: 'absolute', left: egg + 6, bottom: 20, width: 8, height: 10,
+            borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+            background: '#fef9c3', border: '1px solid #d97706',
+          }} />
+        )}
+
         {ballX !== null && (
           <div style={{
             position: 'absolute', left: ballX, bottom: 48, width: 10, height: 10,
@@ -1015,62 +1117,61 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <div style={{ height: 8, background: '#6b3d10' }} />
         </div>
 
-        {/* ── HUD stats — wolf info bar (fixed game overlay) ── */}
+        {/* ── HUD — centered bottom game bar ── */}
         <div style={{
-          position: 'fixed', bottom: 28, left: 8, zIndex: 8000, maxWidth: 200,
-          background: 'rgba(20,14,4,0.92)', border: '2px solid #5D9E2E',
-          borderRadius: 6, padding: '5px 10px', fontFamily: 'monospace',
-          display: 'flex', flexDirection: 'column', gap: 3,
+          position: 'fixed', bottom: 10, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 8000, display: 'flex', alignItems: 'center', gap: 8,
+          background: 'rgba(14,9,2,0.93)', border: '2px solid #5D9E2E',
+          borderRadius: 10, padding: '6px 14px', fontFamily: 'monospace',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.5)', whiteSpace: 'nowrap',
         }}>
-          {tamed ? (
-            <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ background: '#5D9E2E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 3 }}>Lv.{level}</span>
-                <span style={{ color: '#FFD700', fontSize: noBackdrop ? 10 : 12, fontWeight: 700 }}>{wolfName}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ color: '#aaa', fontSize: 9 }}>XP</span>
-                <div style={{ flex: 1, height: 4, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
-                  <div style={{ width: `${(xpInLv / xpToNext) * 100}%`, height: '100%', background: '#5D9E2E', transition: 'width 0.3s' }} />
+          {/* Wolf info */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 120 }}>
+            {tamed ? (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ background: '#5D9E2E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 5px', borderRadius: 3 }}>Lv.{level}</span>
+                  <span style={{ color: '#FFD700', fontSize: 11, fontWeight: 700 }}>{wolfName}</span>
                 </div>
-                <span style={{ color: moodColor, fontSize: 9, fontWeight: 700 }}>{moodLabel}</span>
-                <div style={{ width: 32, height: 4, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
-                  <div style={{ width: `${hunger}%`, height: '100%', background: moodColor, transition: 'width 0.3s' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span style={{ color: '#666', fontSize: 9 }}>XP</span>
+                  <div style={{ width: 60, height: 4, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
+                    <div style={{ width: `${(xpInLv / xpToNext) * 100}%`, height: '100%', background: '#5D9E2E', transition: 'width 0.3s' }} />
+                  </div>
+                  <div style={{ width: 28, height: 4, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
+                    <div style={{ width: `${hunger}%`, height: '100%', background: moodColor, transition: 'width 0.3s' }} />
+                  </div>
+                  <span style={{ color: moodColor, fontSize: 9, fontWeight: 700 }}>{moodLabel}</span>
                 </div>
-              </div>
-            </>
-          ) : (
-            <span style={{ color: '#aaa', fontSize: noBackdrop ? 9 : 10 }}>
-              {wolfBones < 3 ? `${wolfBones}/3 Knochen` : 'Klick auf den Wolf!'}
-            </span>
-          )}
-        </div>
-
-        {/* ── HUD controls (fixed game overlay) ── */}
-        <div style={{
-          position: 'fixed', bottom: 28, right: 8, zIndex: 8000,
-          display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
-        }}>
-          <div style={{ display: 'flex', gap: 3 }}>
-            {[
-              { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, always: true },
-              { emoji: '&#x1F34E;', label: 'Apfel', action: feedApple, always: false },
-              { emoji: '&#x26BD;', label: 'Ball', action: throwBall, always: false },
-            ].map(item => (
-              <button key={item.label} onClick={item.action}
-                title={!item.always && !tamed ? 'Wolf erst zähmen!' : item.label}
-                style={{
-                  background: 'rgba(20,14,4,0.90)', border: '2px solid #5D9E2E', borderRadius: 4,
-                  color: '#fff', fontSize: noBackdrop ? 13 : 16,
-                  width: noBackdrop ? 28 : 34, height: noBackdrop ? 28 : 34,
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  opacity: !item.always && !tamed ? 0.35 : 1,
-                }}
-                dangerouslySetInnerHTML={{ __html: item.emoji }} />
-            ))}
+              </>
+            ) : (
+              <span style={{ color: '#888', fontSize: 10 }}>
+                {wolfBones < 3 ? `${wolfBones}/3 Knochen` : 'Klick auf den Wolf!'}
+              </span>
+            )}
           </div>
+          {/* Divider */}
+          <div style={{ width: 1, height: 32, background: '#2a4a2a' }} />
+          {/* Action buttons */}
+          {[
+            { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, always: true },
+            { emoji: '&#x1F34E;', label: 'Apfel',   action: feedApple, always: false },
+            { emoji: '&#x26BD;',  label: 'Ball',     action: throwBall, always: false },
+          ].map(item => (
+            <button key={item.label} onClick={item.action}
+              title={!item.always && !tamed ? 'Wolf erst zähmen!' : item.label}
+              style={{
+                background: 'rgba(30,20,6,0.95)', border: '2px solid #5D9E2E', borderRadius: 6,
+                color: '#fff', fontSize: 15, width: 32, height: 32, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                opacity: !item.always && !tamed ? 0.3 : 1,
+              }}
+              dangerouslySetInnerHTML={{ __html: item.emoji }} />
+          ))}
+          {/* Trick buttons (only when tamed) */}
           {tamed && (
-            <div style={{ display: 'flex', gap: 4 }}>
+            <>
+              <div style={{ width: 1, height: 32, background: '#2a4a2a' }} />
               {([
                 { key: 'sit', label: 'Sitz' },
                 { key: 'howl', label: 'Heulen' },
@@ -1079,15 +1180,14 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
                 <button key={t.key} onClick={() => doTrick(t.key)}
                   disabled={wolfState !== 'idle'}
                   style={{
-                    background: 'rgba(20,14,4,0.90)', border: '2px solid #3a7D44', borderRadius: 4,
-                    color: wolfState !== 'idle' ? '#555' : '#aaa',
-                    fontSize: noBackdrop ? 9 : 10, fontWeight: 700,
-                    padding: noBackdrop ? '2px 5px' : '3px 8px',
+                    background: 'rgba(30,20,6,0.95)', border: '2px solid #3a7D44', borderRadius: 5,
+                    color: wolfState !== 'idle' ? '#444' : '#9ca3af',
+                    fontSize: 10, fontWeight: 700, padding: '4px 8px',
                     cursor: wolfState !== 'idle' ? 'not-allowed' : 'pointer',
                     fontFamily: 'monospace',
                   }}>{t.label}</button>
               ))}
-            </div>
+            </>
           )}
         </div>
       </div>

@@ -20,6 +20,8 @@ const ACHIEVEMENTS = [
   { id: 'ach-night-owl',        title: 'Nacht-Eule',               desc: 'Spät nachts am CRM gearbeitet' },
   { id: 'ach-early-bird',       title: 'Früher Vogel',             desc: 'Früh morgens schon aktiv' },
   { id: 'ach-adventurer',       title: 'Adventurer',               desc: 'Den Wolf ganz nach rechts geführt' },
+  { id: 'ach-kuh',             title: 'Milch-Meisterin',           desc: 'Die Kuh entdeckt' },
+  { id: 'ach-huhn',            title: 'Hühner-Flüsterin',          desc: 'Das Huhn angeklickt' },
   // ── Business ──
   { id: 'ach-biz-first-contact',title: 'Erster Kontakt',           desc: 'Ersten Kunden angelegt' },
   { id: 'ach-biz-5-contacts',   title: 'Netzwerkerin',             desc: '5 Kontakte im CRM' },
