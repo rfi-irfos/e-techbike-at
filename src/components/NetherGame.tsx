@@ -216,7 +216,34 @@ export function NetherGame({
       }}
     >
       {/* nether haze */}
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(60% 40% at 50% 18%, rgba(255,120,40,.18), transparent 70%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(60% 40% at 50% 18%, rgba(255,120,40,.2), transparent 70%)', pointerEvents: 'none' }} />
+
+      {/* distant lava sea glow at the horizon */}
+      <div style={{ position: 'absolute', left: 0, right: 0, bottom: GROUND - 8, height: 80, background: 'linear-gradient(to top, rgba(255,110,30,.35), transparent)', pointerEvents: 'none' }} />
+
+      {/* ── Nether fortress silhouette (background) ── */}
+      <div style={{ position: 'absolute', left: 0, right: 0, bottom: GROUND - 4, height: 240, pointerEvents: 'none', opacity: 0.9 }}>
+        {[
+          { l: '6%', w: 46, h: 200 }, { l: '13%', w: 70, h: 150 }, { l: '24%', w: 40, h: 230 },
+          { l: '40%', w: 90, h: 130 }, { l: '52%', w: 44, h: 210 }, { l: '66%', w: 64, h: 160 },
+          { l: '78%', w: 40, h: 240 }, { l: '88%', w: 80, h: 140 },
+        ].map((t, i) => (
+          <div key={i} style={{ position: 'absolute', left: t.l, bottom: 0, width: t.w, height: t.h, background: 'linear-gradient(#3a1414, #240b0b)', borderTop: '4px solid #4a1a1a', boxShadow: 'inset 0 0 0 2px #1c0808' }}>
+            {/* crenellations */}
+            <div style={{ position: 'absolute', top: -4, left: 0, right: 0, height: 8, background: 'repeating-linear-gradient(90deg, #4a1a1a 0 8px, transparent 8px 16px)' }} />
+            {/* glowing windows */}
+            <div style={{ position: 'absolute', top: 24, left: '50%', transform: 'translateX(-50%)', width: 8, height: 14, background: 'radial-gradient(#ffb066, #ff6a00)', boxShadow: '0 0 8px #ff7a1eaa', opacity: 0.85 }} />
+            {t.h > 170 && <div style={{ position: 'absolute', top: 64, left: '50%', transform: 'translateX(-50%)', width: 8, height: 14, background: 'radial-gradient(#ffb066, #ff6a00)', boxShadow: '0 0 8px #ff7a1eaa', opacity: 0.7 }} />}
+          </div>
+        ))}
+        {/* connecting arch bridge */}
+        <div style={{ position: 'absolute', left: '13%', right: '12%', bottom: 96, height: 12, background: 'linear-gradient(#3a1414,#240b0b)', borderTop: '3px solid #4a1a1a' }} />
+      </div>
+
+      {/* floating embers in the air */}
+      {[12, 28, 44, 61, 73, 86].map((l, i) => (
+        <div key={i} style={{ position: 'absolute', left: `${l}%`, bottom: `${18 + (i % 3) * 22}%`, width: 3, height: 3, borderRadius: '50%', background: '#ff9a3c', boxShadow: '0 0 6px #ff7a1e', opacity: 0.7, animation: `nether-bob ${1.2 + (i % 3) * 0.4}s ease-in-out infinite alternate`, pointerEvents: 'none' }} />
+      ))}
 
       {/* ground (netherrack) */}
       <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: GROUND, background: 'repeating-linear-gradient(90deg, #5b1b18 0 18px, #631f1b 18px 36px)', borderTop: '4px solid #7a2a24', boxShadow: 'inset 0 8px 0 #4a1512' }} />
@@ -274,16 +301,18 @@ export function NetherGame({
         <div style={{ position: 'absolute', left: facing.current === 1 ? px.current : px.current - SWORD_REACH, bottom: GROUND + py.current + 6, width: SWORD_REACH, height: 34, border: '2px solid rgba(155,240,236,.55)', borderRadius: facing.current === 1 ? '0 40px 40px 0' : '40px 0 0 40px', pointerEvents: 'none' }} />
       )}
 
-      {/* ── HUD ── */}
-      <div style={{ position: 'absolute', top: 14, left: 16, display: 'flex', alignItems: 'center', gap: 16, fontSize: 11, color: '#fff' }}>
-        <span style={{ display: 'flex', gap: 3 }}>{[0, 1, 2].map(i => <span key={i} style={{ color: i < hearts.current ? '#ff4d4d' : '#5a2a2a', fontSize: 14 }}>♥</span>)}</span>
-        <span style={{ color: '#ffd84d' }}>⬤ {gold.current} Gold</span>
-        <span style={{ color: '#e8e8e8' }}>🦴 {bones.current}</span>
-        <span style={{ color: '#9bf0ec' }}>☠ {kills.current}</span>
+      {/* ── HUD (chunky Nether bar) ── */}
+      <div style={{ position: 'absolute', top: 16, left: 16, display: 'flex', alignItems: 'stretch', gap: 10 }}>
+        <div style={fatPill}>
+          <span style={{ display: 'flex', gap: 4 }}>{[0, 1, 2].map(i => <span key={i} style={{ color: i < hearts.current ? '#ff4d4d' : '#3a1414', fontSize: 22, textShadow: i < hearts.current ? '0 0 8px #ff4d4daa' : 'none' }}>♥</span>)}</span>
+        </div>
+        <div style={fatPill}><span style={{ width: 16, height: 16, borderRadius: '50%', background: 'linear-gradient(#ffe27a,#f4b400)', border: '2px solid #b07d00', display: 'inline-block' }} /><span style={{ color: '#ffd84d', fontSize: 17 }}>{gold.current}</span><span style={fatLbl}>GOLD</span></div>
+        <div style={fatPill}><span style={{ fontSize: 17 }}>🦴</span><span style={{ color: '#e8e8e8', fontSize: 17 }}>{bones.current}</span></div>
+        <div style={fatPill}><span style={{ fontSize: 17 }}>⚔</span><span style={{ color: '#9bf0ec', fontSize: 17 }}>{kills.current}</span><span style={fatLbl}>KILLS</span></div>
       </div>
-      <div style={{ position: 'absolute', top: 12, right: 16, display: 'flex', gap: 8 }}>
-        <button onClick={() => setShowTrade(s => !s)} style={hudBtn}>Handeln (T)</button>
-        <button onClick={exit} style={{ ...hudBtn, background: '#7a2a24' }}>Zurück (Esc)</button>
+      <div style={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: 10 }}>
+        <button onClick={() => setShowTrade(s => !s)} style={fatBtn}>HANDELN (T)</button>
+        <button onClick={exit} style={{ ...fatBtn, background: 'linear-gradient(#8a2a22,#5b1b18)' }}>ZURÜCK (Esc)</button>
       </div>
       <div style={{ position: 'absolute', bottom: GROUND + 8, left: '50%', transform: 'translateX(-50%)', fontSize: 8, color: 'rgba(255,255,255,.45)', whiteSpace: 'nowrap' }}>
         A / D bewegen · W / Leertaste springen · Maus zielen · Klick = Schwert
@@ -316,6 +345,8 @@ export function NetherGame({
   )
 }
 
-const hudBtn: React.CSSProperties = { background: '#3a0c0a', border: '2px solid #7a2a24', color: '#fff', fontSize: 9, padding: '6px 10px', cursor: 'pointer', fontFamily: 'inherit', borderRadius: 4 }
+const fatPill: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 7, background: 'linear-gradient(#2a0d0b,#1a0605)', border: '3px solid #7a2a24', borderRadius: 10, padding: '8px 14px', color: '#fff', fontWeight: 700, boxShadow: '0 3px 0 #1c0606, 0 6px 16px rgba(0,0,0,.5)' }
+const fatLbl: React.CSSProperties = { fontSize: 8, letterSpacing: '.12em', color: '#a06b5a', alignSelf: 'center' }
+const fatBtn: React.CSSProperties = { background: 'linear-gradient(#3a1410,#240b0b)', border: '3px solid #7a2a24', color: '#fff', fontSize: 11, fontWeight: 700, padding: '10px 16px', cursor: 'pointer', fontFamily: 'inherit', borderRadius: 10, boxShadow: '0 3px 0 #1c0606, 0 6px 16px rgba(0,0,0,.5)' }
 const panelStyle: React.CSSProperties = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', background: 'rgba(20,6,5,.96)', border: '3px solid #7a2a24', borderRadius: 10, padding: '26px 30px', textAlign: 'center', minWidth: 260, boxShadow: '0 12px 50px rgba(0,0,0,.6)' }
 const tradeBtn: React.CSSProperties = { display: 'block', width: '100%', background: '#5b1b18', border: '2px solid #7a2a24', color: '#fff', fontSize: 9, padding: '10px', marginBottom: 8, cursor: 'pointer', fontFamily: 'inherit', borderRadius: 5 }

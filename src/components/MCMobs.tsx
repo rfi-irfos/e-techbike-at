@@ -118,17 +118,19 @@ export function McBackdrop() {
             fill={isNight ? '#0d2030' : isTransition ? '#4a3058' : '#6888a8'} opacity={0.9} />
         </svg>
       )}
-      {/* ── Lava waterfall cascading down the far mountain ── */}
+      {/* ── Lava waterfall pouring from a rock cliff on the mountain ── */}
       {W > 0 && (
-        <div style={{ position: 'absolute', bottom: 30, left: '16.5%', width: 12, height: '24%', pointerEvents: 'none', opacity: 0.9 - daylight * 0.12, filter: 'blur(0.4px)' }}>
+        <div style={{ position: 'absolute', bottom: 60, left: '15%', width: 14, height: '20%', pointerEvents: 'none', opacity: 0.92 - daylight * 0.1 }}>
+          {/* rock cliff the lava emerges from (the source) */}
+          <div style={{ position: 'absolute', top: -14, left: -11, width: 38, height: 18, background: 'linear-gradient(#6b6b75,#3f3f48)', borderRadius: '3px 3px 6px 6px', boxShadow: 'inset 0 -3px 0 #2a2a30, 0 2px 4px rgba(0,0,0,.4)' }}>
+            <div style={{ position: 'absolute', bottom: -2, left: 11, width: 16, height: 6, background: 'linear-gradient(#ffb066,#ff6a00)', borderRadius: '0 0 4px 4px', boxShadow: '0 0 10px #ff8a3ccc' }} />
+          </div>
           {/* falling lava stream */}
-          <div style={{ position: 'absolute', inset: 0, borderRadius: 3, background: 'linear-gradient(180deg,#ffd08a 0%,#ff9a3c 25%,#ff6a00 55%,#e03a00 85%,#b81e00 100%)', backgroundSize: '100% 220%', boxShadow: '0 0 12px #ff7a1eaa, 0 0 30px #ff5a0066', animation: 'lava-fall 1.1s linear infinite' }} />
-          {/* widening crown at the top */}
-          <div style={{ position: 'absolute', top: -3, left: -4, width: 20, height: 8, borderRadius: 4, background: 'linear-gradient(#ffb066,#ff7a1e)', boxShadow: '0 0 10px #ff8a3caa' }} />
+          <div style={{ position: 'absolute', inset: 0, borderRadius: '0 0 4px 4px', background: 'linear-gradient(180deg,#ffd08a 0%,#ff9a3c 25%,#ff6a00 55%,#e03a00 85%,#b81e00 100%)', backgroundSize: '100% 220%', boxShadow: '0 0 12px #ff7a1eaa, 0 0 30px #ff5a0066', filter: 'blur(0.4px)', animation: 'lava-fall 1.1s linear infinite' }} />
           {/* glowing splash pool at the base */}
-          <div style={{ position: 'absolute', bottom: -7, left: -12, width: 36, height: 12, borderRadius: '50%', background: 'radial-gradient(ellipse, #ff7a1edd 0%, #ff5a0066 50%, transparent 72%)', filter: 'blur(2px)', animation: 'lava-pool 1.4s ease-in-out infinite alternate' }} />
+          <div style={{ position: 'absolute', bottom: -7, left: -13, width: 40, height: 13, borderRadius: '50%', background: 'radial-gradient(ellipse, #ff7a1edd 0%, #ff5a0066 50%, transparent 72%)', filter: 'blur(2px)', animation: 'lava-pool 1.4s ease-in-out infinite alternate' }} />
           {/* embers drifting up */}
-          <div style={{ position: 'absolute', top: '40%', left: -2, width: 3, height: 3, borderRadius: '50%', background: '#ffd08a', boxShadow: '6px 22px 0 #ffb066, 3px 44px 0 #ff8a3c', animation: 'lava-ember 1.8s ease-in infinite' }} />
+          <div style={{ position: 'absolute', top: '45%', left: -2, width: 3, height: 3, borderRadius: '50%', background: '#ffd08a', boxShadow: '6px 22px 0 #ffb066, 3px 44px 0 #ff8a3c', animation: 'lava-ember 1.8s ease-in infinite' }} />
         </div>
       )}
       <style>{`
@@ -498,13 +500,6 @@ function wolfSitPx(tamed: boolean, eating = false): PR[] {
   ]
 }
 
-const TREE_PX: PR[] = [
-  pb(11, 30, 8, 20, '#92400e'),
-  pb(5, 20, 20, 14, '#15803d'), pb(1, 12, 28, 12, '#16a34a'),
-  pb(5, 4, 20, 12, '#15803d'), pb(9, 0, 12, 8, '#166534'),
-  pb(3, 14, 4, 4, '#166534'), pb(23, 14, 4, 4, '#166534'),
-]
-
 const CRAFTING_TABLE_PX: PR[] = [
   pb(0, 4, 24, 20, '#78350f'), // body
   pb(0, 0, 24, 4, '#92400e'),  // top
@@ -625,7 +620,39 @@ function AchievementToast({ title, onDone }: { title: string; onDone: () => void
 }
 
 // ── CrmScene — full gamified scene ────────────────────────────────────────────
-const WK = { name: 'lazi_w_name', xp: 'lazi_w_xp', hunger: 'lazi_w_hunger', bones: 'lazi_w_bones', tp: 'lazi_w_tp', tb: 'lazi_w_tb', gold: 'lazi_w_gold' }
+const WK = { name: 'lazi_w_name', xp: 'lazi_w_xp', hunger: 'lazi_w_hunger', bones: 'lazi_w_bones', tp: 'lazi_w_tp', tb: 'lazi_w_tb', gold: 'lazi_w_gold', wood: 'lazi_w_wood', house: 'lazi_w_house' }
+
+// Foreground trees — chop for wood, then upgrade the house. Positions are
+// fractions of the scene width so they scale with the viewport.
+type TreeType = 'oak' | 'birch' | 'spruce'
+const TREES: { id: number; xf: number; type: TreeType }[] = [
+  { id: 1, xf: 0.11, type: 'oak' },
+  { id: 2, xf: 0.21, type: 'birch' },
+  { id: 3, xf: 0.32, type: 'spruce' },
+  { id: 4, xf: 0.46, type: 'oak' },
+  { id: 5, xf: 0.60, type: 'birch' },
+  { id: 6, xf: 0.71, type: 'spruce' },
+]
+const HOUSE_COSTS = [4, 8, 14, 22, 32] // wood for L0->1 ... L4->5
+
+function TreeSvg({ type }: { type: TreeType }) {
+  if (type === 'birch') return (
+    <svg viewBox="0 0 18 44" width={20} height={48} style={{ imageRendering: 'pixelated', display: 'block' }}>
+      <rect x="7" y="24" width="4" height="20" fill="#d4d4d4" /><rect x="7" y="20" width="4" height="6" fill="#a3a3a3" /><rect x="7" y="26" width="1" height="2" fill="#525252" />
+      <rect x="3" y="10" width="12" height="12" fill="#4ade80" /><rect x="1" y="6" width="16" height="10" fill="#22c55e" /><rect x="3" y="2" width="12" height="8" fill="#4ade80" /><rect x="6" y="0" width="6" height="6" fill="#16a34a" />
+    </svg>
+  )
+  if (type === 'spruce') return (
+    <svg viewBox="0 0 20 48" width={22} height={52} style={{ imageRendering: 'pixelated', display: 'block' }}>
+      <rect x="8" y="30" width="4" height="18" fill="#92400e" /><rect x="6" y="22" width="8" height="12" fill="#065f46" /><rect x="4" y="14" width="12" height="12" fill="#047857" /><rect x="2" y="8" width="16" height="10" fill="#065f46" /><rect x="4" y="2" width="12" height="10" fill="#047857" /><rect x="7" y="0" width="6" height="6" fill="#064e3b" />
+    </svg>
+  )
+  return (
+    <svg viewBox="0 0 22 44" width={24} height={48} style={{ imageRendering: 'pixelated', display: 'block' }}>
+      <rect x="9" y="24" width="4" height="20" fill="#7c4f1e" /><rect x="4" y="12" width="14" height="14" fill="#166534" /><rect x="2" y="6" width="18" height="10" fill="#15803d" /><rect x="5" y="2" width="12" height="8" fill="#166534" />
+    </svg>
+  )
+}
 const lsGet = (k: string, fb = '') => { try { return localStorage.getItem(k) ?? fb } catch { return fb } }
 const lsNum = (k: string, fb = 0) => { const v = parseInt(lsGet(k)); return isNaN(v) ? fb : v }
 const lsSet = (k: string, v: string) => { try { localStorage.setItem(k, v) } catch {} }
@@ -686,6 +713,21 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   // ── Nether portal: hold 5s to enter the minigame ──
   const [gold, setGold] = useState(() => lsNum(WK.gold))
   const [inNether, setInNether] = useState(false)
+  // ── Woodcutting & house upgrades ──
+  const [wood, setWood] = useState(() => lsNum(WK.wood))
+  const [houseLevel, setHouseLevel] = useState(() => Math.min(5, lsNum(WK.house)))
+  const [choppedTrees, setChoppedTrees] = useState<Set<number>>(new Set())
+  const [respawning, setRespawning] = useState(false)
+  // Once every tree is chopped, they slowly grow back one by one.
+  useEffect(() => {
+    if (choppedTrees.size >= TREES.length) setRespawning(true)
+    if (choppedTrees.size === 0) setRespawning(false)
+  }, [choppedTrees])
+  useEffect(() => {
+    if (!respawning || choppedTrees.size === 0) return
+    const t = setTimeout(() => setChoppedTrees(prev => { const a = [...prev]; a.pop(); return new Set(a) }), 4000)
+    return () => clearTimeout(t)
+  }, [respawning, choppedTrees])
   const [portalCharge, setPortalCharge] = useState(0) // 0..1
   const portalTimer = useRef<ReturnType<typeof setInterval> | null>(null)
   const stopPortalHold = () => { if (portalTimer.current) { clearInterval(portalTimer.current); portalTimer.current = null } setPortalCharge(0) }
@@ -913,12 +955,32 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
     spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x1F356;', '#b45309']])
     gainXp(12)
   }
-  const minePickaxe = () => {
-    const ng = gold + 1
-    setGold(ng); lsSet(WK.gold, String(ng))
-    spawnPts(wolfX + 24, [['&#x26CF;', '#9ca3af'], ['&#x1F7E1;', '#f4b400']])
-    if (ng === 1) unlock('ach-first-gold', 'Erstes Gold')
-    if (ng >= 64) unlock('ach-gold-stack', 'Ein ganzer Stack Gold')
+  const chopTree = (id: number, x: number, type: TreeType) => {
+    if (choppedTrees.has(id)) return
+    setChoppedTrees(prev => new Set(prev).add(id))
+    const amt = type === 'spruce' ? 3 : type === 'oak' ? 2 : 1
+    const nw = wood + amt
+    setWood(nw); lsSet(WK.wood, String(nw))
+    spawnPts(x + 10, [['&#x1FAB5;', '#a16207'], ['&#x1F343;', '#15803d']])
+    if (nw >= 1) unlock('ach-first-wood', 'Holzfäller')
+    if (nw >= 50) unlock('ach-lumberjack', 'Waldmeister')
+  }
+  const chopNearest = () => {
+    const standing = TREES.filter(t => !choppedTrees.has(t.id))
+    if (!standing.length) return
+    let best = standing[0], bd = Infinity
+    standing.forEach(t => { const d = Math.abs(t.xf * W - wolfX); if (d < bd) { bd = d; best = t } })
+    chopTree(best.id, best.xf * W, best.type)
+  }
+  const upgradeHouse = () => {
+    if (houseLevel >= 5) { spawnPts(W - 40, [['&#x2728;', '#fbbf24']]); return }
+    const cost = HOUSE_COSTS[houseLevel]
+    if (wood < cost) { spawnPts(W - 40, [['&#x1FAB5;', '#a16207']]); return }
+    const nw = wood - cost; setWood(nw); lsSet(WK.wood, String(nw))
+    const nl = houseLevel + 1; setHouseLevel(nl); lsSet(WK.house, String(nl))
+    spawnPts(W - 40, [['&#x2B06;', '#22c55e'], ['&#x1F3E0;', '#f59e0b']])
+    unlock('ach-house-up', 'Heimwerker')
+    if (nl === 5) unlock('ach-house-max', 'Eigenheim Level 5')
   }
   const enterNether = () => {
     if (!tamed) { setShowNameDialog(true); return }
@@ -1070,7 +1132,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
 
         {/* ── Far mountains — tiny, hazy, razor-sharp spikes ── */}
         {!noBackdrop && W > 0 && (
-          <svg style={{ position: 'absolute', bottom: 25, left: 0, width: '100%', height: '16%', filter: 'blur(7px) brightness(1.25) saturate(0.4)' }}
+          <svg style={{ position: 'absolute', bottom: 25, left: 0, width: '100%', height: '26%', filter: 'blur(6px) brightness(1.25) saturate(0.4)' }}
             viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
             <polygon points={`0,120 0,85 ${W*0.06},40 ${W*0.09},80 ${W*0.14},15 ${W*0.17},75 ${W*0.24},5 ${W*0.27},70 ${W*0.35},30 ${W*0.39},80 ${W*0.46},2 ${W*0.49},65 ${W*0.56},20 ${W*0.60},75 ${W*0.67},8 ${W*0.70},70 ${W*0.78},35 ${W*0.82},80 ${W*0.88},10 ${W*0.92},70 ${W},45 ${W},120`}
               fill={mtDistFill} opacity={0.9} />
@@ -1079,23 +1141,27 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           </svg>
         )}
 
-        {/* ── Waterfalls on far mountains ── */}
-        {!noBackdrop && (
-          <div style={{ position: 'absolute', left: `${W*0.455}px`, bottom: 25, width: 4, height: '10%', overflow: 'hidden', zIndex: 1 }}>
-            <div style={{
-              width: '100%', height: '200%',
-              background: 'linear-gradient(to bottom, #f97316 0%, #dc2626 40%, #f97316 60%, #dc2626 100%)',
-              animation: 'lazi-lavafall 0.6s linear infinite',
-            }} />
+        {/* ── Lava waterfall on the far mountain (pours from a rock cliff) ── */}
+        {!noBackdrop && W > 0 && (
+          <div style={{ position: 'absolute', left: `${W*0.455}px`, bottom: 25, width: 6, height: '13%', zIndex: 1 }}>
+            {/* rock cliff source at the top */}
+            <div style={{ position: 'absolute', top: -6, left: -6, width: 18, height: 8, background: 'linear-gradient(#5f5f68,#3a3a42)', borderRadius: '2px 2px 4px 4px', boxShadow: 'inset 0 -2px 0 #2a2a30' }} />
+            {/* falling lava */}
+            <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', borderRadius: '0 0 3px 3px' }}>
+              <div style={{ width: '100%', height: '200%', background: 'linear-gradient(to bottom, #ffb066 0%, #f97316 35%, #dc2626 60%, #f97316 80%, #dc2626 100%)', boxShadow: '0 0 8px #f9731688', animation: 'lazi-lavafall 0.6s linear infinite' }} />
+            </div>
+            {/* glowing splash pool */}
+            <div style={{ position: 'absolute', bottom: -4, left: -8, width: 22, height: 7, borderRadius: '50%', background: 'radial-gradient(ellipse, #ff7a1edd 0%, #ff5a0055 55%, transparent 75%)', animation: 'lava-pool 1.4s ease-in-out infinite alternate' }} />
           </div>
         )}
-        {!noBackdrop && (
-          <div style={{ position: 'absolute', left: `${W*0.245}px`, bottom: 25, width: 4, height: '8%', overflow: 'hidden', zIndex: 1 }}>
-            <div style={{
-              width: '100%', height: '200%',
-              background: 'linear-gradient(to bottom, #38bdf8 0%, #0284c7 50%, #38bdf8 100%)',
-              animation: 'lazi-waterfall 0.8s linear infinite',
-            }} />
+        {/* ── Water waterfall on the far mountain ── */}
+        {!noBackdrop && W > 0 && (
+          <div style={{ position: 'absolute', left: `${W*0.245}px`, bottom: 25, width: 5, height: '10%', zIndex: 1 }}>
+            <div style={{ position: 'absolute', top: -5, left: -5, width: 15, height: 7, background: 'linear-gradient(#5f5f68,#3a3a42)', borderRadius: '2px 2px 4px 4px' }} />
+            <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', borderRadius: '0 0 3px 3px' }}>
+              <div style={{ width: '100%', height: '200%', background: 'linear-gradient(to bottom, #bae6fd 0%, #38bdf8 50%, #0284c7 75%, #38bdf8 100%)', animation: 'lazi-waterfall 0.8s linear infinite' }} />
+            </div>
+            <div style={{ position: 'absolute', bottom: -4, left: -7, width: 19, height: 6, borderRadius: '50%', background: 'radial-gradient(ellipse, #bae6fdcc 0%, #38bdf855 55%, transparent 75%)' }} />
           </div>
         )}
 
@@ -1169,14 +1235,42 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           </>
         )}
 
-        <div style={{ position: 'absolute', left: 30, bottom: 20 }}>
-          <Sprite px={TREE_PX} vw={30} vh={50} />
-        </div>
-        <div style={{ position: 'absolute', left: 185, bottom: 20 }}>
-          <Sprite px={TREE_PX} vw={30} vh={50} scale={0.8} />
-        </div>
-        <div style={{ position: 'absolute', right: 6, bottom: 20 }}>
-          <Sprite px={HOUSE_PX} vw={72} vh={80} />
+        {/* ── Choppable foreground trees (axe → wood) ── */}
+        {!noBackdrop && W > 0 && TREES.map(t => {
+          const x = t.xf * W
+          const chopped = choppedTrees.has(t.id)
+          if (chopped) {
+            // tree stump
+            return (
+              <div key={t.id} style={{ position: 'absolute', left: x, bottom: 18, width: 14, height: 8, pointerEvents: 'none', zIndex: 2 }}>
+                <div style={{ width: 12, height: 7, background: '#7c4f1e', borderRadius: 2, boxShadow: 'inset 0 2px 0 #a16207' }} />
+              </div>
+            )
+          }
+          return (
+            <div key={t.id} title="Baum fällen (Holz)" onClick={() => chopTree(t.id, x, t.type)}
+              style={{ position: 'absolute', left: x, bottom: 18, cursor: 'pointer', zIndex: 2, transition: 'transform .1s' }}
+              onMouseDown={e => { (e.currentTarget as HTMLDivElement).style.transform = 'rotate(-3deg)' }}
+              onMouseUp={e => { (e.currentTarget as HTMLDivElement).style.transform = 'none' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'none' }}>
+              <TreeSvg type={t.type} />
+            </div>
+          )
+        })}
+
+        {/* ── House — click to upgrade with wood (5 levels) ── */}
+        <div style={{ position: 'absolute', right: 6, bottom: 20, cursor: 'pointer', zIndex: 2 }}
+          onClick={upgradeHouse}
+          title={houseLevel >= 5 ? 'Haus voll ausgebaut (Lv 5)' : `Haus ausbauen — ${HOUSE_COSTS[houseLevel]} Holz`}>
+          <div style={{ transform: `scale(${0.8 + houseLevel * 0.11})`, transformOrigin: 'bottom right' }}>
+            <Sprite px={HOUSE_PX} vw={72} vh={80} />
+          </div>
+          {houseLevel >= 2 && <div style={{ position: 'absolute', top: -6, right: 14, width: 8, height: 16, background: '#5a3a2a', boxShadow: '0 -3px 0 #6b4a3a' }} />}
+          {houseLevel >= 4 && <div style={{ position: 'absolute', top: -22, right: 4, width: 14, height: 9, background: '#dc2626', clipPath: 'polygon(0 0,100% 50%,0 100%)' }} />}
+          <div style={{ position: 'absolute', top: -14, left: -6, fontSize: 9, fontWeight: 700, color: '#fff', background: '#5D9E2E', borderRadius: 4, padding: '1px 5px', fontFamily: 'monospace' }}>Lv {houseLevel}</div>
+          {houseLevel < 5 && wood >= HOUSE_COSTS[houseLevel] && (
+            <div style={{ position: 'absolute', top: -30, right: 18, fontSize: 13, animation: 'lazi-float-up 1.4s ease-in-out infinite' }}>&#x2B06;</div>
+          )}
         </div>
         {/* ... (Existing scene elements: Trees, House, Crafting Table, Chest, Campfire) */}
         
@@ -1498,9 +1592,9 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <div style={{ height: 8, background: '#6b3d10' }} />
         </div>
 
-        {/* ── HUD — centered bottom game bar ── */}
+        {/* ── HUD — top game bar (so the world & mobs show below it) ── */}
         <div style={{
-          position: 'fixed', bottom: 10, left: '50%', transform: 'translateX(-50%)',
+          position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)',
           zIndex: 8000, display: 'flex', alignItems: 'center', gap: 8,
           background: 'rgba(14,9,2,0.93)', border: '2px solid #5D9E2E',
           borderRadius: 10, padding: '6px 14px', fontFamily: 'monospace',
@@ -1533,10 +1627,14 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           </div>
           {/* Divider */}
           <div style={{ width: 1, height: 32, background: '#2a4a2a' }} />
-          {/* Gold pouch */}
-          <div title="Gold" style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '0 6px', color: '#f4b400', fontSize: 11, fontWeight: 700, fontFamily: 'monospace' }}>
+          {/* Resource counters: gold + wood */}
+          <div title="Gold" style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '0 5px', color: '#f4b400', fontSize: 11, fontWeight: 700, fontFamily: 'monospace' }}>
             <span style={{ width: 12, height: 12, borderRadius: '50%', background: 'linear-gradient(#ffe27a,#f4b400)', border: '1px solid #b07d00', display: 'inline-block' }} />
             {gold}
+          </div>
+          <div title="Holz" style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '0 5px', color: '#c08457', fontSize: 11, fontWeight: 700, fontFamily: 'monospace' }}>
+            <span style={{ width: 11, height: 11, borderRadius: 2, background: 'linear-gradient(#a16207,#6b3d10)', border: '1px solid #4a2a08', display: 'inline-block' }} />
+            {wood}
           </div>
           <div style={{ width: 1, height: 32, background: '#2a4a2a' }} />
           {/* Hotbar — tools & items */}
@@ -1545,7 +1643,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
             { emoji: '&#x1F356;', label: 'Fleisch', action: feedMeat, always: false },
             { emoji: '&#x1F34E;', label: 'Apfel',   action: feedApple, always: false },
             { emoji: '&#x26BD;',  label: 'Ball',     action: throwBall, always: false },
-            { emoji: '&#x26CF;',  label: 'Spitzhacke — Gold schürfen', action: minePickaxe, always: true },
+            { emoji: '&#x1FA93;', label: 'Axt — nächsten Baum fällen', action: chopNearest, always: true },
             { emoji: '&#x1F48E;', label: 'Diamant',  action: flexDiamond, always: true },
             { emoji: '&#x1F525;', label: 'Mit Wolfi ins Nether', action: enterNether, always: false },
           ].map(item => (
@@ -1593,6 +1691,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         @keyframes portal-glow { 0% { opacity: 0.55; transform: translate(-50%,-50%) scale(0.92); } 100% { opacity: 1; transform: translate(-50%,-50%) scale(1.06); } }
         @keyframes lazi-waterfall { 0%{transform:translateY(-100%);opacity:0.9} 100%{transform:translateY(0);opacity:0.4} }
         @keyframes lazi-lavafall { 0%{transform:translateY(-100%);opacity:1} 100%{transform:translateY(0);opacity:0.7} }
+        @keyframes lava-pool { from { transform: scaleX(0.85); opacity: .7; } to { transform: scaleX(1.15); opacity: 1; } }
       `}</style>
     </>
   )
