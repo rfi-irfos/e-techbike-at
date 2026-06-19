@@ -1279,6 +1279,29 @@ export function PublicSite({
           </section>
         )}
 
+        {/* ── PRICING ─────────────────────────────────────────────────── */}
+        {pricing && (
+          <section className="site-section site-pricing" id="pricing">
+            <E field="pricing.title" value={pricing.title} as="h2" className="site-section-title" />
+            <E field="pricing.body" value={pricing.body} as="div" className="site-pricing-body" />
+          </section>
+        )}
+
+        {/* ── CERTIFICATES ─────────────────────────────────────────────── */}
+        {(certificates?.items?.length ?? 0) > 0 && (
+          <section className="site-section site-certificates" id="certificates">
+            {certificates!.title && <h2 className="site-section-title">{certificates!.title}</h2>}
+            <div className="site-certs-grid">
+              {certificates!.items.map((cert: CertificateItem) => (
+                <div key={cert.id} className="site-cert-card">
+                  <div className="site-cert-title">{cert.title}</div>
+                  <div className="site-cert-sub">{cert.subtitle}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── LOCATION ─────────────────────────────────────────────────── */}
         {!hiddenSections.includes('location') && <section className={`site-location${editMode ? ' site-edit-section' : ''}`} id="location"
           onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('contact') } : undefined}>

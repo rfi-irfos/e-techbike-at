@@ -1304,13 +1304,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                   </Field>
                 </PanelSection>
                 <PanelSection title="Foto">
-                  <UploadRow
-                    label="Profilfoto"
-                    value={draft.about?.photo ?? ''}
-                    uploading={uploading && uploadTarget === 'about.photo'}
-                    onUpload={() => handleImageClick('about.photo')}
-                    onClear={() => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), photo: '' } }))}
-                  />
+                  <UploadRow src={draft.about?.photo ?? ''} onUpload={() => handleImageClick('about.photo')} uploading={uploading && uploadTarget === 'about.photo'} />
+                  {draft.about?.photo && <button className="panel-back-btn" style={{ marginTop: 6 }} onClick={() => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), photo: '' } }))}>Foto entfernen</button>}
                 </PanelSection>
                 <PanelSection title="Kennzahlen">
                   {(draft.about?.stats ?? []).map((s: AboutStat, i: number) => (

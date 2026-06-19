@@ -1,6 +1,7 @@
 // Shared Minecraft mob + landscape components
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { NetherGame } from './NetherGame'
 
 // ── Pure visual backdrop: sky + mountains + hills + sun/moon + clouds ─────────
 export function McBackdrop() {
@@ -31,32 +32,44 @@ export function McBackdrop() {
   const isNight = !isDayPhase
   const isTransition = isDayPhase && (arcPct < 0.18 || arcPct > 0.82)
 
-  const skyBg = isNight
-    ? 'linear-gradient(180deg,#05091a 0%,#0d1a3a 50%,#0f2a0f 80%,#1a3d1a 100%)'
-    : isTransition
-      ? 'linear-gradient(180deg,#1a0a3e 0%,#c2410c 20%,#f97316 45%,#fbbf24 65%,#4a7c3f 85%,#2d5a27 100%)'
-      : 'linear-gradient(180deg,#1e90e8 0%,#4db8ff 25%,#87ceeb 55%,#a8d8a8 75%,#4caf50 88%,#388e3c 100%)'
+  // Continuous day/night so everything cross-fades instead of snapping.
+  const theta = (totalPhase / (HALF * 2)) * Math.PI * 2            // 0..2π over the full cycle
+  const clamp01 = (v: number) => Math.max(0, Math.min(1, v))
+  const daylight = clamp01(Math.sin(theta) * 1.5)                  // 0 = deep night, 1 = midday
+  const twilight = clamp01(1 - Math.abs(Math.sin(theta)) * 2.2)    // peaks only at dawn & dusk
+  const starOpacity = clamp01(1 - daylight * 1.4)
 
+  const skyNight = 'linear-gradient(180deg,#05091a 0%,#0d1a3a 50%,#0f2a0f 80%,#1a3d1a 100%)'
+  const skyDay = 'linear-gradient(180deg,#1e90e8 0%,#4db8ff 25%,#87ceeb 55%,#a8d8a8 75%,#4caf50 88%,#388e3c 100%)'
+  const skyDusk = 'linear-gradient(180deg,#1a0a3e 0%,#c2410c 20%,#f97316 45%,#fbbf24 65%,#4a7c3f 85%,#2d5a27 100%)'
 
   return (
-    <div ref={ref} style={{ position: 'absolute', inset: 0, background: skyBg, overflow: 'hidden', transition: 'background 8s ease' }}>
-      {/* Stars (night) */}
-      {isNight && [0.02,0.06,0.10,0.15,0.20,0.25,0.30,0.36,0.42,0.48,0.54,0.60,0.66,0.72,0.78,0.83,0.88,0.93,0.97,
-        0.04,0.14,0.28,0.45,0.58,0.71,0.85,0.91,0.08].map((p, i) => (
-        <div key={i} style={{
-          position:'absolute', left:`${p*100}%`, top:`${3 + (i % 6) * 4 + (i % 3)}%`,
-          width: i%5===0?4:i%3===0?3:2, height: i%5===0?4:i%3===0?3:2,
-          borderRadius:'50%', background:'#fff',
-          opacity: 0.3 + (i%4)*0.18,
-        }}/>
-      ))}
-      {/* Sun arc (day) */}
+    <div ref={ref} style={{ position: 'absolute', inset: 0, background: skyNight, overflow: 'hidden' }}>
+      {/* Smooth cross-faded sky: night base, day + dusk layered on top by brightness */}
+      <div style={{ position: 'absolute', inset: 0, background: skyDay, opacity: daylight, transition: 'opacity .25s linear', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: skyDusk, opacity: twilight * 0.92, transition: 'opacity .25s linear', pointerEvents: 'none' }} />
+      {/* Stars — fade with brightness instead of snapping on/off */}
+      {starOpacity > 0.02 && (
+        <div style={{ position: 'absolute', inset: 0, opacity: starOpacity, transition: 'opacity .25s linear', pointerEvents: 'none' }}>
+          {[0.02,0.06,0.10,0.15,0.20,0.25,0.30,0.36,0.42,0.48,0.54,0.60,0.66,0.72,0.78,0.83,0.88,0.93,0.97,
+            0.04,0.14,0.28,0.45,0.58,0.71,0.85,0.91,0.08].map((p, i) => (
+            <div key={i} style={{
+              position:'absolute', left:`${p*100}%`, top:`${3 + (i % 6) * 4 + (i % 3)}%`,
+              width: i%5===0?4:i%3===0?3:2, height: i%5===0?4:i%3===0?3:2,
+              borderRadius:'50%', background:'#fff',
+              opacity: 0.3 + (i%4)*0.18,
+            }}/>
+          ))}
+        </div>
+      )}
+      {/* Sun arc (day) — fades in at dawn, out at dusk */}
       {isDayPhase && (
         <div style={{
           position: 'absolute', left: sunLeft, bottom: sunBottom,
           width: 38, height: 38, borderRadius: '50%', transform: 'translate(-50%, 50%)',
           background: '#FFD700', border: '4px solid #FFA500',
           boxShadow: '0 0 32px #FFD700ee, 0 0 80px #FFD70077',
+          opacity: clamp01(0.2 + daylight), transition: 'opacity .25s linear',
         }} />
       )}
       {/* Moon arc (night) — SVG mask crescent */}
@@ -65,7 +78,7 @@ export function McBackdrop() {
           position: 'absolute', left: sunLeft, bottom: sunBottom,
           transform: 'translate(-50%, 50%)',
           filter: 'drop-shadow(0 0 12px #fef08a88) drop-shadow(0 0 30px #fef08a44)',
-          pointerEvents: 'none',
+          pointerEvents: 'none', opacity: clamp01(1 - daylight), transition: 'opacity .25s linear',
         }}>
           <svg viewBox="0 0 32 32" width="32" height="32" style={{ imageRendering: 'auto', display: 'block' }}>
             <defs>
@@ -91,10 +104,10 @@ export function McBackdrop() {
           filter: 'blur(7px)',
         }} />
       ))}
-      {/* Far mountains — smooth, hazy, truly distant */}
+      {/* Far mountains — smooth, hazy, truly distant (taller for depth) */}
       {W > 0 && (
-        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '10%',
-          filter: 'blur(5px) brightness(1.3) saturate(0.3) opacity(0.55)',
+        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '26%',
+          filter: 'blur(5px) brightness(1.3) saturate(0.3) opacity(0.6)',
           imageRendering: 'auto' }}
           viewBox={`0 0 ${W} 100`} preserveAspectRatio="none">
           {/* Background mountain range — very smooth, very distant */}
@@ -105,6 +118,24 @@ export function McBackdrop() {
             fill={isNight ? '#0d2030' : isTransition ? '#4a3058' : '#6888a8'} opacity={0.9} />
         </svg>
       )}
+      {/* ── Lava waterfall cascading down the far mountain ── */}
+      {W > 0 && (
+        <div style={{ position: 'absolute', bottom: 30, left: '16.5%', width: 12, height: '24%', pointerEvents: 'none', opacity: 0.9 - daylight * 0.12, filter: 'blur(0.4px)' }}>
+          {/* falling lava stream */}
+          <div style={{ position: 'absolute', inset: 0, borderRadius: 3, background: 'linear-gradient(180deg,#ffd08a 0%,#ff9a3c 25%,#ff6a00 55%,#e03a00 85%,#b81e00 100%)', backgroundSize: '100% 220%', boxShadow: '0 0 12px #ff7a1eaa, 0 0 30px #ff5a0066', animation: 'lava-fall 1.1s linear infinite' }} />
+          {/* widening crown at the top */}
+          <div style={{ position: 'absolute', top: -3, left: -4, width: 20, height: 8, borderRadius: 4, background: 'linear-gradient(#ffb066,#ff7a1e)', boxShadow: '0 0 10px #ff8a3caa' }} />
+          {/* glowing splash pool at the base */}
+          <div style={{ position: 'absolute', bottom: -7, left: -12, width: 36, height: 12, borderRadius: '50%', background: 'radial-gradient(ellipse, #ff7a1edd 0%, #ff5a0066 50%, transparent 72%)', filter: 'blur(2px)', animation: 'lava-pool 1.4s ease-in-out infinite alternate' }} />
+          {/* embers drifting up */}
+          <div style={{ position: 'absolute', top: '40%', left: -2, width: 3, height: 3, borderRadius: '50%', background: '#ffd08a', boxShadow: '6px 22px 0 #ffb066, 3px 44px 0 #ff8a3c', animation: 'lava-ember 1.8s ease-in infinite' }} />
+        </div>
+      )}
+      <style>{`
+        @keyframes lava-fall { from { background-position: 0 0; } to { background-position: 0 220%; } }
+        @keyframes lava-pool { from { transform: scaleX(0.85); opacity: .7; } to { transform: scaleX(1.15); opacity: 1; } }
+        @keyframes lava-ember { 0% { transform: translateY(0); opacity: .9; } 100% { transform: translateY(-26px); opacity: 0; } }
+      `}</style>
       {/* Near hills — 3-layer stepped, lush depth */}
       {W > 0 && (
         <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '25%', imageRendering: 'pixelated' }}
@@ -594,7 +625,7 @@ function AchievementToast({ title, onDone }: { title: string; onDone: () => void
 }
 
 // ── CrmScene — full gamified scene ────────────────────────────────────────────
-const WK = { name: 'lazi_w_name', xp: 'lazi_w_xp', hunger: 'lazi_w_hunger', bones: 'lazi_w_bones', tp: 'lazi_w_tp', tb: 'lazi_w_tb' }
+const WK = { name: 'lazi_w_name', xp: 'lazi_w_xp', hunger: 'lazi_w_hunger', bones: 'lazi_w_bones', tp: 'lazi_w_tp', tb: 'lazi_w_tb', gold: 'lazi_w_gold' }
 const lsGet = (k: string, fb = '') => { try { return localStorage.getItem(k) ?? fb } catch { return fb } }
 const lsNum = (k: string, fb = 0) => { const v = parseInt(lsGet(k)); return isNaN(v) ? fb : v }
 const lsSet = (k: string, v: string) => { try { localStorage.setItem(k, v) } catch {} }
@@ -651,6 +682,22 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   const [achToast, setAchToast] = useState<{ id: string; title: string } | null>(null)
   const [tailWag, setTailWag] = useState(false)
   const [wolfSitting, setWolfSitting] = useState(false)
+
+  // ── Nether portal: hold 5s to enter the minigame ──
+  const [gold, setGold] = useState(() => lsNum(WK.gold))
+  const [inNether, setInNether] = useState(false)
+  const [portalCharge, setPortalCharge] = useState(0) // 0..1
+  const portalTimer = useRef<ReturnType<typeof setInterval> | null>(null)
+  const stopPortalHold = () => { if (portalTimer.current) { clearInterval(portalTimer.current); portalTimer.current = null } setPortalCharge(0) }
+  const startPortalHold = () => {
+    if (inNether || portalTimer.current) return
+    const t0 = performance.now()
+    portalTimer.current = setInterval(() => {
+      const p = Math.min(1, (performance.now() - t0) / 5000)
+      setPortalCharge(p)
+      if (p >= 1) { stopPortalHold(); setInNether(true) }
+    }, 50)
+  }
   const netherAchDone = useRef(false)
 
   const wsRef = useRef(wolfState); wsRef.current = wolfState
@@ -859,6 +906,30 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
     gainXp(10)
   }
 
+  const feedMeat = () => {
+    if (!tamed) { setShowNameDialog(true); return }
+    setWolfState('eating'); setTimeout(() => setWolfState('idle'), 2000)
+    setHunger(h => Math.min(100, h + 35))
+    spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x1F356;', '#b45309']])
+    gainXp(12)
+  }
+  const minePickaxe = () => {
+    const ng = gold + 1
+    setGold(ng); lsSet(WK.gold, String(ng))
+    spawnPts(wolfX + 24, [['&#x26CF;', '#9ca3af'], ['&#x1F7E1;', '#f4b400']])
+    if (ng === 1) unlock('ach-first-gold', 'Erstes Gold')
+    if (ng >= 64) unlock('ach-gold-stack', 'Ein ganzer Stack Gold')
+  }
+  const enterNether = () => {
+    if (!tamed) { setShowNameDialog(true); return }
+    spawnPts(wolfX + 24, [['&#x1F525;', '#ff6a00']])
+    setInNether(true)
+  }
+  const flexDiamond = () => {
+    spawnPts(wolfX + 24, [['&#x1F48E;', '#7dd3fc'], ['&#x2728;', '#bae6fd']])
+    gainXp(4)
+  }
+
   const doTrick = (trick: 'sit' | 'howl' | 'spin') => {
     if (!tamed || wsRef.current !== 'idle') return
     if (trick === 'sit') {
@@ -940,6 +1011,19 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
     <>
       {showNameDialog && <WolfNameDialog onName={handleName} onSkip={() => setShowNameDialog(false)} />}
       {achToast && <AchievementToast title={achToast.title} onDone={() => setAchToast(null)} />}
+      {inNether && createPortal(
+        <NetherGame
+          wolfName={wolfName}
+          startGold={gold}
+          onAchUnlock={unlock}
+          onExit={(g, b) => {
+            setGold(g); lsSet(WK.gold, String(g))
+            if (b > 0) setWolfBones(pb => { const nb = pb + b; lsSet(WK.bones, String(nb)); return nb })
+            setInNether(false)
+          }}
+        />,
+        document.body,
+      )}
 
       <div ref={containerRef} style={{
         position: 'relative', overflow: 'hidden', width: '100%', height: '100%',
@@ -1105,26 +1189,35 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
         </div>
 
-        {/* ── Nether Portal ── */}
-        <div style={{ position:'absolute', bottom:28, left:42, zIndex:3 }}>
+        {/* ── Nether Portal (hold 5s to enter) ── */}
+        <div
+          style={{ position:'absolute', bottom:28, left:42, zIndex:3, cursor:'pointer', userSelect:'none', WebkitUserSelect:'none', touchAction:'none' }}
+          onMouseDown={e => { e.preventDefault(); startPortalHold() }} onMouseUp={stopPortalHold} onMouseLeave={stopPortalHold}
+          onTouchStart={e => { e.preventDefault(); startPortalHold() }} onTouchEnd={stopPortalHold}
+          title="5 Sekunden gedrückt halten: ab ins Nether"
+        >
+          {/* ambient glow halo behind the frame */}
+          <div style={{ position:'absolute', left:'50%', top:'52%', width:120, height:140, transform:'translate(-50%,-50%)', borderRadius:'50%', background:'radial-gradient(ellipse at center, rgba(155,89,182,.55) 0%, rgba(123,47,190,.28) 40%, transparent 72%)', filter:'blur(4px)', pointerEvents:'none', animation:'portal-glow 2.4s ease-in-out infinite alternate' }}/>
           <div style={{ position:'relative', width:60, height:90 }}>
-            {/* Left column */}
+            {/* Frame (obsidian) */}
             <div style={{ position:'absolute',left:0,top:0,width:10,height:90,background:'#1a0a2e',border:'1px solid #2d1a4a',imageRendering:'pixelated' }}/>
-            {/* Right column */}
             <div style={{ position:'absolute',right:0,top:0,width:10,height:90,background:'#1a0a2e',border:'1px solid #2d1a4a' }}/>
-            {/* Top bar */}
             <div style={{ position:'absolute',top:0,left:10,right:10,height:10,background:'#1a0a2e',border:'1px solid #2d1a4a' }}/>
-            {/* Bottom bar */}
             <div style={{ position:'absolute',bottom:0,left:10,right:10,height:10,background:'#1a0a2e',border:'1px solid #2d1a4a' }}/>
-            {/* Portal interior */}
+            {/* Portal interior — brighter, layered glow */}
             <div style={{
               position:'absolute', left:10, top:10, right:10, bottom:10,
-              background: 'linear-gradient(135deg, #4b0082 0%, #7b2fbe 30%, #9b59b6 50%, #7b2fbe 70%, #4b0082 100%)',
+              background: 'linear-gradient(135deg, #5b1f9e 0%, #8f3fd6 28%, #c77dff 50%, #8f3fd6 72%, #5b1f9e 100%)',
               animation: 'portal-shimmer 2s ease-in-out infinite alternate',
-              boxShadow: 'inset 0 0 20px #7b2fbe, 0 0 30px #7b2fbe88',
+              boxShadow: 'inset 0 0 24px #c77dff, 0 0 26px #9b59b6cc, 0 0 52px #7b2fbe88',
             }}/>
-            {/* Portal label */}
-            <div style={{ position:'absolute', bottom:-18, left:'50%', transform:'translateX(-50%)', fontSize:8, color:'#9b59b6', fontWeight:700, letterSpacing:'.04em', whiteSpace:'nowrap', textShadow:'0 0 6px #7b2fbe' }}>NETHER</div>
+            {/* sparkle motes */}
+            <div style={{ position:'absolute', left:'50%', top:'50%', width:4, height:4, transform:'translate(-50%,-50%)', background:'#e8c7ff', borderRadius:'50%', boxShadow:'-8px -16px 0 #d7a7ff, 10px 8px 0 #c77dff, -6px 18px 0 #e8c7ff, 12px -10px 0 #d7a7ff', opacity:.8, animation:'portal-glow 1.6s ease-in-out infinite alternate', pointerEvents:'none' }}/>
+            {/* charge ring while holding */}
+            {portalCharge > 0 && (
+              <div style={{ position:'absolute', inset:-8, borderRadius:8, background:`conic-gradient(#c77dff ${Math.round(portalCharge*360)}deg, transparent 0deg)`, opacity:.85, WebkitMask:'radial-gradient(circle, transparent 60%, #000 62%)', mask:'radial-gradient(circle, transparent 60%, #000 62%)', pointerEvents:'none' }}/>
+            )}
+            <div style={{ position:'absolute', bottom:-18, left:'50%', transform:'translateX(-50%)', fontSize:8, color:'#c77dff', fontWeight:700, letterSpacing:'.04em', whiteSpace:'nowrap', textShadow:'0 0 8px #9b59b6' }}>{portalCharge > 0 ? `${Math.ceil((1-portalCharge)*5)}s…` : 'NETHER'}</div>
           </div>
         </div>
 
@@ -1440,11 +1533,21 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           </div>
           {/* Divider */}
           <div style={{ width: 1, height: 32, background: '#2a4a2a' }} />
-          {/* Action buttons */}
+          {/* Gold pouch */}
+          <div title="Gold" style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '0 6px', color: '#f4b400', fontSize: 11, fontWeight: 700, fontFamily: 'monospace' }}>
+            <span style={{ width: 12, height: 12, borderRadius: '50%', background: 'linear-gradient(#ffe27a,#f4b400)', border: '1px solid #b07d00', display: 'inline-block' }} />
+            {gold}
+          </div>
+          <div style={{ width: 1, height: 32, background: '#2a4a2a' }} />
+          {/* Hotbar — tools & items */}
           {[
             { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, always: true },
+            { emoji: '&#x1F356;', label: 'Fleisch', action: feedMeat, always: false },
             { emoji: '&#x1F34E;', label: 'Apfel',   action: feedApple, always: false },
             { emoji: '&#x26BD;',  label: 'Ball',     action: throwBall, always: false },
+            { emoji: '&#x26CF;',  label: 'Spitzhacke — Gold schürfen', action: minePickaxe, always: true },
+            { emoji: '&#x1F48E;', label: 'Diamant',  action: flexDiamond, always: true },
+            { emoji: '&#x1F525;', label: 'Mit Wolfi ins Nether', action: enterNether, always: false },
           ].map(item => (
             <button key={item.label} onClick={item.action}
               title={!item.always && !tamed ? 'Wolf erst zähmen!' : item.label}
@@ -1487,6 +1590,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         @keyframes lazi-flicker { 0%{transform:scale(1) translateY(0);opacity:1} 100%{transform:scale(1.05) translateY(-2px);opacity:0.9} }
         @keyframes lazi-slide-up { from{transform:translateX(-50%) translateY(14px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
         @keyframes portal-shimmer { 0% { opacity: 0.7; filter: brightness(0.9) saturate(1.2); } 100% { opacity: 1; filter: brightness(1.3) saturate(1.8); } }
+        @keyframes portal-glow { 0% { opacity: 0.55; transform: translate(-50%,-50%) scale(0.92); } 100% { opacity: 1; transform: translate(-50%,-50%) scale(1.06); } }
         @keyframes lazi-waterfall { 0%{transform:translateY(-100%);opacity:0.9} 100%{transform:translateY(0);opacity:0.4} }
         @keyframes lazi-lavafall { 0%{transform:translateY(-100%);opacity:1} 100%{transform:translateY(0);opacity:0.7} }
       `}</style>
