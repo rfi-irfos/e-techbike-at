@@ -240,6 +240,13 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   return (
     <div className={`crm-panel${mcMode ? ' crm-mc' : ''} crm-shell`}>
 
+      {/* MC scene — rendered first = behind everything (DOM order) */}
+      {mcMode && (
+        <div className="minigame-bg">
+          <CrmScene onAchUnlock={handleAchUnlock} />
+        </div>
+      )}
+
       {/* Content Viewport */}
       <div className="crm-viewport">
         {/* MC tree strip (only if MC mode active) ── */}
@@ -540,11 +547,6 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       {/* ── Gamified MC scene at bottom ── */}
       </div>
 
-      {mcMode && crmTab === 'kunden' && (
-        <div className="minigame-container">
-          <CrmScene onAchUnlock={handleAchUnlock} />
-        </div>
-      )}
 
     </div>
   )

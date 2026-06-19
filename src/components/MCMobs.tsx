@@ -339,17 +339,26 @@ function Sprite({ px, vw, vh, scale = 1, flip = false, style }: {
 }
 
 // ── Name dialog ───────────────────────────────────────────────────────────────
-function WolfNameDialog({ onName }: { onName: (n: string) => void }) {
+function WolfNameDialog({ onName, onSkip }: { onName: (n: string) => void; onSkip: () => void }) {
   const [val, setVal] = useState('')
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onSkip() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onSkip])
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
       background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
-    }}>
+    }} onClick={onSkip}>
       <div style={{
         background: '#1a1206', border: '4px solid #5D9E2E', borderRadius: 8, padding: '20px 24px',
-        width: 300, boxShadow: '0 20px 60px rgba(0,0,0,0.5)', fontFamily: 'monospace',
-      }}>
+        width: 300, boxShadow: '0 20px 60px rgba(0,0,0,0.5)', fontFamily: 'monospace', position: 'relative',
+      }} onClick={e => e.stopPropagation()}>
+        <button onClick={onSkip} style={{
+          position: 'absolute', top: 8, right: 10, background: 'none', border: 'none',
+          color: '#666', fontSize: 18, cursor: 'pointer', lineHeight: 1, padding: '2px 6px',
+        }}>×</button>
         <div style={{ color: '#FFD700', fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Ein Wolf erscheint!</div>
         <div style={{ color: '#aaa', fontSize: 12, marginBottom: 16 }}>Gib deinem neuen Begleiter einen Namen.</div>
         <input autoFocus maxLength={20} value={val} onChange={e => setVal(e.target.value)}
@@ -359,12 +368,19 @@ function WolfNameDialog({ onName }: { onName: (n: string) => void }) {
             color: '#fff', padding: '8px 10px', fontSize: 14, fontFamily: 'monospace',
             boxSizing: 'border-box', marginBottom: 10, outline: 'none',
           }} placeholder="Name..." />
-        <button onClick={() => { if (val.trim()) onName(val.trim()) }} disabled={!val.trim()}
-          style={{
-            width: '100%', background: val.trim() ? '#5D9E2E' : '#333', border: 'none',
-            color: '#fff', fontWeight: 700, fontSize: 14, padding: '8px', borderRadius: 4,
-            cursor: val.trim() ? 'pointer' : 'not-allowed', fontFamily: 'monospace',
-          }}>Zähmen!</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={onSkip} style={{
+            flex: 1, background: '#2a2010', border: '2px solid #5a4020', color: '#888',
+            fontWeight: 600, fontSize: 12, padding: '8px', borderRadius: 4,
+            cursor: 'pointer', fontFamily: 'monospace',
+          }}>Später</button>
+          <button onClick={() => { if (val.trim()) onName(val.trim()) }} disabled={!val.trim()}
+            style={{
+              flex: 2, background: val.trim() ? '#5D9E2E' : '#333', border: 'none',
+              color: '#fff', fontWeight: 700, fontSize: 14, padding: '8px', borderRadius: 4,
+              cursor: val.trim() ? 'pointer' : 'not-allowed', fontFamily: 'monospace',
+            }}>Zähmen!</button>
+        </div>
       </div>
     </div>
   )
@@ -651,7 +667,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
   return (
     <>
-      {showNameDialog && <WolfNameDialog onName={handleName} />}
+      {showNameDialog && <WolfNameDialog onName={handleName} onSkip={() => setShowNameDialog(false)} />}
       {achToast && <AchievementToast title={achToast.title} onDone={() => setAchToast(null)} />}
 
       <div ref={containerRef} style={{
