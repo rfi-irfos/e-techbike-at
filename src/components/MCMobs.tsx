@@ -1015,14 +1015,11 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <div style={{ height: 8, background: '#6b3d10' }} />
         </div>
 
-        {/* ── HUD stats — wolf info bar ── */}
-        {!noBackdrop && <div style={{
-          position: 'absolute', zIndex: 10,
-          ...(noBackdrop
-            ? { bottom: 30, left: 6, maxWidth: 180 }
-            : { top: 8, left: 8, maxWidth: 220 }),
-          background: 'rgba(20,14,4,0.90)', border: '2px solid #5D9E2E',
-          borderRadius: 6, padding: noBackdrop ? '4px 8px' : '5px 10px', fontFamily: 'monospace',
+        {/* ── HUD stats — wolf info bar (fixed game overlay) ── */}
+        <div style={{
+          position: 'fixed', bottom: 28, left: 8, zIndex: 8000, maxWidth: 200,
+          background: 'rgba(20,14,4,0.92)', border: '2px solid #5D9E2E',
+          borderRadius: 6, padding: '5px 10px', fontFamily: 'monospace',
           display: 'flex', flexDirection: 'column', gap: 3,
         }}>
           {tamed ? (
@@ -1047,11 +1044,11 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
               {wolfBones < 3 ? `${wolfBones}/3 Knochen` : 'Klick auf den Wolf!'}
             </span>
           )}
-        </div>}
+        </div>
 
-        {/* ── HUD controls ── */}
-        {!noBackdrop && <div style={{
-          position: 'absolute', zIndex: 10, top: 8, right: 8,
+        {/* ── HUD controls (fixed game overlay) ── */}
+        <div style={{
+          position: 'fixed', bottom: 28, right: 8, zIndex: 8000,
           display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
         }}>
           <div style={{ display: 'flex', gap: 3 }}>
@@ -1092,7 +1089,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
               ))}
             </div>
           )}
-        </div>}
+        </div>
       </div>
 
       <style>{`
