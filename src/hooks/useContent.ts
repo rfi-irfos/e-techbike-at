@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { SiteContent } from '../types/content'
-import { ghRead, ghWrite, b64Encode, CONTENT_PATH, UPLOADS_DIR } from '../lib/github'
+import { ghRead, ghWrite, b64Encode, CONTENT_PATH, UPLOADS_DIR, OWNER, REPO } from '../lib/github'
 
 export function useContent() {
   const [content, setContent]   = useState<SiteContent | null>(null)
@@ -11,8 +11,8 @@ export function useContent() {
   useEffect(() => {
     ;(async () => {
       try {
-        const bust = `?t=${Date.now()}`
-        const res = await fetch(`${import.meta.env.BASE_URL}content.json${bust}`, { cache: 'no-store' })
+        const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${CONTENT_PATH}?t=${Date.now()}`
+        const res = await fetch(rawUrl, { cache: 'no-store' })
         if (!res.ok) throw new Error('missing')
         setContent(await res.json())
       } catch {
