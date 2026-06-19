@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import type { SiteContent, SectionId, CanvasPos, NewsItem } from '../types/content'
+import type { SiteContent, SectionId, CanvasPos, NewsItem, CertificateItem } from '../types/content'
+import type { Testimonial } from '../types/testimonials'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 import { InquiryModal } from './InquiryModal'
@@ -664,12 +665,56 @@ interface Props {
   selectedProductId?: string
 }
 
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <span className="site-review-stars" aria-label={`${rating} out of 5`}>
+      {[1,2,3,4,5].map(n => (
+        <svg key={n} className={`site-review-star${n <= rating ? ' filled' : ''}`} width="14" height="14" viewBox="0 0 24 24">
+          <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+        </svg>
+      ))}
+    </span>
+  )
+}
+
+function ReviewsSection({ editMode }: { editMode: boolean }) {
+  const [testimonials, setTestimonials] = React.useState<Testimonial[]>([])
+  React.useEffect(() => {
+    fetch(`/testimonials.json?t=${Date.now()}`)
+      .then(r => r.ok ? r.json() : [])
+      .then(setTestimonials)
+      .catch(() => setTestimonials([]))
+  }, [])
+  if (editMode) return (
+    <section className="site-section site-reviews site-edit-section" id="reviews">
+      <div className="site-edit-section-badge">Bewertungen</div>
+      <div className="site-reviews-placeholder">Kundenbewertungen werden hier angezeigt</div>
+    </section>
+  )
+  if (testimonials.length === 0) return null
+  return (
+    <section className="site-section site-reviews" id="reviews">
+      <div className="site-reviews-grid">
+        {testimonials.map(r => (
+          <div key={r.id} className="site-review-card">
+            <Stars rating={r.rating} />
+            <p className="site-review-text">{r.text}</p>
+            <div className="site-review-name">{r.name}</div>
+            {r.date && <div className="site-review-date">{r.date}</div>}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export function PublicSite({
   content, editMode = false, rearrangeMode = false, initPositions = {},
   onTextChange, onImageClick, onUpdate, onProductClick, onProductDblClick, onSectionClick,
   selectedProductId,
 }: Props) {
-  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, pages } = content
+  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, pages, about, pricing, certificates } = content
   const hiddenSections = content.hiddenSections ?? []
   const pageNavLinks = (pages ?? []).filter(p => p.showInNav).map(p => ({ label: p.title, href: `#p/${p.slug}` }))
 
@@ -1103,7 +1148,36 @@ export function PublicSite({
           </div>
         )}
 
-        {/* ── CATEGORY BROWSER (3-level: cat → subcat → products) ── */}
+
+        {/* ── ABOUT ───────────────────────────────────────────────────── */}
+        {about && (
+          <section className="site-about" id="about">
+            <div className={`site-about-inner${about.photo ? '' : ' site-about-inner--no-photo'}`}>
+              {about.photo && (
+                <div className="site-about-photo-wrap">
+                  <EImg field="about.photo" src={about.photo} alt={about.headline} className="site-about-photo" />
+                </div>
+              )}
+              <div className="site-about-content">
+                {about.eyebrow && <div className="site-about-eyebrow" data-cid="about.eyebrow">{about.eyebrow}</div>}
+                <E field="about.headline" value={about.headline} as="h2" className="site-about-headline" />
+                <E field="about.bio" value={about.bio} as="p" className="site-about-bio" />
+                {(about.stats?.length ?? 0) > 0 && (
+                  <div className="site-about-stats">
+                    {about.stats!.map((s, i) => (
+                      <div key={i} className="site-about-stat">
+                        <strong data-cid={`about.stats.${i}.value`}>{s.value}</strong>
+                        <span data-cid={`about.stats.${i}.label`}>{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── CATEGORY BROWSER (3-level: cat → subcat → products) ── */
         {!editMode && !hiddenSections.includes('categories') && (categories?.items?.length ?? 0) > 0 && (
           <CategoryBrowser categories={categories} products={products} />
         )}
@@ -1170,6 +1244,8 @@ export function PublicSite({
             </div>
           </section>
         )}
+
+        <ReviewsSection editMode={editMode} />
 
         {/* ── NEWS ─────────────────────────────────────────────────────── */}
         {!hiddenSections.includes('news') && (news?.items?.length ?? 0) > 0 && (

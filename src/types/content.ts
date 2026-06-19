@@ -1,5 +1,7 @@
 export interface NavLink { label: string; href: string }
 export interface FeatureItem { id: string; title: string; description: string }
+export interface AboutStat { value: string; label: string }
+export interface CertificateItem { id: string; title: string; subtitle: string; file: string }
 
 export interface SubCategoryItem {
   id: string
@@ -123,5 +125,20 @@ export interface SiteContent {
     cols: Array<{ title: string; links: NavLink[] }>
     links: NavLink[]
     copyright: string
+  }
+  about?: {
+    eyebrow?: string
+    headline: string
+    bio: string
+    photo?: string
+    stats?: AboutStat[]
+  }
+  pricing?: {
+    title: string
+    body: string
+  }
+  certificates?: {
+    title?: string
+    items: CertificateItem[]
   }
 }

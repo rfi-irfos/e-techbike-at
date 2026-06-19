@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
-import type { SiteContent, SectionId, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem } from '../types/content'
+import type { SiteContent, SectionId, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem, AboutStat, CertificateItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 import { CrmPanel } from './CrmPanel'
+import { useTestimonials } from '../lib/useTestimonials'
+import type { Testimonial } from '../types/testimonials'
 
 interface Props {
   content: SiteContent
@@ -13,7 +15,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'kunden' | 'inbox'
+type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'kunden' | 'inbox' | 'about' | 'pricing' | 'reviews'
 
 interface ContactInboxItem { name: string; email: string; phone?: string; message: string; ts: string }
 function loadInbox(): ContactInboxItem[] { try { return JSON.parse(localStorage.getItem('rfi_contact_inbox') || '[]') } catch { return [] } }
@@ -209,6 +211,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
   const [saveError, setSaveError] = useState(false)
+  const { testimonials, saving: testimonialsSaving, add: addTestimonial, update: updateTestimonial, remove: removeTestimonial } = useTestimonials()
+  const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null)
+  const [testimonialDraft, setTestimonialDraft] = useState<Testimonial | null>(null)
+  const [newTestimonialForm, setNewTestimonialForm] = useState({ name: '', rating: 5, text: '', date: '' })
   const [mcTheme, setMcTheme] = useState(() => localStorage.getItem('mc-theme') !== 'false')
   const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -498,6 +504,9 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     { id: 'nav',        label: 'Navigation' },
     { id: 'style',      label: 'Stil' },
     { id: 'kunden',     label: 'Kunden' },
+    { id: 'about',      label: 'Über uns' },
+    { id: 'pricing',    label: 'Preise' },
+    { id: 'reviews',    label: 'Bewertungen', badge: testimonials.length },
   ]
 
   const editingProd = editingProduct ? draft.products?.items?.find(p => p.id === editingProduct) : null
@@ -1276,6 +1285,116 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                     </div>
                   ))
                 )}
+              </div>
+            )}
+
+
+            {/* ── ABOUT TAB ─────────────────────────────────────────────── */}
+            {activeTab === 'about' && (
+              <div className="panel-sections">
+                <PanelSection title="Text">
+                  <Field label="Eyebrow (klein)">
+                    <input className="panel-input" value={draft.about?.eyebrow ?? ''} onChange={e => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), eyebrow: e.target.value } }))} />
+                  </Field>
+                  <Field label="Überschrift">
+                    <input className="panel-input" value={draft.about?.headline ?? ''} onChange={e => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), headline: e.target.value } }))} />
+                  </Field>
+                  <Field label="Bio / Text">
+                    <textarea className="panel-input panel-textarea" rows={5} value={draft.about?.bio ?? ''} onChange={e => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), bio: e.target.value } }))} />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Foto">
+                  <UploadRow
+                    label="Profilfoto"
+                    value={draft.about?.photo ?? ''}
+                    uploading={uploading && uploadTarget === 'about.photo'}
+                    onUpload={() => handleImageClick('about.photo')}
+                    onClear={() => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), photo: '' } }))}
+                  />
+                </PanelSection>
+                <PanelSection title="Kennzahlen">
+                  {(draft.about?.stats ?? []).map((s: AboutStat, i: number) => (
+                    <div key={i} className="panel-row-inline">
+                      <input className="panel-input" style={{ width: 80 }} placeholder="Wert" value={s.value}
+                        onChange={e => setDraft(d => { const stats = [...(d.about?.stats ?? [])]; stats[i] = { ...stats[i], value: e.target.value }; return { ...d, about: { ...(d.about ?? { headline: '', bio: '' }), stats } } })} />
+                      <input className="panel-input" placeholder="Bezeichnung" value={s.label}
+                        onChange={e => setDraft(d => { const stats = [...(d.about?.stats ?? [])]; stats[i] = { ...stats[i], label: e.target.value }; return { ...d, about: { ...(d.about ?? { headline: '', bio: '' }), stats } } })} />
+                      <button className="panel-remove-btn" onClick={() => setDraft(d => { const stats = (d.about?.stats ?? []).filter((_: AboutStat, j: number) => j !== i); return { ...d, about: { ...(d.about ?? { headline: '', bio: '' }), stats } } })}>Entf.</button>
+                    </div>
+                  ))}
+                  <button className="panel-add-btn" onClick={() => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), stats: [...(d.about?.stats ?? []), { value: '', label: '' }] } }))}>+ Kennzahl</button>
+                </PanelSection>
+              </div>
+            )}
+
+            {/* ── PRICING TAB ───────────────────────────────────────────── */}
+            {activeTab === 'pricing' && (
+              <div className="panel-sections">
+                <PanelSection title="Preisübersicht">
+                  <Field label="Überschrift">
+                    <input className="panel-input" value={draft.pricing?.title ?? ''} onChange={e => setDraft(d => ({ ...d, pricing: { ...(d.pricing ?? { title: '', body: '' }), title: e.target.value } }))} />
+                  </Field>
+                  <Field label="Text / Preistabelle (HTML)">
+                    <textarea className="panel-input panel-textarea" rows={8} value={draft.pricing?.body ?? ''} onChange={e => setDraft(d => ({ ...d, pricing: { ...(d.pricing ?? { title: '', body: '' }), body: e.target.value } }))} />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Zertifikate / Auszeichnungen">
+                  {(draft.certificates?.items ?? []).map((cert: CertificateItem, i: number) => (
+                    <div key={cert.id} className="panel-cert-row">
+                      <input className="panel-input" placeholder="Titel" value={cert.title}
+                        onChange={e => setDraft(d => { const items = [...(d.certificates?.items ?? [])]; items[i] = { ...items[i], title: e.target.value }; return { ...d, certificates: { ...(d.certificates ?? { items: [] }), items } } })} />
+                      <input className="panel-input" placeholder="Untertitel" value={cert.subtitle}
+                        onChange={e => setDraft(d => { const items = [...(d.certificates?.items ?? [])]; items[i] = { ...items[i], subtitle: e.target.value }; return { ...d, certificates: { ...(d.certificates ?? { items: [] }), items } } })} />
+                      <button className="panel-remove-btn" onClick={() => setDraft(d => { const items = (d.certificates?.items ?? []).filter((_: CertificateItem, j: number) => j !== i); return { ...d, certificates: { ...(d.certificates ?? { items: [] }), items } } })}>Entf.</button>
+                    </div>
+                  ))}
+                  <button className="panel-add-btn" onClick={() => setDraft(d => ({ ...d, certificates: { ...(d.certificates ?? { items: [] }), items: [...(d.certificates?.items ?? []), { id: crypto.randomUUID(), title: '', subtitle: '', file: '' }] } }))}>+ Zertifikat</button>
+                </PanelSection>
+              </div>
+            )}
+
+            {/* ── REVIEWS TAB ───────────────────────────────────────────── */}
+            {activeTab === 'reviews' && (
+              <div className="panel-sections">
+                <PanelSection title={`Kundenbewertungen (${testimonials.length})`}>
+                  {testimonialsSaving && <div className="panel-saving">Speichert…</div>}
+                  {testimonials.map(r => (
+                    <div key={r.id} className="panel-cert-row">
+                      {editingTestimonial?.id === r.id && testimonialDraft ? (
+                        <>
+                          <input className="panel-input" placeholder="Name" value={testimonialDraft.name} onChange={e => setTestimonialDraft(t => t ? { ...t, name: e.target.value } : t)} />
+                          <input className="panel-input" type="number" min={1} max={5} placeholder="Sterne" value={testimonialDraft.rating} onChange={e => setTestimonialDraft(t => t ? { ...t, rating: Number(e.target.value) } : t)} style={{ width: 60 }} />
+                          <textarea className="panel-input panel-textarea" rows={3} placeholder="Text" value={testimonialDraft.text} onChange={e => setTestimonialDraft(t => t ? { ...t, text: e.target.value } : t)} />
+                          <div className="panel-row-inline">
+                            <button className="panel-add-btn" onClick={() => { if (testimonialDraft) { updateTestimonial(testimonialDraft); setEditingTestimonial(null); setTestimonialDraft(null) } }}>Speichern</button>
+                            <button className="panel-remove-btn" onClick={() => { setEditingTestimonial(null); setTestimonialDraft(null) }}>Abbrechen</button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="panel-row-inline">
+                          <span style={{ flex: 1 }}><strong>{r.name}</strong> — {'★'.repeat(r.rating)} — {r.text.slice(0, 60)}{r.text.length > 60 ? '…' : ''}</span>
+                          <button className="panel-add-btn" onClick={() => { setEditingTestimonial(r); setTestimonialDraft({ ...r }) }}>Bearb.</button>
+                          <button className="panel-remove-btn" onClick={() => removeTestimonial(r.id)}>Entf.</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </PanelSection>
+                <PanelSection title="Neue Bewertung hinzufügen">
+                  <Field label="Name">
+                    <input className="panel-input" value={newTestimonialForm.name} onChange={e => setNewTestimonialForm(f => ({ ...f, name: e.target.value }))} />
+                  </Field>
+                  <Field label="Sterne (1–5)">
+                    <input className="panel-input" type="number" min={1} max={5} value={newTestimonialForm.rating} onChange={e => setNewTestimonialForm(f => ({ ...f, rating: Number(e.target.value) }))} style={{ width: 60 }} />
+                  </Field>
+                  <Field label="Text">
+                    <textarea className="panel-input panel-textarea" rows={3} value={newTestimonialForm.text} onChange={e => setNewTestimonialForm(f => ({ ...f, text: e.target.value }))} />
+                  </Field>
+                  <Field label="Datum">
+                    <input className="panel-input" placeholder="z.B. Juni 2025" value={newTestimonialForm.date} onChange={e => setNewTestimonialForm(f => ({ ...f, date: e.target.value }))} />
+                  </Field>
+                  <button className="panel-add-btn" onClick={() => { if (newTestimonialForm.name && newTestimonialForm.text) { addTestimonial(newTestimonialForm); setNewTestimonialForm({ name: '', rating: 5, text: '', date: '' }) } }}>+ Bewertung hinzufügen</button>
+                </PanelSection>
               </div>
             )}
 
