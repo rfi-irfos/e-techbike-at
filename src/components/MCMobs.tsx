@@ -597,6 +597,12 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   const [chickenDir, setChickenDir] = useState<'r' | 'l'>('r')
   const [chickenBob, setChickenBob] = useState(false)
   const [egg, setEgg] = useState<number | null>(null)
+  const [clickEgg, setClickEgg] = useState<number | null>(null)
+  const okosRef = useRef(false)
+  const [sheepSucked, setSheepSucked] = useState(false)
+  const [pigSucked, setPigSucked] = useState(false)
+  const [cowSucked, setCowSucked] = useState(false)
+  const [chickenSucked, setChickenSucked] = useState(false)
   const cdRef = useRef(cowDir); cdRef.current = cowDir
   const ckdRef = useRef(chickenDir); ckdRef.current = chickenDir
 
@@ -842,11 +848,26 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   const [portalSuck, setPortalSuck] = useState(false)
 
   useEffect(() => {
-    if (portalSuck && !netherAchDone.current) {
-      netherAchDone.current = true
-      unlock('ach-nether-suck', 'Ins Nether gezogen!')
+    if (!portalSuck) return
+    const checkAndSuck = (x: number, set: (v: boolean) => void, setX: (v: number) => void) => {
+      if (x < 140) {
+        set(true)
+        if (!netherAchDone.current) {
+          netherAchDone.current = true
+          unlock('ach-nether-suck', 'Ins Nether gezogen!')
+        }
+        setTimeout(() => {
+          setX(W - 150)
+          set(false)
+        }, 2000)
+      }
     }
-  }, [portalSuck, unlock])
+    checkAndSuck(sheepX, setSheepSucked, setSheepX)
+    checkAndSuck(pigX, setPigSucked, setPigX)
+    checkAndSuck(cowX, setCowSucked, setCowX)
+    checkAndSuck(chickenX, setChickenSucked, setChickenX)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [portalSuck])
 
   const handleName = (n: string) => {
     setWolfName(n); lsSet(WK.name, n)
@@ -877,6 +898,9 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
     : isSunset
       ? 'linear-gradient(180deg,#1a0a3e 0%,#c2410c 25%,#f97316 50%,#fbbf24 70%,#4a7c3f 85%,#2d5a27 100%)'
       : 'linear-gradient(180deg,#4fc3f7 0%,#29b6f6 30%,#81c784 70%,#4caf50 85%,#388e3c 100%)'
+
+  const mtDistFill = isNight ? '#1a2840' : isSunset ? '#5a4060' : '#6a8aa8'
+  const mt2DistFill = isNight ? '#233248' : isSunset ? '#6a3870' : '#7a9ab8'
 
   const bodyX   = W > 0 ? ((tick * 0.12) % (W + 60)) - 30 : 80
   const bodyPct = W > 0 ? bodyX / W : 0.5
@@ -930,24 +954,105 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           }} />
         ))}
 
-        {/* ── Far mountains — smooth with blur for depth ── */}
+        {/* ── Far mountains — tiny, hazy, razor-sharp spikes ── */}
         {!noBackdrop && W > 0 && (
-          <svg style={{ position: 'absolute', bottom: 55, left: 0, width: '100%', height: '38%', filter: 'blur(3px)' }}
+          <svg style={{ position: 'absolute', bottom: 25, left: 0, width: '100%', height: '16%', filter: 'blur(7px) brightness(1.25) saturate(0.4)' }}
             viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
-            <polygon points={`0,120 0,70 ${W*0.08},40 ${W*0.18},65 ${W*0.28},25 ${W*0.4},55 ${W*0.52},15 ${W*0.62},50 ${W*0.72},30 ${W*0.83},60 ${W*0.92},20 ${W},45 ${W},120`}
-              fill={isNight ? '#0d1f0d' : isSunset ? '#3d1a4a' : '#2d6b3a'} opacity={0.65} />
-            <polygon points={`0,120 0,85 ${W*0.1},65 ${W*0.22},80 ${W*0.35},50 ${W*0.46},70 ${W*0.58},40 ${W*0.68},65 ${W*0.79},48 ${W*0.88},70 ${W},55 ${W},120`}
-              fill={isNight ? '#1a2e1a' : isSunset ? '#5c2d6b' : '#3a7a48'} opacity={0.8} />
+            <polygon points={`0,120 0,85 ${W*0.06},40 ${W*0.09},80 ${W*0.14},15 ${W*0.17},75 ${W*0.24},5 ${W*0.27},70 ${W*0.35},30 ${W*0.39},80 ${W*0.46},2 ${W*0.49},65 ${W*0.56},20 ${W*0.60},75 ${W*0.67},8 ${W*0.70},70 ${W*0.78},35 ${W*0.82},80 ${W*0.88},10 ${W*0.92},70 ${W},45 ${W},120`}
+              fill={mtDistFill} opacity={0.9} />
+            <polygon points={`0,120 0,100 ${W*0.06},55 ${W*0.09},95 ${W*0.14},30 ${W*0.17},90 ${W*0.24},20 ${W*0.27},85 ${W*0.35},45 ${W*0.39},95 ${W*0.46},17 ${W*0.49},80 ${W*0.56},35 ${W*0.60},90 ${W*0.67},23 ${W*0.70},85 ${W*0.78},50 ${W*0.82},95 ${W*0.88},25 ${W*0.92},85 ${W},60 ${W},120`}
+              fill={mt2DistFill} opacity={0.85} />
           </svg>
         )}
 
-        {/* ── Near hills — smooth, sharp (in-focus foreground) ── */}
+        {/* ── Waterfalls on far mountains ── */}
+        {!noBackdrop && (
+          <div style={{ position: 'absolute', left: `${W*0.455}px`, bottom: 25, width: 4, height: '10%', overflow: 'hidden', zIndex: 1 }}>
+            <div style={{
+              width: '100%', height: '200%',
+              background: 'linear-gradient(to bottom, #f97316 0%, #dc2626 40%, #f97316 60%, #dc2626 100%)',
+              animation: 'lazi-lavafall 0.6s linear infinite',
+            }} />
+          </div>
+        )}
+        {!noBackdrop && (
+          <div style={{ position: 'absolute', left: `${W*0.245}px`, bottom: 25, width: 4, height: '8%', overflow: 'hidden', zIndex: 1 }}>
+            <div style={{
+              width: '100%', height: '200%',
+              background: 'linear-gradient(to bottom, #38bdf8 0%, #0284c7 50%, #38bdf8 100%)',
+              animation: 'lazi-waterfall 0.8s linear infinite',
+            }} />
+          </div>
+        )}
+
+        {/* ── Near hills — smooth, bigger foreground prominence ── */}
         {!noBackdrop && W > 0 && (
-          <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '22%' }}
+          <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '30%' }}
             viewBox={`0 0 ${W} 80`} preserveAspectRatio="none">
-            <path d={`M0,80 Q${W*0.15},20 ${W*0.3},55 Q${W*0.45},10 ${W*0.6},50 Q${W*0.75},15 ${W*0.9},45 Q${W*0.95},35 ${W},40 L${W},80 Z`}
+            <path d={`M0,80 Q${W*0.15},5 ${W*0.3},55 Q${W*0.45},5 ${W*0.6},48 Q${W*0.75},8 ${W*0.9},42 Q${W*0.97},30 ${W},38 L${W},80 Z`}
               fill={isNight ? '#1e3d1e' : '#4a8c3f'} opacity={0.95} />
           </svg>
+        )}
+
+        {/* ── Pixel-art trees on hill crests ── */}
+        {!noBackdrop && W > 0 && (
+          <>
+            <div style={{ position: 'absolute', left: `${W*0.13}px`, bottom: 72, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 22 40" width={22} height={40} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                <rect x="9" y="22" width="4" height="18" fill="#7c4f1e"/>
+                <rect x="4" y="12" width="14" height="12" fill="#166534"/>
+                <rect x="2" y="6" width="18" height="10" fill="#15803d"/>
+                <rect x="5" y="2" width="12" height="8" fill="#166534"/>
+              </svg>
+            </div>
+            <div style={{ position: 'absolute', left: `${W*0.30}px`, bottom: 85, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 18 44" width={18} height={44} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                <rect x="7" y="24" width="4" height="20" fill="#d4d4d4"/>
+                <rect x="7" y="20" width="4" height="6" fill="#a3a3a3"/>
+                <rect x="7" y="26" width="1" height="2" fill="#525252"/>
+                <rect x="3" y="10" width="12" height="12" fill="#4ade80"/>
+                <rect x="1" y="6" width="16" height="10" fill="#22c55e"/>
+                <rect x="3" y="2" width="12" height="8" fill="#4ade80"/>
+                <rect x="6" y="0" width="6" height="6" fill="#16a34a"/>
+              </svg>
+            </div>
+            <div style={{ position: 'absolute', left: `${W*0.43}px`, bottom: 100, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 20 48" width={20} height={48} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                <rect x="8" y="30" width="4" height="18" fill="#92400e"/>
+                <rect x="6" y="22" width="8" height="12" fill="#065f46"/>
+                <rect x="4" y="14" width="12" height="12" fill="#047857"/>
+                <rect x="2" y="8" width="16" height="10" fill="#065f46"/>
+                <rect x="4" y="2" width="12" height="10" fill="#047857"/>
+                <rect x="7" y="0" width="6" height="6" fill="#064e3b"/>
+              </svg>
+            </div>
+            <div style={{ position: 'absolute', left: `${W*0.57}px`, bottom: 68, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 18 34" width={18} height={34} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                <rect x="7" y="18" width="4" height="16" fill="#7c4f1e"/>
+                <rect x="3" y="10" width="12" height="10" fill="#166534"/>
+                <rect x="1" y="4" width="16" height="10" fill="#15803d"/>
+                <rect x="4" y="0" width="10" height="8" fill="#14532d"/>
+              </svg>
+            </div>
+            <div style={{ position: 'absolute', left: `${W*0.71}px`, bottom: 82, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 16 38" width={16} height={38} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                <rect x="6" y="20" width="4" height="18" fill="#e5e5e5"/>
+                <rect x="6" y="24" width="1" height="2" fill="#525252"/>
+                <rect x="2" y="8" width="12" height="12" fill="#86efac"/>
+                <rect x="0" y="4" width="16" height="10" fill="#4ade80"/>
+                <rect x="2" y="0" width="12" height="8" fill="#86efac"/>
+              </svg>
+            </div>
+            <div style={{ position: 'absolute', left: `${W*0.82}px`, bottom: 74, pointerEvents: 'none' }}>
+              <svg viewBox="0 0 18 42" width={18} height={42} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                <rect x="7" y="26" width="4" height="16" fill="#78350f"/>
+                <rect x="5" y="20" width="8" height="8" fill="#064e3b"/>
+                <rect x="3" y="12" width="12" height="12" fill="#065f46"/>
+                <rect x="1" y="6" width="16" height="10" fill="#047857"/>
+                <rect x="4" y="0" width="10" height="10" fill="#065f46"/>
+              </svg>
+            </div>
+          </>
         )}
 
         <div style={{ position: 'absolute', left: 30, bottom: 20 }}>
@@ -995,9 +1100,13 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
 
         {/* ── Sheep (cute fluffy) ── */}
         <div style={{
-          position: 'absolute', left: portalSuck ? Math.max(0, sheepX - 20) : sheepX, bottom: 20, cursor: 'pointer',
-          transform: sheepBob ? 'translateY(-4px)' : 'translateY(0)', transition: 'transform 0.18s, left 0.8s ease',
-        }} onClick={() => unlock('ach-schaf', 'Schaf-Flüsterin')} title="Baa!">
+          position: 'absolute',
+          left: sheepSucked ? sheepX : (portalSuck && !sheepSucked && sheepX < 180 ? sheepX - 10 : sheepX),
+          bottom: 20, cursor: 'pointer',
+          transform: sheepSucked ? 'scale(0) translateY(20px)' : (sheepBob ? 'translateY(-4px)' : 'translateY(0)'),
+          opacity: sheepSucked ? 0 : 1,
+          transition: sheepSucked ? 'all 0.5s ease' : 'transform 0.18s, left 0.8s ease, opacity 0.5s ease',
+        }} onClick={() => { unlock('ach-schaf', 'Schaf-Flüsterin'); spawnPt(sheepX + 16, '&#x2665;', '#f472b6') }} title="Baa!">
           <svg viewBox="0 0 32 26" width={52} height={42}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: sheepDir === 'l' ? 'scaleX(-1)' : undefined }}>
@@ -1031,8 +1140,15 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         </div>
 
         {/* ── Pig (cute chubby) ── */}
-        <div style={{ position: 'absolute', left: portalSuck ? Math.max(0, pigX - 20) : pigX, bottom: 20, cursor: 'pointer', transition: 'left 0.8s ease' }}
-          onClick={() => unlock('ach-ferkel', 'Ferkel-Königin')} title="Oink!">
+        <div style={{
+          position: 'absolute',
+          left: pigSucked ? pigX : (portalSuck && !pigSucked && pigX < 180 ? pigX - 10 : pigX),
+          bottom: 20, cursor: 'pointer',
+          opacity: pigSucked ? 0 : 1,
+          transform: pigSucked ? 'scale(0) translateY(20px)' : undefined,
+          transition: pigSucked ? 'all 0.5s ease' : 'left 0.8s ease, opacity 0.5s ease',
+        }}
+          onClick={() => { unlock('ach-ferkel', 'Ferkel-Königin'); spawnPt(pigX + 18, '&#x2665;', '#f472b6') }} title="Oink!">
           <svg viewBox="0 0 36 28" width={56} height={44}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: pigDir === 'l' ? 'scaleX(-1)' : undefined }}>
@@ -1066,8 +1182,15 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         </div>
 
         {/* ── Cow (cute blocky) ── */}
-        <div style={{ position: 'absolute', left: portalSuck ? Math.max(0, cowX - 20) : cowX, bottom: 20, cursor: 'pointer', transition: 'left 0.8s ease' }}
-          onClick={() => { spawnPt(cowX + 28, '&#x1F95B;', '#fff'); unlock('ach-kuh', 'Milch-Meisterin') }}
+        <div style={{
+          position: 'absolute',
+          left: cowSucked ? cowX : (portalSuck && !cowSucked && cowX < 180 ? cowX - 10 : cowX),
+          bottom: 20, cursor: 'pointer',
+          opacity: cowSucked ? 0 : 1,
+          transform: cowSucked ? 'scale(0) translateY(20px)' : undefined,
+          transition: cowSucked ? 'all 0.5s ease' : 'left 0.8s ease, opacity 0.5s ease',
+        }}
+          onClick={() => { spawnPt(cowX + 28, '&#x1F95B;', '#fff'); spawnPt(cowX + 22, '&#x2665;', '#f472b6'); unlock('ach-kuh', 'Milch-Meisterin') }}
           title="Muh!">
           <svg viewBox="0 0 44 30" width={66} height={45}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
@@ -1107,9 +1230,20 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
 
         {/* ── Chicken (cute little) ── */}
         <div style={{
-          position: 'absolute', left: portalSuck ? Math.max(0, chickenX - 20) : chickenX, bottom: 20, cursor: 'pointer',
-          transform: chickenBob ? 'translateY(-2px)' : 'translateY(0)', transition: 'transform 0.1s, left 0.8s ease',
-        }} onClick={() => { spawnPt(chickenX + 8, '&#x1F95A;', '#fbbf24'); unlock('ach-huhn', 'Hühner-Flüsterin') }}
+          position: 'absolute',
+          left: chickenSucked ? chickenX : (portalSuck && !chickenSucked && chickenX < 180 ? chickenX - 10 : chickenX),
+          bottom: 20, cursor: 'pointer',
+          transform: chickenSucked ? 'scale(0) translateY(20px)' : (chickenBob ? 'translateY(-2px)' : 'translateY(0)'),
+          opacity: chickenSucked ? 0 : 1,
+          transition: chickenSucked ? 'all 0.5s ease' : 'transform 0.1s, left 0.8s ease, opacity 0.5s ease',
+        }} onClick={() => {
+          spawnPt(chickenX + 8, '&#x1F95A;', '#fbbf24')
+          spawnPt(chickenX + 8, '&#x2665;', '#f472b6')
+          unlock('ach-huhn', 'Hühner-Flüsterin')
+          if (!okosRef.current) { okosRef.current = true; unlock('ach-okostojas', 'Okostojás') }
+          setClickEgg(chickenX)
+          setTimeout(() => setClickEgg(null), 2000)
+        }}
           title="Gak!">
           <svg viewBox="0 0 18 22" width={27} height={33}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
@@ -1147,6 +1281,14 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
             position: 'absolute', left: egg + 6, bottom: 20, width: 8, height: 10,
             borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
             background: '#fef9c3', border: '1px solid #d97706',
+          }} />
+        )}
+        {clickEgg !== null && (
+          <div style={{
+            position: 'absolute', left: clickEgg + 6, bottom: 22, width: 8, height: 10,
+            borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+            background: '#fef9c3', border: '1px solid #d97706',
+            animation: 'lazi-float-up 1.5s ease-out forwards',
           }} />
         )}
 
@@ -1315,6 +1457,8 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         @keyframes lazi-flicker { 0%{transform:scale(1) translateY(0);opacity:1} 100%{transform:scale(1.05) translateY(-2px);opacity:0.9} }
         @keyframes lazi-slide-up { from{transform:translateX(-50%) translateY(14px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
         @keyframes portal-shimmer { 0% { opacity: 0.7; filter: brightness(0.9) saturate(1.2); } 100% { opacity: 1; filter: brightness(1.3) saturate(1.8); } }
+        @keyframes lazi-waterfall { 0%{transform:translateY(-100%);opacity:0.9} 100%{transform:translateY(0);opacity:0.4} }
+        @keyframes lazi-lavafall { 0%{transform:translateY(-100%);opacity:1} 100%{transform:translateY(0);opacity:0.7} }
       `}</style>
     </>
   )

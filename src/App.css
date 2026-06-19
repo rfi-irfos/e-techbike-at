@@ -1922,10 +1922,10 @@ button { cursor: pointer; font-family: inherit; }
   display: flex; align-items: center; gap: 5px;
   background: #330066; border: 1.5px solid #6600cc;
   color: #cc00ff; font-size: 11px; font-weight: 700;
-  padding: 5px 10px; border-radius: 4px; letter-spacing: .04em;
+  padding: 5px 10px; border-radius: 0; letter-spacing: .04em;
   font-family: 'Courier New', monospace; text-transform: uppercase;
   transition: .15s; cursor: pointer;
-  box-shadow: 1px 1px 0 #1a0033;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 .builder-mc-toggle:hover { background: #440088; color: #ff44ff; border-color: #aa00ff; }
 .builder-mc-toggle.active {
@@ -2631,7 +2631,7 @@ button { cursor: pointer; font-family: inherit; }
 .rte-body ul { margin: 0 0 8px; padding-left: 20px; }
 
 /* CRM admin button */
-.builder-crm-btn { display:flex;align-items:center;gap:5px;padding:5px 12px;font-size:11px;font-weight:700;border:2px solid #45b0e0;border-radius:4px;background:#1a8ab5;color:#fff;cursor:pointer;letter-spacing:.04em;text-decoration:none; }
+.builder-crm-btn { display:flex;align-items:center;gap:5px;padding:5px 12px;font-size:11px;font-weight:700;border:2px solid #45b0e0;border-radius:0;background:#1a8ab5;color:#fff;cursor:pointer;letter-spacing:.04em;text-decoration:none;box-shadow:2px 2px 0 rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.1); }
 .builder-crm-btn:hover { background:#1070a0;border-color:#70d0f0;color:#fff; }
 /* Red logout button */
 .builder-logout-btn { display:flex;align-items:center;justify-content:center;width:30px;height:28px;border:2px solid #cc3333;border-radius:4px;background:#cc3333;color:#fff;cursor:pointer; }

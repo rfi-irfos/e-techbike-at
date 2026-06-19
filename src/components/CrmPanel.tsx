@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import type { Customer, Transaction, CRMData } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
 import { McBackdrop, CrmScene } from './MCMobs'
@@ -22,6 +22,7 @@ const ACHIEVEMENTS = [
   { id: 'ach-adventurer',       title: 'Adventurer',               desc: 'Den Wolf ganz nach rechts geführt' },
   { id: 'ach-kuh',             title: 'Milch-Meisterin',           desc: 'Die Kuh entdeckt' },
   { id: 'ach-huhn',            title: 'Hühner-Flüsterin',          desc: 'Das Huhn angeklickt' },
+  { id: 'ach-okostojas',      title: 'Okostojás',                 desc: 'A csirke tojást tojt!' },
   { id: 'ach-schaf',           title: 'Schaf-Flüsterin',            desc: 'Das pinke Schaf entdeckt' },
   { id: 'ach-ferkel',          title: 'Ferkel-Königin',             desc: 'Das Ferkelchen gestreichelt' },
   { id: 'ach-nether-suck',     title: 'Ins Nether gezogen!',        desc: 'Ein Mob wurde vom Portal verschluckt' },
@@ -69,6 +70,237 @@ function emptyTransaction(): Omit<Transaction, 'id' | 'date'> {
   return { type: 'einnahme', amount: 0, category: 'Verkauf', description: '', invoiceNumber: '' }
 }
 
+function AchIcon({ id, locked }: { id: string; locked: boolean }) {
+  const c = (color: string) => locked ? '#444' : color
+  const icons: Record<string, React.ReactElement> = {
+    'ach-erste-schritte': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="6" y="0" width="4" height="2" fill={c('#888')}/><rect x="4" y="2" width="8" height="2" fill={c('#aaa')}/>
+        <rect x="6" y="4" width="4" height="10" fill={c('#888')}/><rect x="4" y="12" width="8" height="2" fill={c('#6B4226')}/>
+      </svg>
+    ),
+    'ach-wolf': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="0" y="4" width="4" height="3" fill={c('#9ca3af')}/><rect x="4" y="6" width="10" height="7" fill={c('#6b7280')}/>
+        <rect x="10" y="2" width="6" height="8" fill={c('#9ca3af')}/><rect x="14" y="5" width="2" height="2" fill={c('#d1d5db')}/>
+        <rect x="11" y="3" width="2" height="2" fill={c('#1f2937')}/>
+        <rect x="10" y="5" width="4" height="1" fill={c('#0ea5e9')}/>
+      </svg>
+    ),
+    'ach-wolf-bone-first': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="2" y="7" width="12" height="2" fill={c('#e5e7eb')}/><rect x="0" y="5" width="3" height="3" fill={c('#d1d5db')}/>
+        <rect x="0" y="8" width="3" height="3" fill={c('#d1d5db')}/><rect x="13" y="5" width="3" height="3" fill={c('#d1d5db')}/>
+        <rect x="13" y="8" width="3" height="3" fill={c('#d1d5db')}/>
+      </svg>
+    ),
+    'ach-wolf-pet-10': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="1" y="4" width="6" height="5" fill={c('#f472b6')}/><rect x="9" y="4" width="6" height="5" fill={c('#f472b6')}/>
+        <rect x="0" y="5" width="2" height="3" fill={c('#ec4899')}/><rect x="14" y="5" width="2" height="3" fill={c('#ec4899')}/>
+        <rect x="2" y="8" width="12" height="5" fill={c('#f472b6')}/><rect x="4" y="12" width="8" height="3" fill={c('#ec4899')}/>
+        <rect x="6" y="14" width="4" height="2" fill={c('#f472b6')}/>
+      </svg>
+    ),
+    'ach-wolf-pet-50': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="1" y="4" width="6" height="5" fill={c('#f9a8d4')}/><rect x="9" y="4" width="6" height="5" fill={c('#f9a8d4')}/>
+        <rect x="2" y="8" width="12" height="5" fill={c('#f9a8d4')}/><rect x="4" y="12" width="8" height="3" fill={c('#f9a8d4')}/>
+        <rect x="0" y="5" width="2" height="3" fill={c('#f472b6')}/><rect x="14" y="5" width="2" height="3" fill={c('#f472b6')}/>
+        <rect x="5" y="6" width="2" height="2" fill={c('#fbbf24')}/><rect x="9" y="6" width="2" height="2" fill={c('#fbbf24')}/>
+      </svg>
+    ),
+    'ach-wolf-bone-5': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="1" y="3" width="8" height="1" fill={c('#e5e7eb')}/><rect x="0" y="2" width="2" height="3" fill={c('#d1d5db')}/>
+        <rect x="7" y="2" width="2" height="3" fill={c('#d1d5db')}/>
+        <rect x="3" y="7" width="10" height="1" fill={c('#e5e7eb')}/><rect x="2" y="6" width="2" height="3" fill={c('#d1d5db')}/>
+        <rect x="11" y="6" width="2" height="3" fill={c('#d1d5db')}/>
+        <rect x="1" y="11" width="14" height="2" fill={c('#e5e7eb')}/><rect x="0" y="10" width="3" height="4" fill={c('#d1d5db')}/>
+        <rect x="13" y="10" width="3" height="4" fill={c('#d1d5db')}/>
+      </svg>
+    ),
+    'ach-wolf-bone-20': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="0" y="6" width="16" height="4" fill={c('#e5e7eb')}/><rect x="0" y="4" width="3" height="8" fill={c('#d1d5db')}/>
+        <rect x="13" y="4" width="3" height="8" fill={c('#d1d5db')}/><rect x="7" y="2" width="2" height="12" fill={c('#f59e0b')}/>
+      </svg>
+    ),
+    'ach-creeper': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="2" y="0" width="12" height="10" fill={c('#4ade80')}/><rect x="2" y="4" width="3" height="3" fill={c('#166534')}/>
+        <rect x="11" y="4" width="3" height="3" fill={c('#166534')}/><rect x="4" y="8" width="2" height="3" fill={c('#166534')}/>
+        <rect x="10" y="8" width="2" height="3" fill={c('#166534')}/><rect x="6" y="9" width="4" height="2" fill={c('#166534')}/>
+        <rect x="4" y="10" width="8" height="6" fill={c('#4ade80')}/><rect x="2" y="14" width="4" height="2" fill={c('#166534')}/>
+        <rect x="10" y="14" width="4" height="2" fill={c('#166534')}/>
+      </svg>
+    ),
+    'ach-night-owl': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="6" y="0" width="8" height="8" fill={c('#fef9c3')}/><rect x="10" y="0" width="6" height="6" fill={c('#05091a')}/>
+        <rect x="4" y="4" width="8" height="10" fill={c('#fef9c3')}/><rect x="2" y="6" width="4" height="4" fill={c('#fef9c3')}/>
+        <rect x="10" y="6" width="4" height="4" fill={c('#fef9c3')}/>
+        <rect x="6" y="6" width="2" height="2" fill={c('#1f2937')}/><rect x="10" y="6" width="2" height="2" fill={c('#1f2937')}/>
+        <rect x="7" y="10" width="4" height="2" fill={c('#f59e0b')}/>
+      </svg>
+    ),
+    'ach-early-bird': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="4" y="4" width="8" height="8" fill={c('#fbbf24')}/><rect x="2" y="6" width="12" height="4" fill={c('#fbbf24')}/>
+        <rect x="6" y="2" width="4" height="12" fill={c('#fbbf24')}/><rect x="0" y="4" width="2" height="2" fill={c('#fde68a')}/>
+        <rect x="0" y="10" width="2" height="2" fill={c('#fde68a')}/><rect x="14" y="4" width="2" height="2" fill={c('#fde68a')}/>
+        <rect x="14" y="10" width="2" height="2" fill={c('#fde68a')}/><rect x="2" y="2" width="2" height="2" fill={c('#fde68a')}/>
+        <rect x="12" y="2" width="2" height="2" fill={c('#fde68a')}/><rect x="2" y="12" width="2" height="2" fill={c('#fde68a')}/>
+        <rect x="12" y="12" width="2" height="2" fill={c('#fde68a')}/>
+      </svg>
+    ),
+    'ach-adventurer': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="7" y="0" width="2" height="10" fill={c('#9ca3af')}/><rect x="5" y="1" width="6" height="2" fill={c('#d1d5db')}/>
+        <rect x="6" y="2" width="4" height="6" fill={c('#bfdbfe')}/><rect x="7" y="10" width="2" height="6" fill={c('#78350f')}/>
+        <rect x="5" y="14" width="6" height="2" fill={c('#92400e')}/>
+      </svg>
+    ),
+    'ach-kuh': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="2" y="4" width="12" height="8" fill={c('#f5f5f5')}/><rect x="4" y="5" width="3" height="3" fill={c('#1f2937')}/>
+        <rect x="10" y="7" width="2" height="2" fill={c('#1f2937')}/><rect x="12" y="2" width="4" height="6" fill={c('#f5f5f5')}/>
+        <rect x="14" y="5" width="3" height="2" fill={c('#fda4af')}/><rect x="5" y="12" width="2" height="4" fill={c('#9ca3af')}/>
+        <rect x="9" y="12" width="2" height="4" fill={c('#9ca3af')}/><rect x="2" y="6" width="2" height="1" fill={c('#d4a017')}/>
+      </svg>
+    ),
+    'ach-huhn': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="2" y="5" width="9" height="7" fill={c('#fef9c3')}/><rect x="8" y="2" width="6" height="5" fill={c('#fef9c3')}/>
+        <rect x="9" y="0" width="2" height="3" fill={c('#ef4444')}/><rect x="13" y="3" width="3" height="2" fill={c('#ef4444')}/>
+        <rect x="13" y="3" width="3" height="2" fill={c('#f59e0b')}/><rect x="10" y="3" width="2" height="2" fill={c('#1f2937')}/>
+        <rect x="4" y="12" width="2" height="4" fill={c('#f59e0b')}/><rect x="7" y="12" width="2" height="4" fill={c('#f59e0b')}/>
+      </svg>
+    ),
+    'ach-okostojas': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="4" y="2" width="8" height="2" fill={c('#fef9c3')}/><rect x="2" y="4" width="12" height="2" fill={c('#fef9c3')}/>
+        <rect x="1" y="6" width="14" height="5" fill={c('#fef9c3')}/><rect x="2" y="11" width="12" height="2" fill={c('#fef9c3')}/>
+        <rect x="4" y="13" width="8" height="2" fill={c('#fef9c3')}/><rect x="3" y="3" width="2" height="2" fill={c('#fde68a')}/>
+        <rect x="11" y="3" width="2" height="2" fill={c('#fde68a')}/><rect x="6" y="8" width="4" height="2" fill={c('#f59e0b')}/>
+      </svg>
+    ),
+    'ach-schaf': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="2" y="4" width="10" height="7" fill={c('#e8eaec')}/><rect x="0" y="6" width="3" height="4" fill={c('#e8eaec')}/>
+        <rect x="11" y="6" width="3" height="4" fill={c('#e8eaec')}/><rect x="3" y="2" width="5" height="4" fill={c('#e8eaec')}/>
+        <rect x="7" y="3" width="4" height="3" fill={c('#e8eaec')}/><rect x="11" y="2" width="5" height="7" fill={c('#6b7280')}/>
+        <rect x="13" y="5" width="3" height="2" fill={c('#1f2937')}/><rect x="4" y="11" width="2" height="4" fill={c('#6b7280')}/>
+        <rect x="8" y="11" width="2" height="4" fill={c('#6b7280')}/>
+      </svg>
+    ),
+    'ach-ferkel': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="1" y="4" width="11" height="9" fill={c('#fbb6c8')}/><rect x="10" y="2" width="6" height="8" fill={c('#fbb6c8')}/>
+        <rect x="14" y="4" width="4" height="4" fill={c('#f472b6')}/><rect x="15" y="5" width="1" height="1" fill={c('#9f1239')}/>
+        <rect x="15" y="7" width="1" height="1" fill={c('#9f1239')}/><rect x="11" y="3" width="2" height="2" fill={c('#1f2937')}/>
+        <rect x="3" y="13" width="2" height="3" fill={c('#fbb6c8')}/><rect x="7" y="13" width="2" height="3" fill={c('#fbb6c8')}/>
+        <rect x="0" y="5" width="2" height="2" fill={c('#f472b6')}/>
+      </svg>
+    ),
+    'ach-nether-suck': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="0" y="0" width="3" height="16" fill={c('#1a0a2e')}/><rect x="13" y="0" width="3" height="16" fill={c('#1a0a2e')}/>
+        <rect x="0" y="0" width="16" height="3" fill={c('#1a0a2e')}/><rect x="0" y="13" width="16" height="3" fill={c('#1a0a2e')}/>
+        <rect x="3" y="3" width="10" height="10" fill={c('#7b2fbe')} opacity="0.8"/>
+        <rect x="5" y="5" width="6" height="6" fill={c('#9b59b6')}/>
+        <rect x="7" y="7" width="2" height="2" fill={c('#c084fc')}/>
+      </svg>
+    ),
+  }
+  const bizIcons: Record<string, React.ReactElement> = {
+    'ach-biz-first-contact': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="0" y="2" width="16" height="12" fill={c('#4b5563')}/><rect x="0" y="2" width="16" height="2" fill={c('#9ca3af')}/>
+        <polygon points="0,4 8,9 16,4" fill={c('#9ca3af')}/>
+      </svg>
+    ),
+    'ach-biz-5-contacts': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="2" y="0" width="4" height="4" fill={c('#6b7280')}/><rect x="1" y="4" width="6" height="5" fill={c('#6b7280')}/>
+        <rect x="8" y="2" width="4" height="4" fill={c('#9ca3af')}/><rect x="7" y="6" width="6" height="5" fill={c('#9ca3af')}/>
+        <rect x="0" y="11" width="16" height="2" fill={c('#4b5563')}/>
+      </svg>
+    ),
+    'ach-biz-10-contacts': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="0" y="2" width="4" height="4" fill={c('#6b7280')}/><rect x="6" y="0" width="4" height="4" fill={c('#9ca3af')}/>
+        <rect x="12" y="2" width="4" height="4" fill={c('#6b7280')}/><rect x="0" y="6" width="5" height="4" fill={c('#6b7280')}/>
+        <rect x="5" y="4" width="6" height="4" fill={c('#9ca3af')}/><rect x="11" y="6" width="5" height="4" fill={c('#6b7280')}/>
+        <rect x="2" y="11" width="12" height="2" fill={c('#4b5563')}/>
+      </svg>
+    ),
+    'ach-biz-first-sale': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="1" y="7" width="4" height="6" fill={c('#4ade80')}/><rect x="5" y="5" width="4" height="8" fill={c('#22c55e')}/>
+        <rect x="9" y="2" width="4" height="11" fill={c('#4ade80')}/><rect x="13" y="0" width="2" height="13" fill={c('#16a34a')}/>
+        <rect x="0" y="13" width="16" height="2" fill={c('#15803d')}/>
+      </svg>
+    ),
+    'ach-biz-first-partner': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="0" y="4" width="6" height="5" fill={c('#6b7280')}/><rect x="0" y="6" width="4" height="2" fill={c('#9ca3af')}/>
+        <rect x="10" y="4" width="6" height="5" fill={c('#6b7280')}/><rect x="12" y="6" width="4" height="2" fill={c('#9ca3af')}/>
+        <rect x="6" y="7" width="4" height="2" fill={c('#4ade80')}/>
+      </svg>
+    ),
+    'ach-biz-first-income': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="2" y="2" width="12" height="12" fill={c('#ca8a04')}/><rect x="3" y="3" width="10" height="10" fill={c('#fbbf24')}/>
+        <rect x="5" y="5" width="6" height="6" fill={c('#d97706')}/><rect x="7" y="3" width="2" height="10" fill={c('#fef08a')}/>
+      </svg>
+    ),
+    'ach-biz-big-deal': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="4" y="0" width="8" height="2" fill={c('#22d3ee')}/><rect x="2" y="2" width="12" height="6" fill={c('#67e8f9')}/>
+        <rect x="4" y="8" width="8" height="4" fill={c('#22d3ee')}/><rect x="6" y="12" width="4" height="2" fill={c('#0e7490')}/>
+        <rect x="5" y="2" width="2" height="2" fill="#fff" opacity="0.6"/>
+      </svg>
+    ),
+    'ach-biz-first-no': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="0" y="6" width="16" height="4" fill={c('#ef4444')}/><rect x="6" y="0" width="4" height="16" fill={c('#ef4444')}/>
+        <rect x="2" y="2" width="3" height="3" fill={c('#dc2626')}/><rect x="11" y="2" width="3" height="3" fill={c('#dc2626')}/>
+        <rect x="2" y="11" width="3" height="3" fill={c('#dc2626')}/><rect x="11" y="11" width="3" height="3" fill={c('#dc2626')}/>
+      </svg>
+    ),
+    'ach-biz-comeback': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="6" y="0" width="4" height="4" fill={c('#4ade80')}/><rect x="10" y="2" width="4" height="4" fill={c('#4ade80')}/>
+        <rect x="12" y="4" width="4" height="8" fill={c('#22c55e')}/><rect x="10" y="10" width="4" height="4" fill={c('#4ade80')}/>
+        <rect x="6" y="12" width="4" height="4" fill={c('#4ade80')}/><rect x="0" y="6" width="8" height="4" fill={c('#22c55e')}/>
+        <rect x="2" y="4" width="4" height="2" fill={c('#4ade80')}/><rect x="0" y="10" width="4" height="2" fill={c('#4ade80')}/>
+      </svg>
+    ),
+    'ach-biz-hustle': (
+      <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+        <rect x="7" y="0" width="4" height="6" fill={c('#fbbf24')}/><rect x="5" y="4" width="8" height="4" fill={c('#fbbf24')}/>
+        <rect x="8" y="8" width="4" height="8" fill={c('#f59e0b')}/><rect x="6" y="2" width="2" height="2" fill={c('#fef08a')}/>
+      </svg>
+    ),
+  }
+  return icons[id] || bizIcons[id] || (
+    <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+      <rect x="5" y="0" width="6" height="2" fill={c('#fbbf24')}/><rect x="3" y="2" width="10" height="8" fill={c('#fbbf24')}/>
+      <rect x="4" y="10" width="8" height="4" fill={c('#d97706')}/><rect x="6" y="14" width="4" height="2" fill={c('#92400e')}/>
+    </svg>
+  )
+}
+
+function PadlockIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="28" height="28" style={{ imageRendering: 'pixelated' }}>
+      <rect x="4" y="0" width="8" height="2" fill="#374151"/><rect x="2" y="2" width="4" height="6" fill="#374151"/>
+      <rect x="10" y="2" width="4" height="6" fill="#374151"/><rect x="0" y="7" width="16" height="9" fill="#4b5563"/>
+      <rect x="6" y="9" width="4" height="2" fill="#1f2937"/><rect x="7" y="11" width="2" height="3" fill="#1f2937"/>
+    </svg>
+  )
+}
 
 export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   const [data, setData]                   = useState<CRMData>({ customers: [], transactions: [] })
@@ -327,7 +559,9 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
             const isUnlocked = unlocked.has(a.id)
             return (
               <div key={a.id} className={`lazi-ach-tile${isUnlocked ? ' unlocked' : ''}`} title={a.desc}>
-                <div className="lazi-ach-tile-icon">{isUnlocked ? '🏆' : '🔒'}</div>
+                <div className="lazi-ach-tile-icon">
+                  {isUnlocked ? <AchIcon id={a.id} locked={false} /> : <PadlockIcon />}
+                </div>
                 <div className="lazi-ach-tile-title">{a.title}</div>
               </div>
             )
@@ -335,7 +569,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
           {/* Fill remaining slots to reach 50 */}
           {Array.from({ length: 50 - ACHIEVEMENTS.length }).map((_, i) => (
             <div key={`empty-${i}`} className="lazi-ach-tile locked">
-              <div className="lazi-ach-tile-icon">🔒</div>
+              <div className="lazi-ach-tile-icon"><PadlockIcon /></div>
               <div className="lazi-ach-tile-title">???</div>
             </div>
           ))}

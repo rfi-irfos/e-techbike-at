@@ -43,12 +43,12 @@ function MCToast({ text }: { text: string }) {
 
 function EnderDragon({ onCatch }: { onCatch: () => void }) {
   return (
-    <div className="ender-dragon-wrap" onClick={onCatch} title="psst...">
+    <div className="ender-dragon-wrap" style={{ overflow: 'hidden' }} onClick={onCatch} title="psst...">
       <svg
         viewBox="0 0 88 42"
         width="112"
         height="53"
-        style={{ imageRendering: 'pixelated', display: 'block', overflow: 'visible' }}
+        style={{ imageRendering: 'pixelated', display: 'block', overflow: 'hidden' }}
       >
         {/* tail — tapers left */}
         <rect x="0"  y="26" width="4"  height="4"  fill="#1a0033"/>
@@ -56,15 +56,14 @@ function EnderDragon({ onCatch }: { onCatch: () => void }) {
         <rect x="7"  y="22" width="6"  height="8"  fill="#220044"/>
         {/* body */}
         <rect x="13" y="18" width="34" height="13" rx="1" fill="#1a0033"/>
-        {/* wings from MID-back, spread upward */}
-        <g className="dragon-wing-l">
-          <polygon points="19,18  2,2   17,16  21,18"  fill="#2d004d"/>
-          <polygon points="19,18  5,0   1,9    13,15"  fill="#3d0066"/>
-        </g>
-        <g className="dragon-wing-r">
-          <polygon points="39,18  56,2  43,16  37,18"  fill="#2d004d"/>
-          <polygon points="39,18  53,0  57,9   45,15"  fill="#3d0066"/>
-        </g>
+        {/* Left wing - 3 layers */}
+        <polygon points="20,20 0,2 5,12 20,18" fill="#3d0066"/>
+        <polygon points="20,20 2,0 6,8 20,18" fill="#220044"/>
+        <polygon points="15,22 1,8 8,16 16,22" fill="#4d0088" opacity="0.6"/>
+        {/* Right wing - 3 layers */}
+        <polygon points="40,20 58,2 53,12 40,18" fill="#3d0066"/>
+        <polygon points="40,20 56,0 52,8 40,18" fill="#220044"/>
+        <polygon points="45,22 57,8 50,16 44,22" fill="#4d0088" opacity="0.6"/>
         {/* spine spikes */}
         <rect x="18" y="14" width="3" height="5" fill="#220044"/>
         <rect x="25" y="13" width="3" height="6" fill="#220044"/>
@@ -85,6 +84,11 @@ function EnderDragon({ onCatch }: { onCatch: () => void }) {
         {/* horns */}
         <rect x="58" y="4"  width="2" height="5" fill="#1a0033"/>
         <rect x="69" y="2"  width="2" height="7" fill="#1a0033"/>
+        {/* Fire breath from mouth */}
+        <rect x="76" y="14" width="5" height="2" fill="#f97316"/>
+        <rect x="78" y="13" width="4" height="1" fill="#fbbf24"/>
+        <rect x="77" y="15" width="6" height="2" fill="#dc2626" opacity="0.7"/>
+        <rect x="80" y="14" width="5" height="1" fill="#fef08a" opacity="0.8"/>
       </svg>
     </div>
   )
