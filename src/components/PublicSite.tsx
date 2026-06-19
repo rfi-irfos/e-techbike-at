@@ -1177,7 +1177,7 @@ export function PublicSite({
           </section>
         )}
 
-        {/* ── CATEGORY BROWSER (3-level: cat → subcat → products) ── */
+        {/* ── CATEGORY BROWSER (3-level: cat → subcat → products) ── */}
         {!editMode && !hiddenSections.includes('categories') && (categories?.items?.length ?? 0) > 0 && (
           <CategoryBrowser categories={categories} products={products} />
         )}
