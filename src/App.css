@@ -2828,7 +2828,7 @@ button { cursor: pointer; font-family: inherit; }
 .crm-mc .crm-tab.active { color:#FFFF55; border-bottom-color:#7DC845; }
 .crm-mc .crm-tab-count { background:#3A7D44; color:#FFFF55; }
 
-/* ── CRM Grid Layout ── */
+/* ── CRM Layout ── */
 .crm-panel {
   display: flex;
   flex-direction: column;
@@ -2837,7 +2837,8 @@ button { cursor: pointer; font-family: inherit; }
   position: relative;
 }
 
-.crm-content-viewport {
+/* non-MC: content fills everything */
+.crm-viewport {
   flex: 1 1 auto;
   overflow-y: auto;
   background: var(--surface);
@@ -2845,29 +2846,28 @@ button { cursor: pointer; font-family: inherit; }
   min-height: 0;
 }
 
-/* ── MC-Mode: game (75%) + timi (25%) ── */
+/* MC-Mode: cap content, game+timi fill remaining 3:1 */
+.crm-mc .crm-viewport {
+  flex: 0 0 auto;
+  max-height: 28vh;
+  overflow-y: auto;
+}
+
 .minigame-container {
   position: relative;
-  width: 100%;
-  flex: 0 0 75vh;
-  height: 75vh;
+  flex: 3;
+  min-height: 0;
   overflow: hidden;
   border-top: 4px solid #3A7D44;
 }
 
 .timi-game-container {
   position: relative;
-  width: 100%;
-  flex: 0 0 25vh;
-  height: 25vh;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
   background: #0d0d1a;
   border-top: 3px solid #e2a830;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: monospace;
-  color: #e2a830;
 }
 
 .environment-layer {
