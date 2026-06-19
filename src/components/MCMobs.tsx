@@ -511,7 +511,7 @@ const lsGet = (k: string, fb = '') => { try { return localStorage.getItem(k) ?? 
 const lsNum = (k: string, fb = 0) => { const v = parseInt(lsGet(k)); return isNaN(v) ? fb : v }
 const lsSet = (k: string, v: string) => { try { localStorage.setItem(k, v) } catch {} }
 
-export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: string) => void }) {
+export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string, title: string) => void; noBackdrop?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [W, setW] = useState(700)
 
@@ -779,11 +779,11 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
       <div ref={containerRef} style={{
         position: 'relative', overflow: 'hidden', width: '100%', height: '100%',
-        background: skyBg, userSelect: 'none',
+        background: noBackdrop ? 'transparent' : skyBg, userSelect: 'none',
       }}>
 
-        {/* ── Stars (night only) ── */}
-        {isNight && [0.03,0.09,0.18,0.28,0.40,0.55,0.68,0.78,0.88,0.95].map((p, i) => (
+        {/* ── Stars (night only, backdrop mode) ── */}
+        {!noBackdrop && isNight && [0.03,0.09,0.18,0.28,0.40,0.55,0.68,0.78,0.88,0.95].map((p, i) => (
           <div key={i} style={{
             position: 'absolute', left: `${p * 100}%`, top: `${4 + (i % 4) * 6}%`,
             width: i % 3 === 0 ? 3 : 2, height: i % 3 === 0 ? 3 : 2,
@@ -791,8 +791,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           }} />
         ))}
 
-        {/* ── Sun / Moon ── */}
-        {isNight ? (
+        {/* ── Sun / Moon (backdrop mode) ── */}
+        {!noBackdrop && isNight ? (
           <div style={{
             position: 'absolute', left: bodyX, top: bodyY, width: 26, height: 26,
             borderRadius: '50%', background: '#fef9c3', border: '3px solid #fef08a',
@@ -806,8 +806,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           }} />
         )}
 
-        {/* ── Clouds (day/sunset only) ── */}
-        {!isNight && [
+        {/* ── Clouds (backdrop mode, day/sunset only) ── */}
+        {!noBackdrop && !isNight && [
           { pct: ((tick * 0.04) % 110) - 5, top: '8%', w: 90, h: 28 },
           { pct: ((tick * 0.025 + 40) % 110) - 5, top: '15%', w: 60, h: 20 },
           { pct: ((tick * 0.06 + 70) % 110) - 5, top: '6%', w: 70, h: 22 },
@@ -820,8 +820,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           }} />
         ))}
 
-        {/* ── Far mountains (silhouette) ── */}
-        {W > 0 && (
+        {/* ── Far mountains (backdrop mode) ── */}
+        {!noBackdrop && W > 0 && (
           <svg style={{ position: 'absolute', bottom: 55, left: 0, width: '100%', height: '35%' }}
             viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
             <polygon
@@ -837,8 +837,8 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           </svg>
         )}
 
-        {/* ── Near hills ── */}
-        {W > 0 && (
+        {/* ── Near hills (backdrop mode) ── */}
+        {!noBackdrop && W > 0 && (
           <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '22%' }}
             viewBox={`0 0 ${W} 80`} preserveAspectRatio="none">
             <path

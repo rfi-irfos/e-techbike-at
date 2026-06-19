@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import type { Customer, Transaction, CRMData } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
-import { McBackdrop } from './MCMobs'
+import { McBackdrop, CrmScene } from './MCMobs'
 
 // ── Achievements (shared storage) ───────────────────────────────────────────
 const ACH_KEY = 'lazi_achievements'
@@ -240,10 +240,13 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   return (
     <div className={`crm-panel${mcMode ? ' crm-mc' : ''} crm-shell`}>
 
-      {/* Backdrop — pure visual, rendered first so it's behind everything */}
+      {/* MC background: pure landscape + mob layer stacked */}
       {mcMode && (
         <div className="minigame-bg">
           <McBackdrop />
+          <div style={{ position: 'absolute', inset: 0 }}>
+            <CrmScene noBackdrop onAchUnlock={handleAchUnlock} />
+          </div>
         </div>
       )}
 
