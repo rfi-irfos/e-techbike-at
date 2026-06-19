@@ -24,6 +24,7 @@ const ACHIEVEMENTS = [
   { id: 'ach-huhn',            title: 'Hühner-Flüsterin',          desc: 'Das Huhn angeklickt' },
   { id: 'ach-schaf',           title: 'Schaf-Flüsterin',            desc: 'Das pinke Schaf entdeckt' },
   { id: 'ach-ferkel',          title: 'Ferkel-Königin',             desc: 'Das Ferkelchen gestreichelt' },
+  { id: 'ach-nether-suck',     title: 'Ins Nether gezogen!',        desc: 'Ein Mob wurde vom Portal verschluckt' },
   // ── Business ──
   { id: 'ach-biz-first-contact',title: 'Erster Kontakt',           desc: 'Ersten Kunden angelegt' },
   { id: 'ach-biz-5-contacts',   title: 'Netzwerkerin',             desc: '5 Kontakte im CRM' },

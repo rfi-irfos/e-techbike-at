@@ -613,6 +613,9 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
 
   const [showNameDialog, setShowNameDialog] = useState(false)
   const [achToast, setAchToast] = useState<{ id: string; title: string } | null>(null)
+  const [tailWag, setTailWag] = useState(false)
+  const [wolfSitting, setWolfSitting] = useState(false)
+  const netherAchDone = useRef(false)
 
   const wsRef = useRef(wolfState); wsRef.current = wolfState
   const wxRef = useRef(wolfX); wxRef.current = wolfX
@@ -630,6 +633,12 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   useEffect(() => { lsSet(WK.hunger, String(Math.round(hunger))) }, [hunger])
   useEffect(() => { lsSet(WK.tp, String(totalPets)) }, [totalPets])
   useEffect(() => { lsSet(WK.tb, String(totalBones)) }, [totalBones])
+
+  useEffect(() => {
+    if (!tamed) return
+    const id = setInterval(() => setTailWag(t => !t), 600)
+    return () => clearInterval(id)
+  }, [tamed])
 
   const unlock = useCallback((id: string, title: string) => {
     onAchUnlock(id, title)
@@ -761,13 +770,21 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   // Interactions
   const petWolf = () => {
     if (!tamed) { setShowNameDialog(true); return }
-    const next = totalPets + 1
-    setTotalPets(next)
-    setWolfState('happy'); setTimeout(() => setWolfState('idle'), 1400)
-    spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x2661;', '#f9a8d4'], ['&#x2605;', '#fbbf24']])
-    gainXp(5)
-    if (next >= 10) unlock('ach-wolf-pet-10', 'Tierlieb')
-    if (next >= 50) unlock('ach-wolf-pet-50', 'Bester Freund')
+    const nextSitting = !wolfSitting
+    setWolfSitting(nextSitting)
+    if (nextSitting) {
+      setWolfState('sitting')
+    } else {
+      // Unsitting = petting the wolf
+      const next = totalPets + 1
+      setTotalPets(next)
+      setWolfState('happy')
+      setTimeout(() => setWolfState('idle'), 1400)
+      spawnPts(wolfX + 24, [['&#x2665;', '#f472b6'], ['&#x2661;', '#f9a8d4'], ['&#x2605;', '#fbbf24']])
+      gainXp(5)
+      if (next >= 10) unlock('ach-wolf-pet-10', 'Tierlieb')
+      if (next >= 50) unlock('ach-wolf-pet-50', 'Bester Freund')
+    }
   }
 
   const feedBone = () => {
@@ -824,6 +841,13 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   const [chestOpen, setChestOpen] = useState(false)
   const [portalSuck, setPortalSuck] = useState(false)
 
+  useEffect(() => {
+    if (portalSuck && !netherAchDone.current) {
+      netherAchDone.current = true
+      unlock('ach-nether-suck', 'Ins Nether gezogen!')
+    }
+  }, [portalSuck, unlock])
+
   const handleName = (n: string) => {
     setWolfName(n); lsSet(WK.name, n)
     setWolfBones(3); lsSet(WK.bones, '3')
@@ -840,7 +864,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
 
   const moodColor = hunger > 60 ? '#4ade80' : hunger > 30 ? '#fbbf24' : '#ef4444'
   const moodLabel = hunger > 60 ? 'Satt' : hunger > 30 ? 'Okay' : hunger > 10 ? 'Hungrig!' : 'Verhungert!'
-  const isSitting = wolfState === 'sitting' || wolfState === 'eating'
+  const isSitting = wolfSitting || wolfState === 'sitting' || wolfState === 'eating'
   const wolfPx = isSitting ? wolfSitPx(tamed, wolfState === 'eating') : wolfWalkPx(tick, tamed, wolfState === 'howling')
   const wolfVW = isSitting ? 52 : 60; const wolfVH = isSitting ? 38 : 36
 
@@ -1133,14 +1157,22 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           }} />
         )}
 
-        <div style={{ position: 'absolute', left: portalSuck ? Math.max(50, wolfX - 30) : wolfX, bottom: 20, cursor: 'pointer', transition: 'left 0.8s ease' }}
-          onClick={petWolf} title={tamed ? `${wolfName} streicheln!` : 'Klick zum Zähmen!'}>
+        <div style={{ position: 'absolute', left: portalSuck ? Math.max(50, wolfX - 30) : wolfX, bottom: wolfSitting ? 12 : 20, cursor: 'pointer', transition: 'left 0.8s ease, bottom 0.3s ease' }}
+          onClick={petWolf} title={tamed ? (wolfSitting ? `${wolfName} aufstehen!` : `${wolfName} sitzen lassen!`) : 'Klick zum Zähmen!'}>
           {tamed && (
             <div style={{
               position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50%)',
               background: 'rgba(0,0,0,0.75)', color: '#fff', fontSize: 9, fontWeight: 700,
               fontFamily: 'monospace', padding: '2px 6px', borderRadius: 3, whiteSpace: 'nowrap',
             }}>{wolfName} <span style={{ color: moodColor }}>&#x2665;</span></div>
+          )}
+          {tamed && (
+            <div style={{
+              position: 'absolute', top: -34, left: '50%', transform: 'translateX(-50%)',
+              color: '#FFD700', fontSize: 10, fontWeight: 700, fontFamily: 'monospace',
+              whiteSpace: 'nowrap', opacity: wolfSitting ? 1 : 0, transition: 'opacity 0.3s',
+              textShadow: '0 1px 4px rgba(0,0,0,0.8)', pointerEvents: 'none',
+            }}>Sitz!</div>
           )}
           {wolfState === 'happy' && (
             <div style={{
@@ -1150,7 +1182,21 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           )}
           <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={noBackdrop ? 1.1 : 0.9}
             flip={wolfDir === 'l' && !isSitting} />
-
+          {tamed && (
+            <div style={{
+              position: 'absolute',
+              left: wolfDir === 'r' || isSitting ? 1 : undefined,
+              right: wolfDir === 'l' && !isSitting ? 1 : undefined,
+              top: 3,
+              width: 4,
+              height: 12,
+              background: '#9ca3af',
+              borderRadius: 1,
+              transformOrigin: 'top center',
+              transform: `rotate(${tailWag ? 20 : -10}deg)`,
+              transition: 'transform 0.3s ease',
+            }} />
+          )}
         </div>
 
         {creeperVisible && (
