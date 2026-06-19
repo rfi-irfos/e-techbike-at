@@ -118,19 +118,25 @@ export function McBackdrop() {
             fill={isNight ? '#0d2030' : isTransition ? '#4a3058' : '#6888a8'} opacity={0.9} />
         </svg>
       )}
-      {/* ── Lava waterfall pouring from a rock cliff on the mountain ── */}
+      {/* ── Lava waterfall flowing down a mountain face ── */}
       {W > 0 && (
-        <div style={{ position: 'absolute', bottom: 60, left: '15%', width: 14, height: '20%', pointerEvents: 'none', opacity: 0.92 - daylight * 0.1 }}>
-          {/* rock cliff the lava emerges from (the source) */}
-          <div style={{ position: 'absolute', top: -14, left: -11, width: 38, height: 18, background: 'linear-gradient(#6b6b75,#3f3f48)', borderRadius: '3px 3px 6px 6px', boxShadow: 'inset 0 -3px 0 #2a2a30, 0 2px 4px rgba(0,0,0,.4)' }}>
-            <div style={{ position: 'absolute', bottom: -2, left: 11, width: 16, height: 6, background: 'linear-gradient(#ffb066,#ff6a00)', borderRadius: '0 0 4px 4px', boxShadow: '0 0 10px #ff8a3ccc' }} />
-          </div>
-          {/* falling lava stream */}
-          <div style={{ position: 'absolute', inset: 0, borderRadius: '0 0 4px 4px', background: 'linear-gradient(180deg,#ffd08a 0%,#ff9a3c 25%,#ff6a00 55%,#e03a00 85%,#b81e00 100%)', backgroundSize: '100% 220%', boxShadow: '0 0 12px #ff7a1eaa, 0 0 30px #ff5a0066', filter: 'blur(0.4px)', animation: 'lava-fall 1.1s linear infinite' }} />
+        <div style={{ position: 'absolute', bottom: '14%', left: '46%', width: 18, height: '30%', pointerEvents: 'none', opacity: 0.9 - daylight * 0.1 }}>
+          {/* the molten stream — top fades into the mountain so it has no hard edge */}
+          <div style={{
+            position: 'absolute', inset: 0, borderRadius: '0 0 5px 5px',
+            background: 'linear-gradient(180deg,#ffe0a0 0%,#ff9a3c 30%,#ff6a00 60%,#e03a00 88%,#b81e00 100%)',
+            backgroundSize: '100% 240%',
+            boxShadow: '0 0 14px #ff7a1eaa, 0 0 36px #ff5a0055',
+            WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 14%)',
+            maskImage: 'linear-gradient(180deg, transparent 0%, #000 14%)',
+            animation: 'lava-fall 1.1s linear infinite',
+          }} />
+          {/* bright molten core */}
+          <div style={{ position: 'absolute', top: '12%', left: '35%', width: '30%', bottom: '6%', background: 'linear-gradient(180deg,#fff0c0,#ffb066)', opacity: 0.7, borderRadius: 4, filter: 'blur(0.5px)' }} />
           {/* glowing splash pool at the base */}
-          <div style={{ position: 'absolute', bottom: -7, left: -13, width: 40, height: 13, borderRadius: '50%', background: 'radial-gradient(ellipse, #ff7a1edd 0%, #ff5a0066 50%, transparent 72%)', filter: 'blur(2px)', animation: 'lava-pool 1.4s ease-in-out infinite alternate' }} />
+          <div style={{ position: 'absolute', bottom: -8, left: -14, width: 46, height: 14, borderRadius: '50%', background: 'radial-gradient(ellipse, #ff7a1edd 0%, #ff5a0055 52%, transparent 74%)', filter: 'blur(2px)', animation: 'lava-pool 1.4s ease-in-out infinite alternate' }} />
           {/* embers drifting up */}
-          <div style={{ position: 'absolute', top: '45%', left: -2, width: 3, height: 3, borderRadius: '50%', background: '#ffd08a', boxShadow: '6px 22px 0 #ffb066, 3px 44px 0 #ff8a3c', animation: 'lava-ember 1.8s ease-in infinite' }} />
+          <div style={{ position: 'absolute', top: '50%', left: 0, width: 3, height: 3, borderRadius: '50%', background: '#ffd08a', boxShadow: '8px 22px 0 #ffb066, 4px 44px 0 #ff8a3c', animation: 'lava-ember 1.8s ease-in infinite' }} />
         </div>
       )}
       <style>{`
@@ -1236,7 +1242,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         )}
 
         {/* ── Choppable foreground trees (axe → wood) ── */}
-        {!noBackdrop && W > 0 && TREES.map(t => {
+        {W > 0 && TREES.map(t => {
           const x = t.xf * W
           const chopped = choppedTrees.has(t.id)
           if (chopped) {

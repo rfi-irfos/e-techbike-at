@@ -503,7 +503,9 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       {mcMode && (
         <div className="minigame-bg">
           <McBackdrop />
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '20vh' }}>
+          {/* full-height overlay so the HUD sits at the very top while mobs,
+              trees, house and ground stay anchored to the bottom */}
+          <div style={{ position: 'absolute', inset: 0 }}>
             <CrmScene noBackdrop onAchUnlock={handleAchUnlock} />
           </div>
         </div>
