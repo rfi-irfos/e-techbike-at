@@ -2846,25 +2846,17 @@ button { cursor: pointer; font-family: inherit; }
   min-height: 0;
 }
 
-/* MC-Mode: cap content, game+timi fill remaining 3:1 */
-.crm-mc .crm-viewport {
-  flex: 0 0 auto;
-  max-height: 28vh;
-  overflow-y: auto;
-}
-
+/* MC-Mode: CRM list fills top (auto), game strip = 200px, timi = 100px */
 .minigame-container {
   position: relative;
-  flex: 3;
-  min-height: 0;
+  flex: 0 0 200px;
   overflow: hidden;
   border-top: 4px solid #3A7D44;
 }
 
 .timi-game-container {
   position: relative;
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 100px;
   overflow: hidden;
   background: #0d0d1a;
   border-top: 3px solid #e2a830;

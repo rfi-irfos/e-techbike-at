@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import type { Customer, Transaction, CRMData } from '../types/crm'
 import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
 import { MCTopbarTrees, CrmScene } from './MCMobs'
@@ -8,6 +8,7 @@ const ACH_KEY = 'lazi_achievements'
 const FIRST_THREE = ['ach-erste-schritte']
 
 const ACHIEVEMENTS = [
+  // ── Wolf-Game ──
   { id: 'ach-erste-schritte',   title: 'Erste Schritte',          desc: 'Minecraft-Mode im CRM entdeckt' },
   { id: 'ach-wolf',             title: 'Wolfsbändigerin',          desc: 'Wolf gezähmt und Namen gegeben' },
   { id: 'ach-wolf-bone-first',  title: 'Großzügig!',               desc: 'Den allerersten Knochen gegeben' },
@@ -19,6 +20,17 @@ const ACHIEVEMENTS = [
   { id: 'ach-night-owl',        title: 'Nacht-Eule',               desc: 'Spät nachts am CRM gearbeitet' },
   { id: 'ach-early-bird',       title: 'Früher Vogel',             desc: 'Früh morgens schon aktiv' },
   { id: 'ach-adventurer',       title: 'Adventurer',               desc: 'Den Wolf ganz nach rechts geführt' },
+  // ── Business ──
+  { id: 'ach-biz-first-contact',title: 'Erster Kontakt',           desc: 'Ersten Kunden angelegt' },
+  { id: 'ach-biz-5-contacts',   title: 'Netzwerkerin',             desc: '5 Kontakte im CRM' },
+  { id: 'ach-biz-10-contacts',  title: 'Die Basis stimmt',         desc: '10 Kontakte im CRM' },
+  { id: 'ach-biz-first-sale',   title: 'Erster Abschluss!',        desc: 'Ersten Kunden auf "Verkauft" gesetzt' },
+  { id: 'ach-biz-first-partner',title: 'Partnerin',                desc: 'Ersten Partner-Tag vergeben' },
+  { id: 'ach-biz-first-income', title: 'Erste Einnahme',           desc: 'Erste Einnahme eingetragen' },
+  { id: 'ach-biz-big-deal',     title: 'Big Deal',                 desc: 'Einnahme über 1.000 €' },
+  { id: 'ach-biz-first-no',     title: 'Erstes Nein',              desc: 'Nicht jeder wird Kunde — das ist okay' },
+  { id: 'ach-biz-comeback',     title: 'Comeback',                 desc: 'Abgesagten Kontakt wieder auf Offen gesetzt' },
+  { id: 'ach-biz-hustle',       title: 'Hustle-Mode',              desc: '3 Kunden an einem Tag angelegt' },
 ]
 
 function loadAchievements(): Set<string> {
@@ -51,77 +63,6 @@ function emptyCustomer(): Omit<Customer, 'id' | 'createdAt' | 'updatedAt'> {
 function emptyTransaction(): Omit<Transaction, 'id' | 'date'> {
   return { type: 'einnahme', amount: 0, category: 'Verkauf', description: '', invoiceNumber: '' }
 }
-
-// ── Timi Mini-Game ────────────────────────────────────────────────────────────
-const TIMI_MOBS = [
-  { id: 'pig',  emoji: '&#x1F416;', label: 'Schweinchen', pts: 1, color: '#f9a8d4' },
-  { id: 'sheep',emoji: '&#x1F411;', label: 'Schäfchen',   pts: 2, color: '#e5e7eb' },
-  { id: 'cow',  emoji: '&#x1F404;', label: 'Kuh',         pts: 3, color: '#92400e' },
-  { id: 'star', emoji: '&#x2B50;',  label: 'Stern!',      pts: 5, color: '#fbbf24' },
-]
-
-function TimiMiniGame() {
-  const [score, setScore] = useState(0)
-  const [active, setActive] = useState<{ id: string; x: number; y: number; mob: typeof TIMI_MOBS[0] } | null>(null)
-  const [flash, setFlash] = useState<string | null>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const spawnMob = useCallback(() => {
-    const mob = TIMI_MOBS[Math.floor(Math.random() * TIMI_MOBS.length)]
-    const x = 8 + Math.random() * 72
-    const y = 15 + Math.random() * 55
-    setActive({ id: `${Date.now()}`, x, y, mob })
-    if (timerRef.current) clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(() => { setActive(null); spawnMob() }, 2200)
-  }, [])
-
-  useEffect(() => { spawnMob(); return () => { if (timerRef.current) clearTimeout(timerRef.current) } }, [spawnMob])
-
-  const catchMob = () => {
-    if (!active) return
-    setScore(s => s + active.mob.pts)
-    setFlash(`+${active.mob.pts}`)
-    setTimeout(() => setFlash(null), 600)
-    setActive(null)
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setTimeout(spawnMob, 400)
-  }
-
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', background: '#0d0d1a', overflow: 'hidden', fontFamily: 'monospace' }}>
-      <div style={{ position: 'absolute', top: 6, left: 10, color: '#e2a830', fontSize: 11, fontWeight: 700 }}>
-        Timi's Welt
-      </div>
-      <div style={{ position: 'absolute', top: 6, right: 10, color: '#fbbf24', fontSize: 12, fontWeight: 700 }}>
-        {score} Punkte
-      </div>
-      {flash && (
-        <div style={{
-          position: 'absolute', top: '35%', left: '50%', transform: 'translateX(-50%)',
-          color: '#fbbf24', fontSize: 22, fontWeight: 900, pointerEvents: 'none',
-          animation: 'lazi-float-up 0.6s ease-out forwards',
-        }}>{flash}</div>
-      )}
-      {active && (
-        <button onClick={catchMob} style={{
-          position: 'absolute', left: `${active.x}%`, top: `${active.y}%`,
-          background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-          fontSize: 28, lineHeight: 1, transform: 'translate(-50%,-50%)',
-          filter: 'drop-shadow(0 0 6px ' + active.mob.color + ')',
-          animation: 'lazi-slide-up 0.25s ease-out',
-        }} dangerouslySetInnerHTML={{ __html: active.mob.emoji }} />
-      )}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 14,
-        background: '#1a3a1a', borderTop: '2px solid #3A7D44',
-        display: 'flex', alignItems: 'center', paddingLeft: 10,
-      }}>
-        <span style={{ color: '#5D9E2E', fontSize: 9 }}>Klick die Tiere so schnell du kannst!</span>
-      </div>
-    </div>
-  )
-}
-
 
 
 export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
@@ -225,7 +166,29 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       updatedCustomers = [...data.customers, newC]
     }
     const ok = await persistData({ ...data, customers: updatedCustomers })
-    if (ok) { setModalType(null); flash('ok') } else flash('err')
+    if (ok) {
+      setModalType(null); flash('ok')
+      if (!editId) {
+        // new customer
+        handleAchUnlock('ach-biz-first-contact')
+        if (updatedCustomers.length >= 5)  handleAchUnlock('ach-biz-5-contacts')
+        if (updatedCustomers.length >= 10) handleAchUnlock('ach-biz-10-contacts')
+        const todayPrefix = new Date().toISOString().slice(0, 10)
+        const todayCount = updatedCustomers.filter(c => c.createdAt.startsWith(todayPrefix)).length
+        if (todayCount >= 3) handleAchUnlock('ach-biz-hustle')
+      } else {
+        // editing existing — check status changes
+        const updated = updatedCustomers.find(c => c.id === editId)
+        const prev = data.customers.find(c => c.id === editId)
+        if (updated?.status === 'verkauft') handleAchUnlock('ach-biz-first-sale')
+        if (updated?.status === 'abgesagt') handleAchUnlock('ach-biz-first-no')
+        if (updated?.status === 'offen' && prev?.status === 'abgesagt') handleAchUnlock('ach-biz-comeback')
+        if (customerForm.notes?.toLowerCase().includes('partner') ||
+            customerForm.interest?.toLowerCase().includes('partner')) {
+          handleAchUnlock('ach-biz-first-partner')
+        }
+      }
+    } else flash('err')
   }
 
   // --- Transaction Handlers ---
@@ -243,8 +206,15 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       date: now,
       ...transactionForm
     }
-    const ok = await persistData({ ...data, transactions: [...data.transactions, newT] })
-    if (ok) { setModalType(null); flash('ok') } else flash('err')
+    const updatedTransactions = [...data.transactions, newT]
+    const ok = await persistData({ ...data, transactions: updatedTransactions })
+    if (ok) {
+      setModalType(null); flash('ok')
+      if (transactionForm.type === 'einnahme') {
+        handleAchUnlock('ach-biz-first-income')
+        if (transactionForm.amount >= 1000) handleAchUnlock('ach-biz-big-deal')
+      }
+    } else flash('err')
   }
 
   const filteredCustomers = data.customers
@@ -571,14 +541,9 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       </div>
 
       {mcMode && crmTab === 'kunden' && (
-        <>
-          <div className="minigame-container">
-            <CrmScene onAchUnlock={handleAchUnlock} />
-          </div>
-          <div className="timi-game-container">
-            <TimiMiniGame />
-          </div>
-        </>
+        <div className="minigame-container">
+          <CrmScene onAchUnlock={handleAchUnlock} />
+        </div>
       )}
 
     </div>
