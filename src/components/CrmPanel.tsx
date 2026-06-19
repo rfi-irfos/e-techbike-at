@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import type { Customer, Transaction, CRMData } from '../types/crm'
-import { ghRead, ghWrite, b64Encode, b64Decode } from '../lib/github'
+import { ghRead, ghWrite, b64Encode, b64Decode, ghTraffic } from '../lib/github'
 import { McBackdrop, CrmScene } from './MCMobs'
+
+interface GhTrafficData {
+  views: { count: number; uniques: number; views: { timestamp: string; count: number; uniques: number }[] }
+  referrers: { referrer: string; count: number; uniques: number }[]
+  paths: { path: string; title: string; count: number; uniques: number }[]
+}
 
 // ── Achievements (shared storage) ───────────────────────────────────────────
 const ACH_KEY = 'lazi_achievements'
@@ -315,7 +321,9 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   const [customerForm, setCustomerForm]   = useState(emptyCustomer())
   const [transactionForm, setTransactionForm] = useState(emptyTransaction())
   
-  const [crmTab, setCrmTab]               = useState<'kunden' | 'finanzen' | 'achievements'>('kunden')
+  const [crmTab, setCrmTab]               = useState<'kunden' | 'finanzen' | 'achievements' | 'analytics'>('kunden')
+  const [ghTrafficData, setGhTrafficData] = useState<GhTrafficData | null>(null)
+  const [ghTrafficLoading, setGhTrafficLoading] = useState(false)
   const [unlocked, setUnlocked]           = useState<Set<string>>(() => mcMode ? loadAchievements() : new Set())
   const shaRef = useRef<string | null>(null)
 
@@ -329,6 +337,19 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   }
 
   useEffect(() => { loadData() }, [])
+
+  useEffect(() => {
+    if (crmTab !== 'analytics') return
+    setGhTrafficLoading(true)
+    Promise.all([
+      ghTraffic('views'),
+      ghTraffic('referrers'),
+      ghTraffic('popular/paths'),
+    ]).then(([views, referrers, paths]) => {
+      setGhTrafficData({ views: views as GhTrafficData['views'], referrers: referrers as GhTrafficData['referrers'], paths: paths as GhTrafficData['paths'] })
+      setGhTrafficLoading(false)
+    }).catch(() => setGhTrafficLoading(false))
+  }, [crmTab])
 
   async function loadData() {
     setLoading(true)
@@ -503,6 +524,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       <div className={`crm-tabs ${mcMode ? 'crm-mc-tabs' : 'crm-clean-tabs'}`}>
         <button className={`crm-tab${crmTab === 'kunden' ? ' active' : ''}`} onClick={() => setCrmTab('kunden')}>Kunden</button>
         <button className={`crm-tab${crmTab === 'finanzen' ? ' active' : ''}`} onClick={() => setCrmTab('finanzen')}>Finanzen</button>
+        <button className={`crm-tab${crmTab === 'analytics' ? ' active' : ''}`} onClick={() => setCrmTab('analytics')}>Analytics</button>
         {mcMode && (
           <button className={`crm-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
             Achievements
@@ -573,6 +595,80 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
               <div className="lazi-ach-tile-title">???</div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── Analytics Tab ── */}
+      {crmTab === 'analytics' && (
+        <div style={{ padding: 20 }}>
+          {ghTrafficLoading && (
+            <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0', fontSize: 13 }}>Lade Daten…</div>
+          )}
+          {!ghTrafficLoading && !ghTrafficData && (
+            <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0', fontSize: 13 }}>
+              Keine Daten. Token braucht push-Rechte.
+            </div>
+          )}
+          {ghTrafficData && (() => {
+            const maxDay = Math.max(...(ghTrafficData.views.views ?? []).map(d => d.count), 1)
+            const maxRef = Math.max(...(ghTrafficData.referrers ?? []).map(r => r.count), 1)
+            return (
+              <div style={{ color: mcMode ? '#e8e8c8' : 'inherit' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+                  <div style={{ background: mcMode ? 'rgba(0,0,0,.45)' : '#f8f8f8', border: mcMode ? '2px solid #7a7' : '1px solid #e8e8e8', borderRadius: 8, padding: '14px 16px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 28, fontWeight: 800, color: mcMode ? '#a4e875' : '#0099CC' }}>{ghTrafficData.views.count}</div>
+                    <div style={{ fontSize: 11, color: mcMode ? '#adb' : '#888', marginTop: 2 }}>Aufrufe (14 T.)</div>
+                  </div>
+                  <div style={{ background: mcMode ? 'rgba(0,0,0,.45)' : '#f8f8f8', border: mcMode ? '2px solid #7a7' : '1px solid #e8e8e8', borderRadius: 8, padding: '14px 16px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 28, fontWeight: 800, color: mcMode ? '#ffd966' : '#38A169' }}>{ghTrafficData.views.uniques}</div>
+                    <div style={{ fontSize: 11, color: mcMode ? '#adb' : '#888', marginTop: 2 }}>Unique Besucher</div>
+                  </div>
+                </div>
+
+                {(ghTrafficData.views.views ?? []).length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px', color: mcMode ? '#a4e875' : '#555' }}>Täglich (14 Tage)</div>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 64 }}>
+                      {ghTrafficData.views.views.map(d => (
+                        <div key={d.timestamp} title={`${d.timestamp.slice(0,10)}: ${d.count}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, height: '100%', justifyContent: 'flex-end' }}>
+                          <div style={{ width: '100%', height: `${Math.max((d.count / maxDay) * 52, 2)}px`, background: mcMode ? '#a4e875' : '#0099CC', borderRadius: '3px 3px 0 0' }} />
+                          <span style={{ fontSize: 7, color: mcMode ? '#adb' : '#aaa' }}>{d.timestamp.slice(5, 10)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(ghTrafficData.referrers ?? []).length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px', color: mcMode ? '#a4e875' : '#555' }}>Traffic-Quellen</div>
+                    {ghTrafficData.referrers.map(r => (
+                      <div key={r.referrer} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                        <span style={{ width: 90, fontSize: 11, fontWeight: 500, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: mcMode ? '#e8e8c8' : '#555' }}>{r.referrer || 'direkt'}</span>
+                        <div style={{ flex: 1, background: mcMode ? 'rgba(255,255,255,.12)' : '#f0f0f0', borderRadius: 4, height: 8 }}>
+                          <div style={{ width: `${(r.count / maxRef) * 100}%`, height: '100%', background: mcMode ? '#a4e875' : '#0099CC', borderRadius: 4 }} />
+                        </div>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: mcMode ? '#a4e875' : '#0099CC', minWidth: 24, textAlign: 'right' }}>{r.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {(ghTrafficData.paths ?? []).length > 0 && (
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px', color: mcMode ? '#a4e875' : '#555' }}>Beliebteste Seiten</div>
+                    {ghTrafficData.paths.map((p, i) => (
+                      <div key={p.path} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                        <span style={{ width: 18, fontSize: 10, color: mcMode ? '#adb' : '#aaa', fontWeight: 700 }}>#{i + 1}</span>
+                        <span style={{ flex: 1, fontSize: 11, fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: mcMode ? '#e8e8c8' : '#444' }}>{p.path}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, flexShrink: 0, color: mcMode ? '#ffd966' : '#555' }}>{p.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })()}
         </div>
       )}
 
