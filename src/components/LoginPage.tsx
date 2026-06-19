@@ -1,20 +1,19 @@
 import { useState } from 'react'
-import { setGhToken, hasGhToken } from '../lib/github'
+import { setAdminPw } from '../lib/github'
 
 interface Props { onLogin: (pw: string) => Promise<boolean> }
 
 export function LoginPage({ onLogin }: Props) {
   const [pw, setPw] = useState('')
-  const [token, setToken] = useState('')
   const [error, setError] = useState(false)
   const [busy, setBusy] = useState(false)
-  const tokenCached = hasGhToken()
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setBusy(true)
     const ok = await onLogin(pw)
-    if (ok && token.trim()) setGhToken(token)
+    // Password authenticates writes to the proxy (no GitHub token in the browser).
+    if (ok) setAdminPw(pw)
     setBusy(false)
     if (!ok) {
       setError(true)
@@ -42,18 +41,6 @@ export function LoginPage({ onLogin }: Props) {
             autoFocus
             className="login-pw-input"
           />
-          <input
-            type="password"
-            value={token}
-            onChange={e => setToken(e.target.value)}
-            placeholder={tokenCached ? 'GitHub-Token (gespeichert — leer lassen)' : 'GitHub-Token (für Bearbeiten)'}
-            className="login-pw-input"
-            style={{ marginTop: 8 }}
-            autoComplete="off"
-          />
-          <p className="login-sub" style={{ fontSize: 11, marginTop: 6, textAlign: 'left', color: '#888' }}>
-            Fine-grained Token, nur dieses Repo, „Contents: Read and write". Wird nur in diesem Tab gespeichert, nie veröffentlicht.
-          </p>
           {error && <p className="login-error">Falsches Passwort. Bitte nochmal.</p>}
           <button type="submit" disabled={busy} className="login-submit-btn">
             {busy ? 'Anmelden…' : 'Anmelden'}
