@@ -23,9 +23,10 @@ export function McBackdrop() {
   const totalPhase = (tick * 0.12) % (CYCLE * 2)
   const isDayPhase = totalPhase < CYCLE
   const arcTick = totalPhase % CYCLE
-  const bx = arcTick - 30
-  const arcPct = W > 0 ? Math.max(0, Math.min(1, bx / W)) : 0.5
-  const by = 8 + Math.sin(arcPct * Math.PI) * 35
+  const arcPct = W > 0 ? Math.max(0, Math.min(1, (arcTick - 30) / W)) : 0.5
+  // arc: left% across screen, bottom% above ground (peaks at 55% from bottom at noon)
+  const sunLeft = `${arcPct * 100}%`
+  const sunBottom = `${Math.sin(arcPct * Math.PI) * 55 + 2}%`
 
   const isNight = !isDayPhase
   const isTransition = isDayPhase && (arcPct < 0.13 || arcPct > 0.87)
@@ -53,18 +54,19 @@ export function McBackdrop() {
       {/* Sun arc (day) */}
       {isDayPhase && (
         <div style={{
-          position: 'absolute', left: bx, top: by, width: 34, height: 34,
-          borderRadius: '50%', background: '#FFD700', border: '4px solid #FFA500',
-          boxShadow: '0 0 28px #FFD700dd, 0 0 70px #FFD70066',
-          transition: 'box-shadow 3s ease',
+          position: 'absolute', left: sunLeft, bottom: sunBottom,
+          width: 38, height: 38, borderRadius: '50%', transform: 'translate(-50%, 50%)',
+          background: '#FFD700', border: '4px solid #FFA500',
+          boxShadow: '0 0 32px #FFD700ee, 0 0 80px #FFD70077',
         }} />
       )}
       {/* Moon arc (night) */}
       {isNight && (
         <div style={{
-          position: 'absolute', left: bx, top: by, width: 28, height: 28,
-          borderRadius: '50%', background: '#fef9c3', border: '3px solid #fef08a',
-          boxShadow: '0 0 20px #fef08a99, 0 0 50px #fef08a44',
+          position: 'absolute', left: sunLeft, bottom: sunBottom,
+          width: 30, height: 30, borderRadius: '50%', transform: 'translate(-50%, 50%)',
+          background: '#fef9c3', border: '3px solid #fef08a',
+          boxShadow: '0 0 22px #fef08a99, 0 0 55px #fef08a44',
         }} />
       )}
       {/* Clouds (day/transition) */}
@@ -499,16 +501,18 @@ function AchievementToast({ title, onDone }: { title: string; onDone: () => void
   useEffect(() => { const t = setTimeout(onDone, 3200); return () => clearTimeout(t) }, [onDone])
   return (
     <div style={{
-      position: 'fixed', bottom: 100, left: '50%', transform: 'translateX(-50%)',
-      zIndex: 9999, background: '#1a1206', border: '3px solid #FFD700', borderRadius: 8,
-      padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10,
-      fontFamily: 'monospace', boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+      position: 'fixed', top: 80, left: '50%', transform: 'translateX(-50%)',
+      zIndex: 9999,
+      background: 'rgba(255,255,255,0.97)', border: '3px solid #FFD700', borderRadius: 10,
+      padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 12,
+      fontFamily: 'monospace', boxShadow: '0 6px 28px rgba(0,0,0,0.22), 0 0 0 1px #FFD70044',
       whiteSpace: 'nowrap', animation: 'lazi-slide-up 0.35s ease-out',
+      cursor: 'pointer',
     }}>
-      <div style={{ fontSize: 20 }}>&#x1F3C6;</div>
+      <div style={{ fontSize: 22 }}>&#x1F3C6;</div>
       <div>
-        <div style={{ fontSize: 10, color: '#FFD700', fontWeight: 700, letterSpacing: 1 }}>ACHIEVEMENT FREIGESCHALTET</div>
-        <div style={{ fontSize: 14, color: '#fff', fontWeight: 700 }}>{title}</div>
+        <div style={{ fontSize: 10, color: '#b45309', fontWeight: 700, letterSpacing: 1 }}>ACHIEVEMENT FREIGESCHALTET</div>
+        <div style={{ fontSize: 15, color: '#1a1206', fontWeight: 700 }}>{title}</div>
       </div>
     </div>
   )
@@ -1012,7 +1016,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         </div>
 
         {/* ── HUD stats — wolf info bar ── */}
-        <div style={{
+        {!noBackdrop && <div style={{
           position: 'absolute', zIndex: 10,
           ...(noBackdrop
             ? { bottom: 30, left: 6, maxWidth: 180 }
@@ -1043,15 +1047,12 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
               {wolfBones < 3 ? `${wolfBones}/3 Knochen` : 'Klick auf den Wolf!'}
             </span>
           )}
-        </div>
+        </div>}
 
         {/* ── HUD controls ── */}
-        <div style={{
-          position: 'absolute', zIndex: 10,
-          ...(noBackdrop
-            ? { bottom: 30, right: 6, flexDirection: 'column', alignItems: 'flex-end', gap: 3 }
-            : { top: 8, right: 8, flexDirection: 'column', alignItems: 'flex-end', gap: 4 }),
-          display: 'flex',
+        {!noBackdrop && <div style={{
+          position: 'absolute', zIndex: 10, top: 8, right: 8,
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
         }}>
           <div style={{ display: 'flex', gap: 3 }}>
             {[
@@ -1091,7 +1092,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
               ))}
             </div>
           )}
-        </div>
+        </div>}
       </div>
 
       <style>{`
