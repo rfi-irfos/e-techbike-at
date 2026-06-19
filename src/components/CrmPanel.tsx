@@ -249,9 +249,6 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
 
       {/* Content Viewport */}
       <div className="crm-viewport">
-        {/* MC tree strip (only if MC mode active) ── */}
-        {mcMode && <MCTopbarTrees />}
-
         {/* ... Rest of existing component ... */}
       {/* ── Topbar with back link ── */}
       <div className="crm-topbar">
