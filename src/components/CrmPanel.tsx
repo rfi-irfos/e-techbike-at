@@ -22,6 +22,8 @@ const ACHIEVEMENTS = [
   { id: 'ach-adventurer',       title: 'Adventurer',               desc: 'Den Wolf ganz nach rechts geführt' },
   { id: 'ach-kuh',             title: 'Milch-Meisterin',           desc: 'Die Kuh entdeckt' },
   { id: 'ach-huhn',            title: 'Hühner-Flüsterin',          desc: 'Das Huhn angeklickt' },
+  { id: 'ach-schaf',           title: 'Schaf-Flüsterin',            desc: 'Das pinke Schaf entdeckt' },
+  { id: 'ach-ferkel',          title: 'Ferkel-Königin',             desc: 'Das Ferkelchen gestreichelt' },
   // ── Business ──
   { id: 'ach-biz-first-contact',title: 'Erster Kontakt',           desc: 'Ersten Kunden angelegt' },
   { id: 'ach-biz-5-contacts',   title: 'Netzwerkerin',             desc: '5 Kontakte im CRM' },

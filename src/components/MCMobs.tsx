@@ -29,7 +29,7 @@ export function McBackdrop() {
   const sunBottom = `${Math.sin(arcPct * Math.PI) * 80 + 2}%`
 
   const isNight = !isDayPhase
-  const isTransition = isDayPhase && (arcPct < 0.12 || arcPct > 0.88)
+  const isTransition = isDayPhase && (arcPct < 0.18 || arcPct > 0.82)
 
   const skyBg = isNight
     ? 'linear-gradient(180deg,#05091a 0%,#0d1a3a 50%,#0f2a0f 80%,#1a3d1a 100%)'
@@ -42,14 +42,16 @@ export function McBackdrop() {
   const hillFill = isNight ? '#1e3d1e' : '#4a8c3f'
 
   return (
-    <div ref={ref} style={{ position: 'absolute', inset: 0, background: skyBg, overflow: 'hidden', transition: 'background 4s ease' }}>
+    <div ref={ref} style={{ position: 'absolute', inset: 0, background: skyBg, overflow: 'hidden', transition: 'background 8s ease' }}>
       {/* Stars (night) */}
-      {isNight && [0.03,0.09,0.18,0.28,0.40,0.55,0.68,0.78,0.88,0.95].map((p, i) => (
+      {isNight && [0.02,0.06,0.10,0.15,0.20,0.25,0.30,0.36,0.42,0.48,0.54,0.60,0.66,0.72,0.78,0.83,0.88,0.93,0.97,
+        0.04,0.14,0.28,0.45,0.58,0.71,0.85,0.91,0.08].map((p, i) => (
         <div key={i} style={{
-          position: 'absolute', left: `${p * 100}%`, top: `${4 + (i % 4) * 6}%`,
-          width: i % 3 === 0 ? 3 : 2, height: i % 3 === 0 ? 3 : 2,
-          borderRadius: '50%', background: '#fff', opacity: 0.4 + (i % 3) * 0.2,
-        }} />
+          position:'absolute', left:`${p*100}%`, top:`${3 + (i % 6) * 4 + (i % 3)}%`,
+          width: i%5===0?4:i%3===0?3:2, height: i%5===0?4:i%3===0?3:2,
+          borderRadius:'50%', background:'#fff',
+          opacity: 0.3 + (i%4)*0.18,
+        }}/>
       ))}
       {/* Sun arc (day) */}
       {isDayPhase && (
@@ -60,14 +62,17 @@ export function McBackdrop() {
           boxShadow: '0 0 32px #FFD700ee, 0 0 80px #FFD70077',
         }} />
       )}
-      {/* Moon arc (night) */}
+      {/* Moon arc (night) — crescent */}
       {isNight && (
         <div style={{
           position: 'absolute', left: sunLeft, bottom: sunBottom,
-          width: 30, height: 30, borderRadius: '50%', transform: 'translate(-50%, 50%)',
-          background: '#fef9c3', border: '3px solid #fef08a',
-          boxShadow: '0 0 22px #fef08a99, 0 0 55px #fef08a44',
-        }} />
+          transform: 'translate(-50%, 50%)',
+          width: 32, height: 32,
+          overflow: 'hidden',
+        }}>
+          <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#fef9c3', boxShadow: '0 0 22px #fef08a99, 0 0 55px #fef08a44', position: 'absolute' }} />
+          <div style={{ width: 26, height: 26, borderRadius: '50%', background: '#05091a', position: 'absolute', top: -2, left: 8 }} />
+        </div>
       )}
       {/* Clouds (day/transition) */}
       {!isNight && [
@@ -82,21 +87,44 @@ export function McBackdrop() {
           filter: 'blur(7px)',
         }} />
       ))}
-      {/* Far mountains — blocky pixel steps */}
+      {/* Far mountains — stepped triangular peaks */}
       {W > 0 && (
         <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '40%', imageRendering: 'pixelated' }}
           viewBox={`0 0 ${W} 120`} preserveAspectRatio="none" shapeRendering="crispEdges">
-          <path d={`M0,120 L0,70 L${W*0.06},70 L${W*0.06},45 L${W*0.13},45 L${W*0.13},68 L${W*0.18},68 L${W*0.18},28 L${W*0.27},28 L${W*0.27},55 L${W*0.33},55 L${W*0.33},18 L${W*0.43},18 L${W*0.43},50 L${W*0.48},50 L${W*0.48},12 L${W*0.57},12 L${W*0.57},48 L${W*0.63},48 L${W*0.63},28 L${W*0.72},28 L${W*0.72},58 L${W*0.79},58 L${W*0.79},22 L${W*0.9},22 L${W*0.9},48 L${W},48 L${W},120 Z`}
-            fill={mtFill} opacity={0.7} />
-          <path d={`M0,120 L0,88 L${W*0.08},88 L${W*0.08},68 L${W*0.16},68 L${W*0.16},82 L${W*0.24},82 L${W*0.24},52 L${W*0.34},52 L${W*0.34},70 L${W*0.42},70 L${W*0.42},42 L${W*0.52},42 L${W*0.52},65 L${W*0.6},65 L${W*0.6},50 L${W*0.69},50 L${W*0.69},68 L${W*0.77},68 L${W*0.77},48 L${W*0.86},48 L${W*0.86},70 L${W},70 L${W},120 Z`}
-            fill={mt2Fill} opacity={0.85} />
+          {/* Mountain 1: center~17%W, peak y=35, 4 steps sw=4%W sh=14 */}
+          <path d={`M${W*0.01},120 L${W*0.01},90 L${W*0.05},90 L${W*0.05},76 L${W*0.09},76 L${W*0.09},62 L${W*0.13},62 L${W*0.13},48 L${W*0.17},48 L${W*0.17},35 L${W*0.21},35 L${W*0.21},48 L${W*0.25},48 L${W*0.25},62 L${W*0.29},62 L${W*0.29},76 L${W*0.33},76 L${W*0.33},90 L${W*0.33},120 Z`}
+            fill={mtFill} opacity={0.65} />
+          <path d={`M${W*0.09},62 L${W*0.09},48 L${W*0.13},48 L${W*0.13},35 L${W*0.21},35 L${W*0.21},48 L${W*0.25},48 L${W*0.25},62 Z`}
+            fill="#e8edf0" opacity={0.85} />
+          {/* Mountain 2: center~43%W, peak y=10, 5 steps sw=4%W sh=16 */}
+          <path d={`M${W*0.23},120 L${W*0.23},90 L${W*0.27},90 L${W*0.27},74 L${W*0.31},74 L${W*0.31},58 L${W*0.35},58 L${W*0.35},42 L${W*0.39},42 L${W*0.39},26 L${W*0.43},26 L${W*0.43},10 L${W*0.47},10 L${W*0.47},26 L${W*0.51},26 L${W*0.51},42 L${W*0.55},42 L${W*0.55},58 L${W*0.59},58 L${W*0.59},74 L${W*0.63},74 L${W*0.63},90 L${W*0.63},120 Z`}
+            fill={mtFill} opacity={0.75} />
+          <path d={`M${W*0.35},42 L${W*0.35},26 L${W*0.39},26 L${W*0.39},10 L${W*0.47},10 L${W*0.47},26 L${W*0.51},26 L${W*0.51},42 Z`}
+            fill="#e8edf0" opacity={0.85} />
+          {/* Mountain 3: center~65%W, peak y=20, 5 steps sw=4%W sh=14 */}
+          <path d={`M${W*0.45},120 L${W*0.45},90 L${W*0.49},90 L${W*0.49},76 L${W*0.53},76 L${W*0.53},62 L${W*0.57},62 L${W*0.57},48 L${W*0.61},48 L${W*0.61},34 L${W*0.65},34 L${W*0.65},20 L${W*0.69},20 L${W*0.69},34 L${W*0.73},34 L${W*0.73},48 L${W*0.77},48 L${W*0.77},62 L${W*0.81},62 L${W*0.81},76 L${W*0.85},76 L${W*0.85},90 L${W*0.85},120 Z`}
+            fill={mt2Fill} opacity={0.75} />
+          <path d={`M${W*0.57},48 L${W*0.57},34 L${W*0.61},34 L${W*0.61},20 L${W*0.69},20 L${W*0.69},34 L${W*0.73},34 L${W*0.73},48 Z`}
+            fill="#e8edf0" opacity={0.85} />
+          {/* Mountain 4: center~85%W, peak y=26, 4 steps sw=4%W sh=16 */}
+          <path d={`M${W*0.69},120 L${W*0.69},90 L${W*0.73},90 L${W*0.73},74 L${W*0.77},74 L${W*0.77},58 L${W*0.81},58 L${W*0.81},42 L${W*0.85},42 L${W*0.85},26 L${W*0.89},26 L${W*0.89},42 L${W*0.93},42 L${W*0.93},58 L${W*0.97},58 L${W*0.97},74 L${W},74 L${W},90 L${W},120 Z`}
+            fill={mt2Fill} opacity={0.70} />
+          <path d={`M${W*0.77},58 L${W*0.77},42 L${W*0.81},42 L${W*0.81},26 L${W*0.89},26 L${W*0.89},42 L${W*0.93},42 L${W*0.93},58 Z`}
+            fill="#e8edf0" opacity={0.85} />
         </svg>
       )}
-      {/* Near hills — blocky pixel steps */}
+      {/* Near hills — stepped triangular peaks, no snow */}
       {W > 0 && (
         <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '25%', imageRendering: 'pixelated' }}
           viewBox={`0 0 ${W} 80`} preserveAspectRatio="none" shapeRendering="crispEdges">
-          <path d={`M0,80 L0,55 L${W*0.07},55 L${W*0.07},42 L${W*0.15},42 L${W*0.15},62 L${W*0.23},62 L${W*0.23},35 L${W*0.33},35 L${W*0.33},55 L${W*0.41},55 L${W*0.41},22 L${W*0.52},22 L${W*0.52},50 L${W*0.61},50 L${W*0.61},32 L${W*0.71},32 L${W*0.71},55 L${W*0.81},55 L${W*0.81},40 L${W*0.9},40 L${W*0.9},48 L${W},48 L${W},80 Z`}
+          {/* Hill 1: center~20%W, peak y=26, 4 steps sw=5%W sh=11 */}
+          <path d={`M0,80 L0,70 L${W*0.05},70 L${W*0.05},59 L${W*0.10},59 L${W*0.10},48 L${W*0.15},48 L${W*0.15},37 L${W*0.20},37 L${W*0.20},26 L${W*0.25},26 L${W*0.25},37 L${W*0.30},37 L${W*0.30},48 L${W*0.35},48 L${W*0.35},59 L${W*0.40},59 L${W*0.40},70 L${W*0.40},80 Z`}
+            fill={hillFill} opacity={0.95} />
+          {/* Hill 2: center~55%W, peak y=15, 5 steps sw=5%W sh=11 */}
+          <path d={`M${W*0.30},80 L${W*0.30},70 L${W*0.35},70 L${W*0.35},59 L${W*0.40},59 L${W*0.40},48 L${W*0.45},48 L${W*0.45},37 L${W*0.50},37 L${W*0.50},26 L${W*0.55},26 L${W*0.55},15 L${W*0.60},15 L${W*0.60},26 L${W*0.65},26 L${W*0.65},37 L${W*0.70},37 L${W*0.70},48 L${W*0.75},48 L${W*0.75},59 L${W*0.80},59 L${W*0.80},70 L${W*0.80},80 Z`}
+            fill={hillFill} opacity={0.95} />
+          {/* Hill 3: center~85%W, peak y=31, 3 steps sw=5%W sh=13 */}
+          <path d={`M${W*0.70},80 L${W*0.70},70 L${W*0.75},70 L${W*0.75},57 L${W*0.80},57 L${W*0.80},44 L${W*0.85},44 L${W*0.85},31 L${W*0.90},31 L${W*0.90},44 L${W*0.95},44 L${W*0.95},57 L${W},57 L${W},70 L${W},80 Z`}
             fill={hillFill} opacity={0.95} />
         </svg>
       )}
@@ -721,6 +749,15 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
     return () => { clearInterval(walk); clearInterval(explode) }
   }, [W, unlock])
 
+  // Nether Portal suck effect — every 25s, pull mobs for 3s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPortalSuck(true)
+      setTimeout(() => setPortalSuck(false), 3000)
+    }, 25000)
+    return () => clearInterval(interval)
+  }, [])
+
   // Interactions
   const petWolf = () => {
     if (!tamed) { setShowNameDialog(true); return }
@@ -785,6 +822,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
 
 
   const [chestOpen, setChestOpen] = useState(false)
+  const [portalSuck, setPortalSuck] = useState(false)
 
   const handleName = (n: string) => {
     setWolfName(n); lsSet(WK.name, n)
@@ -908,10 +946,33 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
         </div>
 
+        {/* ── Nether Portal ── */}
+        <div style={{ position:'absolute', bottom:28, left:42, zIndex:3 }}>
+          <div style={{ position:'relative', width:60, height:90 }}>
+            {/* Left column */}
+            <div style={{ position:'absolute',left:0,top:0,width:10,height:90,background:'#1a0a2e',border:'1px solid #2d1a4a',imageRendering:'pixelated' }}/>
+            {/* Right column */}
+            <div style={{ position:'absolute',right:0,top:0,width:10,height:90,background:'#1a0a2e',border:'1px solid #2d1a4a' }}/>
+            {/* Top bar */}
+            <div style={{ position:'absolute',top:0,left:10,right:10,height:10,background:'#1a0a2e',border:'1px solid #2d1a4a' }}/>
+            {/* Bottom bar */}
+            <div style={{ position:'absolute',bottom:0,left:10,right:10,height:10,background:'#1a0a2e',border:'1px solid #2d1a4a' }}/>
+            {/* Portal interior */}
+            <div style={{
+              position:'absolute', left:10, top:10, right:10, bottom:10,
+              background: 'linear-gradient(135deg, #4b0082 0%, #7b2fbe 30%, #9b59b6 50%, #7b2fbe 70%, #4b0082 100%)',
+              animation: 'portal-shimmer 2s ease-in-out infinite alternate',
+              boxShadow: 'inset 0 0 20px #7b2fbe, 0 0 30px #7b2fbe88',
+            }}/>
+            {/* Portal label */}
+            <div style={{ position:'absolute', bottom:-18, left:'50%', transform:'translateX(-50%)', fontSize:8, color:'#9b59b6', fontWeight:700, letterSpacing:'.04em', whiteSpace:'nowrap', textShadow:'0 0 6px #7b2fbe' }}>NETHER</div>
+          </div>
+        </div>
+
         {/* ── Sheep (cute fluffy) ── */}
         <div style={{
-          position: 'absolute', left: sheepX, bottom: 20, cursor: 'pointer',
-          transform: sheepBob ? 'translateY(-4px)' : 'translateY(0)', transition: 'transform 0.18s',
+          position: 'absolute', left: portalSuck ? Math.max(0, sheepX - 20) : sheepX, bottom: 20, cursor: 'pointer',
+          transform: sheepBob ? 'translateY(-4px)' : 'translateY(0)', transition: 'transform 0.18s, left 0.8s ease',
         }} onClick={() => unlock('ach-schaf', 'Schaf-Flüsterin')} title="Baa!">
           <svg viewBox="0 0 32 26" width={52} height={42}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
@@ -946,7 +1007,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         </div>
 
         {/* ── Pig (cute chubby) ── */}
-        <div style={{ position: 'absolute', left: pigX, bottom: 20, cursor: 'pointer' }}
+        <div style={{ position: 'absolute', left: portalSuck ? Math.max(0, pigX - 20) : pigX, bottom: 20, cursor: 'pointer', transition: 'left 0.8s ease' }}
           onClick={() => unlock('ach-ferkel', 'Ferkel-Königin')} title="Oink!">
           <svg viewBox="0 0 36 28" width={56} height={44}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
@@ -981,7 +1042,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         </div>
 
         {/* ── Cow (cute blocky) ── */}
-        <div style={{ position: 'absolute', left: cowX, bottom: 20, cursor: 'pointer' }}
+        <div style={{ position: 'absolute', left: portalSuck ? Math.max(0, cowX - 20) : cowX, bottom: 20, cursor: 'pointer', transition: 'left 0.8s ease' }}
           onClick={() => { spawnPt(cowX + 28, '&#x1F95B;', '#fff'); unlock('ach-kuh', 'Milch-Meisterin') }}
           title="Muh!">
           <svg viewBox="0 0 44 30" width={66} height={45}
@@ -1022,8 +1083,8 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
 
         {/* ── Chicken (cute little) ── */}
         <div style={{
-          position: 'absolute', left: chickenX, bottom: 20, cursor: 'pointer',
-          transform: chickenBob ? 'translateY(-2px)' : 'translateY(0)', transition: 'transform 0.1s',
+          position: 'absolute', left: portalSuck ? Math.max(0, chickenX - 20) : chickenX, bottom: 20, cursor: 'pointer',
+          transform: chickenBob ? 'translateY(-2px)' : 'translateY(0)', transition: 'transform 0.1s, left 0.8s ease',
         }} onClick={() => { spawnPt(chickenX + 8, '&#x1F95A;', '#fbbf24'); unlock('ach-huhn', 'Hühner-Flüsterin') }}
           title="Gak!">
           <svg viewBox="0 0 18 22" width={27} height={33}
@@ -1072,7 +1133,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           }} />
         )}
 
-        <div style={{ position: 'absolute', left: wolfX, bottom: 20, cursor: 'pointer' }}
+        <div style={{ position: 'absolute', left: portalSuck ? Math.max(50, wolfX - 30) : wolfX, bottom: 20, cursor: 'pointer', transition: 'left 0.8s ease' }}
           onClick={petWolf} title={tamed ? `${wolfName} streicheln!` : 'Klick zum Zähmen!'}>
           {tamed && (
             <div style={{
@@ -1207,6 +1268,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
         @keyframes lazi-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
         @keyframes lazi-flicker { 0%{transform:scale(1) translateY(0);opacity:1} 100%{transform:scale(1.05) translateY(-2px);opacity:0.9} }
         @keyframes lazi-slide-up { from{transform:translateX(-50%) translateY(14px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+        @keyframes portal-shimmer { 0% { opacity: 0.7; filter: brightness(0.9) saturate(1.2); } 100% { opacity: 1; filter: brightness(1.3) saturate(1.8); } }
       `}</style>
     </>
   )
