@@ -1,5 +1,6 @@
 // Shared Minecraft mob + landscape components
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 
 // ── Pure visual backdrop: sky + mountains + hills + sun/moon + clouds ─────────
 export function McBackdrop() {
@@ -357,38 +358,54 @@ const pb = (x: number, y: number, w: number, h: number, f: string): PR => ({ x, 
 
 function wolfWalkPx(tick: number, tamed: boolean, howling = false): PR[] {
   const leg = Math.sin(tick * 0.45) * 3
-  const tailY = 6 + Math.abs(Math.sin(tick * 0.3)) * 4
-  const collar = tamed ? '#0099CC' : 'transparent'
+  const tailY = tamed ? 1 + Math.abs(Math.sin(tick * 0.9)) * 9 : 8
+  const collar = tamed ? '#0ea5e9' : 'transparent'
+  const bd = '#6b7280', bm = '#9ca3af', bl = '#d4dbe8', pk = '#f9a8d4', bk = '#1f2937', wh = '#ffffff'
   if (howling) return [
-    pb(0, 8, 4, 10, '#6b7280'), pb(4, 7, 26, 14, '#9ca3af'),
-    ...(tamed ? [pb(26, 9, 8, 3, collar)] : []),
-    pb(28, 7, 6, 10, '#9ca3af'), pb(30, 0, 14, 11, '#9ca3af'),
-    pb(30, -1, 4, 5, '#6b7280'), pb(38, -1, 4, 5, '#6b7280'),
-    pb(40, 2, 3, 3, '#111'), pb(41, 2, 1, 1, '#fff'), pb(34, 7, 6, 2, '#111'),
-    pb(6, 21, 4, 9, '#6b7280'), pb(14, 21, 4, 9, '#6b7280'),
-    pb(22, 21, 4, 9, '#6b7280'), pb(28, 21, 4, 9, '#6b7280'),
+    pb(2, 11, 26, 15, bd), pb(5, 13, 20, 11, bm), pb(7, 15, 14, 9, bl),
+    ...(tamed ? [pb(26, 14, 6, 3, collar)] : []),
+    pb(32, 0, 24, 22, bd), pb(34, 2, 18, 16, bm), pb(36, 4, 14, 12, bl),
+    pb(34, -4, 6, 8, bd), pb(35, -3, 4, 6, pk),
+    pb(46, -4, 6, 8, bd), pb(47, -3, 4, 6, pk),
+    pb(36, 5, 6, 6, bk), pb(36, 5, 3, 3, wh), pb(40, 8, 1, 1, wh),
+    pb(50, 4, 5, 4, bl), pb(51, 2, 3, 3, bk), pb(51, 2, 1, 1, wh),
+    pb(34, 16, 5, 3, pk), pb(49, 16, 5, 3, pk),
+    pb(5, 26, 5, 8, bd), pb(11, 26, 5, 8, bd), pb(17, 26, 5, 8, bd), pb(22, 26, 5, 8, bd),
+    pb(0, 4, 5, 14, bd), pb(0, 2, 4, 8, bm), pb(1, 3, 2, 5, bl),
   ]
   return [
-    pb(0, tailY, 4, 10, '#6b7280'), pb(4, 8, 26, 14, '#9ca3af'),
-    ...(tamed ? [pb(26, 10, 8, 3, collar)] : []),
-    pb(28, 8, 6, 10, '#9ca3af'), pb(30, 1, 16, 13, '#9ca3af'),
-    pb(30, 0, 4, 5, '#6b7280'), pb(38, 0, 4, 5, '#6b7280'),
-    pb(40, 4, 3, 3, '#111'), pb(41, 4, 1, 1, '#fff'), pb(44, 9, 3, 2, '#111'),
-    pb(6, 22, 4, 8 + leg, '#6b7280'), pb(14, 22, 4, 8 - leg, '#6b7280'),
-    pb(22, 22, 4, 8 - leg, '#6b7280'), pb(28, 22, 4, 8 + leg, '#6b7280'),
+    pb(0, tailY, 5, 14, bd), pb(0, tailY - 2, 4, 8, bm), pb(1, tailY - 1, 2, 5, bl),
+    pb(4, 10, 26, 16, bd), pb(6, 12, 22, 12, bm), pb(8, 14, 16, 10, bl),
+    ...(tamed ? [pb(28, 14, 6, 3, collar)] : []),
+    pb(28, 8, 6, 8, bd),
+    pb(32, 0, 24, 22, bd), pb(34, 2, 18, 16, bm), pb(36, 4, 14, 12, bl),
+    pb(34, -4, 6, 8, bd), pb(35, -3, 4, 6, pk),
+    pb(45, -4, 6, 8, bd), pb(46, -3, 4, 6, pk),
+    pb(36, 4, 6, 6, bk), pb(36, 4, 3, 3, wh), pb(40, 7, 1, 1, wh),
+    pb(52, 8, 7, 6, bl), pb(54, 6, 4, 3, bk), pb(54, 6, 2, 1, wh),
+    pb(34, 16, 5, 3, pk), pb(50, 16, 5, 3, pk),
+    pb(7, 26, 5, Math.round(8 + leg), bd), pb(13, 26, 5, Math.round(8 - leg), bd),
+    pb(19, 26, 5, Math.round(8 - leg), bd), pb(24, 26, 5, Math.round(8 + leg), bd),
   ]
 }
 
 function wolfSitPx(tamed: boolean, eating = false): PR[] {
-  const collar = tamed ? '#0099CC' : 'transparent'
+  const collar = tamed ? '#0ea5e9' : 'transparent'
+  const bd = '#6b7280', bm = '#9ca3af', bl = '#d4dbe8', pk = '#f9a8d4', bk = '#1f2937', wh = '#ffffff'
   return [
-    pb(2, 16, 16, 12, '#9ca3af'), pb(14, 9, 16, 14, '#9ca3af'),
-    ...(tamed ? [pb(22, 11, 10, 3, collar)] : []),
-    pb(22, 1, 16, 13, '#9ca3af'), pb(22, 0, 4, 5, '#6b7280'), pb(30, 0, 4, 5, '#6b7280'),
-    pb(32, 4, 3, 3, '#111'), pb(33, 4, 1, 1, '#fff'), pb(36, 9, 3, 2, '#111'),
-    pb(16, 26, 4, 8, '#6b7280'), pb(22, 26, 4, 8, '#6b7280'),
-    pb(0, 8, 4, 12, '#6b7280'), pb(2, 4, 4, 6, '#6b7280'),
-    ...(eating ? [pb(36, 5, 6, 4, '#fbbf24'), pb(38, 7, 4, 2, '#92400e')] : []),
+    pb(0, 24, 12, 5, bd), pb(2, 22, 8, 5, bm), pb(3, 23, 5, 3, bl),
+    pb(2, 18, 18, 18, bd), pb(4, 20, 14, 14, bm), pb(6, 22, 10, 10, bl),
+    pb(16, 26, 5, 10, bd), pb(22, 26, 5, 10, bd),
+    pb(14, 8, 16, 18, bd), pb(16, 10, 12, 14, bm), pb(18, 12, 8, 10, bl),
+    ...(tamed ? [pb(18, 12, 10, 3, collar)] : []),
+    pb(24, 6, 6, 8, bd),
+    pb(26, 0, 24, 22, bd), pb(28, 2, 18, 16, bm), pb(30, 4, 14, 12, bl),
+    pb(28, -4, 6, 8, bd), pb(29, -3, 4, 6, pk),
+    pb(42, -4, 6, 8, bd), pb(43, -3, 4, 6, pk),
+    pb(30, 4, 7, 7, bk), pb(30, 4, 3, 3, wh), pb(35, 7, 1, 1, wh),
+    pb(46, 8, 7, 6, bl), pb(48, 6, 4, 3, bk), pb(48, 6, 2, 1, wh),
+    pb(28, 16, 5, 3, pk), pb(44, 16, 5, 3, pk),
+    ...(eating ? [pb(50, 7, 6, 4, '#fbbf24'), pb(52, 9, 4, 2, '#92400e')] : []),
   ]
 }
 
@@ -455,9 +472,9 @@ function WolfNameDialog({ onName, onSkip }: { onName: (n: string) => void; onSki
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [onSkip])
-  return (
+  return createPortal(
     <div style={{
-      position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      position: 'fixed', inset: 0, zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center',
       background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
     }} onClick={onSkip}>
       <div style={{
@@ -491,7 +508,8 @@ function WolfNameDialog({ onName, onSkip }: { onName: (n: string) => void; onSki
             }}>Zähmen!</button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
@@ -786,7 +804,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
   const moodLabel = hunger > 60 ? 'Satt' : hunger > 30 ? 'Okay' : hunger > 10 ? 'Hungrig!' : 'Verhungert!'
   const isSitting = wolfState === 'sitting' || wolfState === 'eating'
   const wolfPx = isSitting ? wolfSitPx(tamed, wolfState === 'eating') : wolfWalkPx(tick, tamed, wolfState === 'howling')
-  const wolfVW = isSitting ? 40 : 52; const wolfVH = isSitting ? 36 : 32
+  const wolfVW = isSitting ? 52 : 60; const wolfVH = isSitting ? 38 : 36
 
   const hourNow = new Date().getHours()
   const isNight  = hourNow >= 21 || hourNow < 6
@@ -821,8 +839,8 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           }} />
         ))}
 
-        {/* ── Sun / Moon (backdrop mode) ── */}
-        {!noBackdrop && isNight ? (
+        {/* ── Sun / Moon (backdrop mode only) ── */}
+        {!noBackdrop && (isNight ? (
           <div style={{
             position: 'absolute', left: bodyX, top: bodyY, width: 26, height: 26,
             borderRadius: '50%', background: '#fef9c3', border: '3px solid #fef08a',
@@ -834,7 +852,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
             borderRadius: '50%', background: '#FFD700', border: '4px solid #FFA500',
             boxShadow: '0 0 24px #FFD700cc, 0 0 60px #FFD70055',
           }} />
-        )}
+        ))}
 
         {/* ── Clouds (backdrop mode, day/sunset only) ── */}
         {!noBackdrop && !isNight && [
@@ -850,32 +868,23 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           }} />
         ))}
 
-        {/* ── Far mountains — blocky pixel steps ── */}
+        {/* ── Far mountains — smooth with blur for depth ── */}
         {!noBackdrop && W > 0 && (
-          <svg style={{ position: 'absolute', bottom: 55, left: 0, width: '100%', height: '35%', imageRendering: 'pixelated' }}
-            viewBox={`0 0 ${W} 120`} preserveAspectRatio="none" shapeRendering="crispEdges">
-            <path
-              d={`M0,120 L0,70 L${W*0.06},70 L${W*0.06},45 L${W*0.13},45 L${W*0.13},68 L${W*0.18},68 L${W*0.18},28 L${W*0.27},28 L${W*0.27},55 L${W*0.33},55 L${W*0.33},18 L${W*0.43},18 L${W*0.43},50 L${W*0.48},50 L${W*0.48},12 L${W*0.57},12 L${W*0.57},48 L${W*0.63},48 L${W*0.63},28 L${W*0.72},28 L${W*0.72},58 L${W*0.79},58 L${W*0.79},22 L${W*0.9},22 L${W*0.9},48 L${W},48 L${W},120 Z`}
-              fill={isNight ? '#0d1f0d' : isSunset ? '#3d1a4a' : '#2d6b3a'}
-              opacity={0.7}
-            />
-            <path
-              d={`M0,120 L0,88 L${W*0.08},88 L${W*0.08},68 L${W*0.16},68 L${W*0.16},82 L${W*0.24},82 L${W*0.24},52 L${W*0.34},52 L${W*0.34},70 L${W*0.42},70 L${W*0.42},42 L${W*0.52},42 L${W*0.52},65 L${W*0.6},65 L${W*0.6},50 L${W*0.69},50 L${W*0.69},68 L${W*0.77},68 L${W*0.77},48 L${W*0.86},48 L${W*0.86},70 L${W},70 L${W},120 Z`}
-              fill={isNight ? '#1a2e1a' : isSunset ? '#5c2d6b' : '#3a7a48'}
-              opacity={0.85}
-            />
+          <svg style={{ position: 'absolute', bottom: 55, left: 0, width: '100%', height: '38%', filter: 'blur(3px)' }}
+            viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
+            <polygon points={`0,120 0,70 ${W*0.08},40 ${W*0.18},65 ${W*0.28},25 ${W*0.4},55 ${W*0.52},15 ${W*0.62},50 ${W*0.72},30 ${W*0.83},60 ${W*0.92},20 ${W},45 ${W},120`}
+              fill={isNight ? '#0d1f0d' : isSunset ? '#3d1a4a' : '#2d6b3a'} opacity={0.65} />
+            <polygon points={`0,120 0,85 ${W*0.1},65 ${W*0.22},80 ${W*0.35},50 ${W*0.46},70 ${W*0.58},40 ${W*0.68},65 ${W*0.79},48 ${W*0.88},70 ${W},55 ${W},120`}
+              fill={isNight ? '#1a2e1a' : isSunset ? '#5c2d6b' : '#3a7a48'} opacity={0.8} />
           </svg>
         )}
 
-        {/* ── Near hills — blocky pixel steps ── */}
+        {/* ── Near hills — smooth, sharp (in-focus foreground) ── */}
         {!noBackdrop && W > 0 && (
-          <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '22%', imageRendering: 'pixelated' }}
-            viewBox={`0 0 ${W} 80`} preserveAspectRatio="none" shapeRendering="crispEdges">
-            <path
-              d={`M0,80 L0,55 L${W*0.07},55 L${W*0.07},42 L${W*0.15},42 L${W*0.15},62 L${W*0.23},62 L${W*0.23},35 L${W*0.33},35 L${W*0.33},55 L${W*0.41},55 L${W*0.41},22 L${W*0.52},22 L${W*0.52},50 L${W*0.61},50 L${W*0.61},32 L${W*0.71},32 L${W*0.71},55 L${W*0.81},55 L${W*0.81},40 L${W*0.9},40 L${W*0.9},48 L${W},48 L${W},80 Z`}
-              fill={isNight ? '#1e3d1e' : '#4a8c3f'}
-              opacity={0.95}
-            />
+          <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '22%' }}
+            viewBox={`0 0 ${W} 80`} preserveAspectRatio="none">
+            <path d={`M0,80 Q${W*0.15},20 ${W*0.3},55 Q${W*0.45},10 ${W*0.6},50 Q${W*0.75},15 ${W*0.9},45 Q${W*0.95},35 ${W},40 L${W},80 Z`}
+              fill={isNight ? '#1e3d1e' : '#4a8c3f'} opacity={0.95} />
           </svg>
         )}
 
