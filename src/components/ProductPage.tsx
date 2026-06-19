@@ -54,10 +54,10 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
     <div className="prodpage">
       {/* Nav */}
       <header className="static-page-nav">
-        <a href="/" className="static-page-brand">
+        <a href="#" className="static-page-brand">
           {nav.logo ? <img src={nav.logo} alt={nav.brand} style={{ height: 36 }} /> : nav.brand}
         </a>
-        <a href="/#products" className="static-page-back">
+        <a href="#products" className="static-page-back">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           Zurück zum Sortiment
         </a>
