@@ -655,7 +655,7 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
       {achToast && <AchievementToast title={achToast.title} onDone={() => setAchToast(null)} />}
 
       <div ref={containerRef} style={{
-        position: 'relative', overflow: 'hidden', height: 120,
+        position: 'relative', overflow: 'hidden', width: '100%', height: '100%',
         background: skyBg, userSelect: 'none', borderTop: '2px solid #5D9E2E',
       }}>
         {isNight && [20, 90, 190, 310, 420, 540, 650].map((sx, i) => (
@@ -789,69 +789,63 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           <div style={{ height: 8, background: '#4a8c22' }} />
           <div style={{ height: 8, background: '#92400e' }} />
         </div>
-      </div>
 
-      {/* HUD */}
-      <div style={{
-        background: '#1a1206', borderTop: '3px solid #5D9E2E', padding: '6px 12px',
-        display: 'flex', flexDirection: 'column', gap: 5, fontFamily: 'monospace',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        {/* ── HUD stats — top left overlay ── */}
+        <div style={{
+          position: 'absolute', top: 8, left: 8, zIndex: 10,
+          background: 'rgba(26,18,6,0.88)', border: '2px solid #5D9E2E',
+          borderRadius: 6, padding: '5px 10px', fontFamily: 'monospace',
+          display: 'flex', flexDirection: 'column', gap: 4, maxWidth: 220,
+        }}>
           {tamed ? (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{
-                  background: '#5D9E2E', color: '#fff', fontSize: 9, fontWeight: 700,
-                  padding: '1px 6px', borderRadius: 3,
-                }}>Lv.{level}</span>
-                <span style={{ color: '#FFD700', fontSize: 13, fontWeight: 700 }}>{wolfName}</span>
+                <span style={{ background: '#5D9E2E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 3 }}>Lv.{level}</span>
+                <span style={{ color: '#FFD700', fontSize: 12, fontWeight: 700 }}>{wolfName}</span>
+                <span style={{ marginLeft: 'auto', color: '#5D9E2E', fontSize: 9 }}>{isNight ? '&#x1F319;' : '&#x2600;'}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ color: '#aaa', fontSize: 10 }}>XP</span>
-                <div style={{ width: 80, height: 6, background: '#2a2010', borderRadius: 3, overflow: 'hidden' }}>
+                <span style={{ color: '#aaa', fontSize: 9 }}>XP</span>
+                <div style={{ flex: 1, height: 5, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
                   <div style={{ width: `${(xpInLv / xpToNext) * 100}%`, height: '100%', background: '#5D9E2E', transition: 'width 0.3s' }} />
                 </div>
-                <span style={{ color: '#555', fontSize: 9 }}>{xpInLv}/{xpToNext}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ color: moodColor, fontSize: 10, fontWeight: 700 }}>{moodLabel}</span>
-                <div style={{ width: 55, height: 6, background: '#2a2010', borderRadius: 3, overflow: 'hidden' }}>
+                <span style={{ color: moodColor, fontSize: 9, fontWeight: 700 }}>{moodLabel}</span>
+                <div style={{ width: 36, height: 5, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
                   <div style={{ width: `${hunger}%`, height: '100%', background: moodColor, transition: 'width 0.3s' }} />
                 </div>
               </div>
             </>
           ) : (
-            <span style={{ color: '#888', fontSize: 11 }}>
-              {wolfBones < 3
-                ? `${wolfBones}/3 Knochen — klick auf den Wolf um ihn zu zähmen!`
-                : 'Wolf wartet auf einen Namen — klick auf ihn!'}
+            <span style={{ color: '#888', fontSize: 10 }}>
+              {wolfBones < 3 ? `${wolfBones}/3 Knochen — Wolf zähmen!` : 'Klick auf den Wolf!'}
             </span>
           )}
-          <div style={{ marginLeft: 'auto', color: '#555', fontSize: 10 }}>
-            {isNight ? 'Nacht' : 'Tag'}
-          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-          {[
-            { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, alwaysEnabled: true },
-            { emoji: '&#x1F34E;', label: 'Apfel', action: feedApple },
-            { emoji: '&#x26BD;', label: 'Ball werfen', action: throwBall },
-          ].map(item => (
-            <button key={item.label} onClick={item.action}
-              title={!item.alwaysEnabled && !tamed ? 'Wolf erst zähmen!' : item.label}
-              style={{
-                background: '#2a2010', border: '2px solid #5D9E2E', borderRadius: 4,
-                color: '#fff', fontSize: 16, width: 34, height: 34, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                opacity: !item.alwaysEnabled && !tamed ? 0.35 : 1,
-              }}
-              dangerouslySetInnerHTML={{ __html: item.emoji }} />
-          ))}
-
+        {/* ── HUD controls — top right overlay ── */}
+        <div style={{
+          position: 'absolute', top: 8, right: 8, zIndex: 10,
+          display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end',
+        }}>
+          <div style={{ display: 'flex', gap: 4 }}>
+            {[
+              { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, always: true },
+              { emoji: '&#x1F34E;', label: 'Apfel', action: feedApple, always: false },
+              { emoji: '&#x26BD;', label: 'Ball werfen', action: throwBall, always: false },
+            ].map(item => (
+              <button key={item.label} onClick={item.action}
+                title={!item.always && !tamed ? 'Wolf erst zähmen!' : item.label}
+                style={{
+                  background: 'rgba(42,32,16,0.92)', border: '2px solid #5D9E2E', borderRadius: 4,
+                  color: '#fff', fontSize: 16, width: 34, height: 34, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  opacity: !item.always && !tamed ? 0.35 : 1,
+                }}
+                dangerouslySetInnerHTML={{ __html: item.emoji }} />
+            ))}
+          </div>
           {tamed && (
-            <>
-              <div style={{ width: 2, height: 26, background: '#3a3028' }} />
+            <div style={{ display: 'flex', gap: 4 }}>
               {([
                 { key: 'sit', label: 'Sitz' },
                 { key: 'howl', label: 'Heulen' },
@@ -860,13 +854,13 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
                 <button key={t.key} onClick={() => doTrick(t.key)}
                   disabled={wolfState !== 'idle'}
                   style={{
-                    background: '#2a2010', border: '2px solid #3a7D44', borderRadius: 4,
+                    background: 'rgba(42,32,16,0.92)', border: '2px solid #3a7D44', borderRadius: 4,
                     color: wolfState !== 'idle' ? '#555' : '#aaa', fontSize: 10, fontWeight: 700,
                     padding: '3px 8px', cursor: wolfState !== 'idle' ? 'not-allowed' : 'pointer',
                     fontFamily: 'monospace',
                   }}>{t.label}</button>
               ))}
-            </>
+            </div>
           )}
         </div>
       </div>

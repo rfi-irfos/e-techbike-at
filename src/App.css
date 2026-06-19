@@ -2830,26 +2830,44 @@ button { cursor: pointer; font-family: inherit; }
 
 /* ── CRM Grid Layout ── */
 .crm-panel {
-  display: grid;
-  grid-template-rows: 85% 15%;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   overflow: hidden;
   position: relative;
 }
 
 .crm-content-viewport {
+  flex: 1 1 auto;
   overflow-y: auto;
   background: var(--surface);
   position: relative;
+  min-height: 0;
 }
 
-/* ── Strict MC-Mode Minigame Layering ── */
+/* ── MC-Mode: game (75%) + timi (25%) ── */
 .minigame-container {
   position: relative;
   width: 100%;
-  height: 250px;
+  flex: 0 0 75vh;
+  height: 75vh;
   overflow: hidden;
   border-top: 4px solid #3A7D44;
+}
+
+.timi-game-container {
+  position: relative;
+  width: 100%;
+  flex: 0 0 25vh;
+  height: 25vh;
+  overflow: hidden;
+  background: #0d0d1a;
+  border-top: 3px solid #e2a830;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  color: #e2a830;
 }
 
 .environment-layer {
