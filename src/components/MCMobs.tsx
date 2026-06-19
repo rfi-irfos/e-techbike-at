@@ -118,27 +118,7 @@ export function McBackdrop() {
             fill={isNight ? '#0d2030' : isTransition ? '#4a3058' : '#6888a8'} opacity={0.9} />
         </svg>
       )}
-      {/* ── Lava waterfall flowing down a mountain face ── */}
-      {W > 0 && (
-        <div style={{ position: 'absolute', bottom: '14%', left: '46%', width: 18, height: '30%', pointerEvents: 'none', opacity: 0.9 - daylight * 0.1 }}>
-          {/* the molten stream — top fades into the mountain so it has no hard edge */}
-          <div style={{
-            position: 'absolute', inset: 0, borderRadius: '0 0 5px 5px',
-            background: 'linear-gradient(180deg,#ffe0a0 0%,#ff9a3c 30%,#ff6a00 60%,#e03a00 88%,#b81e00 100%)',
-            backgroundSize: '100% 240%',
-            boxShadow: '0 0 14px #ff7a1eaa, 0 0 36px #ff5a0055',
-            WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 14%)',
-            maskImage: 'linear-gradient(180deg, transparent 0%, #000 14%)',
-            animation: 'lava-fall 1.1s linear infinite',
-          }} />
-          {/* bright molten core */}
-          <div style={{ position: 'absolute', top: '12%', left: '35%', width: '30%', bottom: '6%', background: 'linear-gradient(180deg,#fff0c0,#ffb066)', opacity: 0.7, borderRadius: 4, filter: 'blur(0.5px)' }} />
-          {/* glowing splash pool at the base */}
-          <div style={{ position: 'absolute', bottom: -8, left: -14, width: 46, height: 14, borderRadius: '50%', background: 'radial-gradient(ellipse, #ff7a1edd 0%, #ff5a0055 52%, transparent 74%)', filter: 'blur(2px)', animation: 'lava-pool 1.4s ease-in-out infinite alternate' }} />
-          {/* embers drifting up */}
-          <div style={{ position: 'absolute', top: '50%', left: 0, width: 3, height: 3, borderRadius: '50%', background: '#ffd08a', boxShadow: '8px 22px 0 #ffb066, 4px 44px 0 #ff8a3c', animation: 'lava-ember 1.8s ease-in infinite' }} />
-        </div>
-      )}
+      {/* Lava waterfall removed — it read as a stray orange beam on the centre hill. */}
       <style>{`
         @keyframes lava-fall { from { background-position: 0 0; } to { background-position: 0 220%; } }
         @keyframes lava-pool { from { transform: scaleX(0.85); opacity: .7; } to { transform: scaleX(1.15); opacity: 1; } }
@@ -1598,9 +1578,10 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <div style={{ height: 8, background: '#6b3d10' }} />
         </div>
 
-        {/* ── HUD — top game bar (so the world & mobs show below it) ── */}
+        {/* ── HUD — floats where the old lava beam crowned the centre hill,
+              so it clears the CRM panel that used to bury it at the very top ── */}
         <div style={{
-          position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)',
+          position: 'absolute', top: '56%', left: '50%', transform: 'translate(-50%, -50%)',
           zIndex: 8000, display: 'flex', alignItems: 'center', gap: 8,
           background: 'rgba(14,9,2,0.93)', border: '2px solid #5D9E2E',
           borderRadius: 10, padding: '6px 14px', fontFamily: 'monospace',
