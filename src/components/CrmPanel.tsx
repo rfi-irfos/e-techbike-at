@@ -244,7 +244,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
       {mcMode && (
         <div className="minigame-bg">
           <McBackdrop />
-          <div style={{ position: 'absolute', inset: 0 }}>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '25vh' }}>
             <CrmScene noBackdrop onAchUnlock={handleAchUnlock} />
           </div>
         </div>

@@ -968,8 +968,8 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <div style={{ height: 8, background: '#6b3d10' }} />
         </div>
 
-        {/* ── HUD stats — top left overlay ── */}
-        <div style={{
+        {/* ── HUD stats — top left overlay (hidden in backdrop/background mode) ── */}
+        {!noBackdrop && <div style={{
           position: 'absolute', top: 8, left: 8, zIndex: 10,
           background: 'rgba(26,18,6,0.88)', border: '2px solid #5D9E2E',
           borderRadius: 6, padding: '5px 10px', fontFamily: 'monospace',
@@ -998,10 +998,10 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
               {wolfBones < 3 ? `${wolfBones}/3 Knochen — Wolf zähmen!` : 'Klick auf den Wolf!'}
             </span>
           )}
-        </div>
+        </div>}
 
-        {/* ── HUD controls — top right overlay ── */}
-        <div style={{
+        {/* ── HUD controls — top right overlay (hidden in backdrop/background mode) ── */}
+        {!noBackdrop && <div style={{
           position: 'absolute', top: 8, right: 8, zIndex: 10,
           display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end',
         }}>
@@ -1040,7 +1040,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
               ))}
             </div>
           )}
-        </div>
+        </div>}
       </div>
 
       <style>{`
