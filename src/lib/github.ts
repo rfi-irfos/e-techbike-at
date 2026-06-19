@@ -9,12 +9,13 @@ const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'publ
 
 // Runtime-only token. NEVER baked into the build — a baked PAT ends up in the
 // public JS bundle and grants repo write access to anyone who opens the site.
-// The admin pastes a fine-grained PAT at login; kept in sessionStorage.
+// The admin pastes a fine-grained PAT once; kept in localStorage so it sticks
+// on that machine (paste once, never again). Cleared on logout.
 const TOKEN_KEY = 'gh_pat'
 let _runtimeToken = ''
-try { _runtimeToken = sessionStorage.getItem(TOKEN_KEY) || '' } catch { /* no storage */ }
-export function setGhToken(t: string) { _runtimeToken = t.trim(); try { sessionStorage.setItem(TOKEN_KEY, _runtimeToken) } catch { /* ignore */ } }
-export function clearGhToken() { _runtimeToken = ''; try { sessionStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ } }
+try { _runtimeToken = localStorage.getItem(TOKEN_KEY) || '' } catch { /* no storage */ }
+export function setGhToken(t: string) { _runtimeToken = t.trim(); try { localStorage.setItem(TOKEN_KEY, _runtimeToken) } catch { /* ignore */ } }
+export function clearGhToken() { _runtimeToken = ''; try { localStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ } }
 export function hasGhToken() { return !!_runtimeToken }
 
 export { CONTENT_PATH, UPLOADS_DIR }
