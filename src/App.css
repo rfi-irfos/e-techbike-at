@@ -2823,10 +2823,11 @@ button { cursor: pointer; font-family: inherit; }
 .crm-tab-count { margin-left: 6px; background:var(--surface-sunken); padding:2px 6px; border-radius:10px; font-size:11px; }
 
 /* MC Theme Tab Overrides */
-.crm-mc .crm-tabs { background:#2a1d10; border-bottom:2px solid #5a4020; }
+.crm-mc .crm-tabs { background:rgba(42,29,16,0.82); backdrop-filter:blur(2px); border-bottom:2px solid #5a4020; position:relative; z-index:2; }
 .crm-mc .crm-tab { color:#b09070; }
 .crm-mc .crm-tab.active { color:#FFFF55; border-bottom-color:#7DC845; }
 .crm-mc .crm-tab-count { background:#3A7D44; color:#FFFF55; }
+.crm-mc .crm-topbar { position:relative; z-index:2; background:rgba(42,29,16,0.85); backdrop-filter:blur(2px); }
 
 /* ── CRM Layout ── */
 .crm-panel {
@@ -2846,20 +2847,26 @@ button { cursor: pointer; font-family: inherit; }
   min-height: 0;
 }
 
-/* MC-Mode: CRM list fills top (auto), game strip = 200px, timi = 100px */
-.minigame-container {
+/* MC-Mode: scene = full background, CRM content floats on top */
+.crm-mc {
   position: relative;
-  flex: 0 0 200px;
-  overflow: hidden;
-  border-top: 4px solid #3A7D44;
 }
 
-.timi-game-container {
-  position: relative;
-  flex: 0 0 100px;
+.minigame-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
-  background: #0d0d1a;
-  border-top: 3px solid #e2a830;
+}
+
+.crm-mc .crm-viewport {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  background: rgba(18, 12, 4, 0.72);
+  backdrop-filter: blur(2px);
 }
 
 .environment-layer {
