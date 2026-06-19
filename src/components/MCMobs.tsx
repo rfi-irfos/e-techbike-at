@@ -660,10 +660,18 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
   const wolfVW = isSitting ? 40 : 52; const wolfVH = isSitting ? 36 : 32
 
   const hourNow = new Date().getHours()
-  const isNight = hourNow >= 21 || hourNow < 6
+  const isNight  = hourNow >= 21 || hourNow < 6
+  const isSunset = !isNight && (hourNow >= 18 || hourNow < 7)
+
   const skyBg = isNight
-    ? 'linear-gradient(180deg,#040a14 0%,#0f172a 55%,#1a2e1a 80%,#2a4a28 100%)'
-    : 'linear-gradient(180deg,#1a3a6a 0%,#2a5a2a 80%,#2d5a27 100%)'
+    ? 'linear-gradient(180deg,#05091a 0%,#0d1a3a 50%,#0f2a0f 80%,#1a3d1a 100%)'
+    : isSunset
+      ? 'linear-gradient(180deg,#1a0a3e 0%,#c2410c 25%,#f97316 50%,#fbbf24 70%,#4a7c3f 85%,#2d5a27 100%)'
+      : 'linear-gradient(180deg,#4fc3f7 0%,#29b6f6 30%,#81c784 70%,#4caf50 85%,#388e3c 100%)'
+
+  const bodyX   = W > 0 ? ((tick * 0.12) % (W + 60)) - 30 : 80
+  const bodyPct = W > 0 ? bodyX / W : 0.5
+  const bodyY   = 8 + Math.sin(Math.max(0, Math.min(1, bodyPct)) * Math.PI) * 30
 
   return (
     <>
@@ -672,33 +680,75 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
 
       <div ref={containerRef} style={{
         position: 'relative', overflow: 'hidden', width: '100%', height: '100%',
-        background: skyBg, userSelect: 'none', borderTop: '2px solid #5D9E2E',
+        background: skyBg, userSelect: 'none',
       }}>
-        {/* Stars */}
-        {isNight && [20, 90, 190, 310, 420, 540, 650].map((sx, i) => (
+
+        {/* ── Stars (night only) ── */}
+        {isNight && [0.03,0.09,0.18,0.28,0.40,0.55,0.68,0.78,0.88,0.95].map((p, i) => (
           <div key={i} style={{
-            position: 'absolute', left: sx, top: 4 + (i % 3) * 5, width: 2, height: 2,
-            borderRadius: '50%', background: '#fff', opacity: 0.5 + (i % 3) * 0.2,
+            position: 'absolute', left: `${p * 100}%`, top: `${4 + (i % 4) * 6}%`,
+            width: i % 3 === 0 ? 3 : 2, height: i % 3 === 0 ? 3 : 2,
+            borderRadius: '50%', background: '#fff', opacity: 0.4 + (i % 3) * 0.2,
           }} />
         ))}
-        {/* Sun / Moon — moves across the top of the scene based on tick */}
-        {(() => {
-          const bodyX = W > 0 ? ((tick * 0.15) % (W + 40)) - 20 : 80
-          const bodyY = 10 + Math.sin((bodyX / Math.max(W, 1)) * Math.PI) * 22
-          return isNight ? (
-            <div style={{
-              position: 'absolute', left: bodyX, top: bodyY, width: 20, height: 20,
-              borderRadius: '50%', background: '#fef9c3', border: '2px solid #fef08a',
-              boxShadow: '0 0 8px #fef08a88',
-            }} />
-          ) : (
-            <div style={{
-              position: 'absolute', left: bodyX, top: bodyY, width: 22, height: 22,
-              borderRadius: '50%', background: '#FFD700', border: '3px solid #FFA500',
-              boxShadow: '0 0 14px #FFD70099',
-            }} />
-          )
-        })()}
+
+        {/* ── Sun / Moon ── */}
+        {isNight ? (
+          <div style={{
+            position: 'absolute', left: bodyX, top: bodyY, width: 26, height: 26,
+            borderRadius: '50%', background: '#fef9c3', border: '3px solid #fef08a',
+            boxShadow: '0 0 18px #fef08a99, 0 0 40px #fef08a44',
+          }} />
+        ) : (
+          <div style={{
+            position: 'absolute', left: bodyX, top: bodyY, width: 32, height: 32,
+            borderRadius: '50%', background: '#FFD700', border: '4px solid #FFA500',
+            boxShadow: '0 0 24px #FFD700cc, 0 0 60px #FFD70055',
+          }} />
+        )}
+
+        {/* ── Clouds (day/sunset only) ── */}
+        {!isNight && [
+          { pct: ((tick * 0.04) % 110) - 5, top: '8%', w: 90, h: 28 },
+          { pct: ((tick * 0.025 + 40) % 110) - 5, top: '15%', w: 60, h: 20 },
+          { pct: ((tick * 0.06 + 70) % 110) - 5, top: '6%', w: 70, h: 22 },
+        ].map((c, i) => (
+          <div key={i} style={{
+            position: 'absolute', left: `${c.pct}%`, top: c.top,
+            width: c.w, height: c.h, borderRadius: 40,
+            background: isSunset ? 'rgba(255,200,150,0.55)' : 'rgba(255,255,255,0.75)',
+            filter: 'blur(6px)',
+          }} />
+        ))}
+
+        {/* ── Far mountains (silhouette) ── */}
+        {W > 0 && (
+          <svg style={{ position: 'absolute', bottom: 55, left: 0, width: '100%', height: '35%' }}
+            viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
+            <polygon
+              points={`0,120 0,70 ${W*0.08},40 ${W*0.18},65 ${W*0.28},25 ${W*0.4},55 ${W*0.52},15 ${W*0.62},50 ${W*0.72},30 ${W*0.83},60 ${W*0.92},20 ${W},45 ${W},120`}
+              fill={isNight ? '#0d1f0d' : isSunset ? '#3d1a4a' : '#2d6b3a'}
+              opacity={0.7}
+            />
+            <polygon
+              points={`0,120 0,85 ${W*0.1},65 ${W*0.22},80 ${W*0.35},50 ${W*0.46},70 ${W*0.58},40 ${W*0.68},65 ${W*0.79},48 ${W*0.88},70 ${W},55 ${W},120`}
+              fill={isNight ? '#1a2e1a' : isSunset ? '#5c2d6b' : '#3a7a48'}
+              opacity={0.8}
+            />
+          </svg>
+        )}
+
+        {/* ── Near hills ── */}
+        {W > 0 && (
+          <svg style={{ position: 'absolute', bottom: 18, left: 0, width: '100%', height: '22%' }}
+            viewBox={`0 0 ${W} 80`} preserveAspectRatio="none">
+            <path
+              d={`M0,80 Q${W*0.15},20 ${W*0.3},55 Q${W*0.45},10 ${W*0.6},50 Q${W*0.75},15 ${W*0.9},45 Q${W*0.95},35 ${W},40 L${W},80 Z`}
+              fill={isNight ? '#1e3d1e' : '#4a8c3f'}
+              opacity={0.9}
+            />
+          </svg>
+        )}
 
         <div style={{ position: 'absolute', left: 30, bottom: 20 }}>
           <Sprite px={TREE_PX} vw={30} vh={50} />
@@ -811,12 +861,12 @@ export function CrmScene({ onAchUnlock }: { onAchUnlock: (id: string, title: str
           }} dangerouslySetInnerHTML={{ __html: p.char }} />
         ))}
 
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: 20,
-          background: '#5D9E2E', borderTop: '4px solid #3a7010',
-        }}>
-          <div style={{ height: 8, background: '#4a8c22' }} />
-          <div style={{ height: 8, background: '#92400e' }} />
+        {/* ── Ground ── */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 28 }}>
+          <div style={{ height: 6, background: '#5D9E2E', borderTop: '3px solid #7DC845' }} />
+          <div style={{ height: 6, background: '#4a8c22' }} />
+          <div style={{ height: 8, background: '#7c4f1e' }} />
+          <div style={{ height: 8, background: '#6b3d10' }} />
         </div>
 
         {/* ── HUD stats — top left overlay ── */}
