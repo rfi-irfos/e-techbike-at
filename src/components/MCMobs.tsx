@@ -18,22 +18,31 @@ export function McBackdrop() {
     return () => clearInterval(id)
   }, [])
 
-  const h = new Date().getHours()
-  const isNight  = h >= 21 || h < 6
-  const isSunset = !isNight && (h >= 18 || h < 7)
+  // Day/night cycle tied to arc animation (~25 min day + 25 min night = 50 min full cycle)
+  const CYCLE = Math.max(W + 60, 200)
+  const totalPhase = (tick * 0.12) % (CYCLE * 2)
+  const isDayPhase = totalPhase < CYCLE
+  const arcTick = totalPhase % CYCLE
+  const bx = arcTick - 30
+  const arcPct = W > 0 ? Math.max(0, Math.min(1, bx / W)) : 0.5
+  const by = 8 + Math.sin(arcPct * Math.PI) * 35
+
+  const isNight = !isDayPhase
+  const isTransition = isDayPhase && (arcPct < 0.13 || arcPct > 0.87)
 
   const skyBg = isNight
     ? 'linear-gradient(180deg,#05091a 0%,#0d1a3a 50%,#0f2a0f 80%,#1a3d1a 100%)'
-    : isSunset
-      ? 'linear-gradient(180deg,#1a0a3e 0%,#c2410c 25%,#f97316 50%,#fbbf24 70%,#4a7c3f 85%,#2d5a27 100%)'
-      : 'linear-gradient(180deg,#4fc3f7 0%,#29b6f6 30%,#81c784 70%,#4caf50 85%,#388e3c 100%)'
+    : isTransition
+      ? 'linear-gradient(180deg,#1a0a3e 0%,#c2410c 20%,#f97316 45%,#fbbf24 65%,#4a7c3f 85%,#2d5a27 100%)'
+      : 'linear-gradient(180deg,#1e90e8 0%,#4db8ff 25%,#87ceeb 55%,#a8d8a8 75%,#4caf50 88%,#388e3c 100%)'
 
-  const bx = W > 0 ? ((tick * 0.12) % (W + 60)) - 30 : 80
-  const by = 8 + Math.sin(Math.max(0, Math.min(1, bx / Math.max(W, 1))) * Math.PI) * 30
+  const mtFill   = isNight ? '#0d1f0d' : isTransition ? '#3d1a4a' : '#2d6b3a'
+  const mt2Fill  = isNight ? '#1a2e1a' : isTransition ? '#5c2d6b' : '#3a7a48'
+  const hillFill = isNight ? '#1e3d1e' : '#4a8c3f'
 
   return (
-    <div ref={ref} style={{ position: 'absolute', inset: 0, background: skyBg, overflow: 'hidden' }}>
-      {/* Stars */}
+    <div ref={ref} style={{ position: 'absolute', inset: 0, background: skyBg, overflow: 'hidden', transition: 'background 4s ease' }}>
+      {/* Stars (night) */}
       {isNight && [0.03,0.09,0.18,0.28,0.40,0.55,0.68,0.78,0.88,0.95].map((p, i) => (
         <div key={i} style={{
           position: 'absolute', left: `${p * 100}%`, top: `${4 + (i % 4) * 6}%`,
@@ -41,52 +50,52 @@ export function McBackdrop() {
           borderRadius: '50%', background: '#fff', opacity: 0.4 + (i % 3) * 0.2,
         }} />
       ))}
-      {/* Sun / Moon */}
-      {isNight ? (
+      {/* Sun arc (day) */}
+      {isDayPhase && (
         <div style={{
-          position: 'absolute', left: bx, top: by, width: 26, height: 26,
-          borderRadius: '50%', background: '#fef9c3', border: '3px solid #fef08a',
-          boxShadow: '0 0 18px #fef08a99, 0 0 40px #fef08a44',
-        }} />
-      ) : (
-        <div style={{
-          position: 'absolute', left: bx, top: by, width: 32, height: 32,
+          position: 'absolute', left: bx, top: by, width: 34, height: 34,
           borderRadius: '50%', background: '#FFD700', border: '4px solid #FFA500',
-          boxShadow: '0 0 24px #FFD700cc, 0 0 60px #FFD70055',
+          boxShadow: '0 0 28px #FFD700dd, 0 0 70px #FFD70066',
+          transition: 'box-shadow 3s ease',
         }} />
       )}
-      {/* Clouds */}
+      {/* Moon arc (night) */}
+      {isNight && (
+        <div style={{
+          position: 'absolute', left: bx, top: by, width: 28, height: 28,
+          borderRadius: '50%', background: '#fef9c3', border: '3px solid #fef08a',
+          boxShadow: '0 0 20px #fef08a99, 0 0 50px #fef08a44',
+        }} />
+      )}
+      {/* Clouds (day/transition) */}
       {!isNight && [
-        { pct: ((tick * 0.04) % 110) - 5, top: '8%', w: 90, h: 28 },
-        { pct: ((tick * 0.025 + 40) % 110) - 5, top: '15%', w: 60, h: 20 },
-        { pct: ((tick * 0.06 + 70) % 110) - 5, top: '6%', w: 70, h: 22 },
+        { pct: ((tick * 0.04) % 110) - 5, top: '8%', w: 100, h: 30 },
+        { pct: ((tick * 0.025 + 40) % 110) - 5, top: '14%', w: 65, h: 22 },
+        { pct: ((tick * 0.06 + 70) % 110) - 5, top: '6%', w: 78, h: 24 },
       ].map((c, i) => (
         <div key={i} style={{
           position: 'absolute', left: `${c.pct}%`, top: c.top,
           width: c.w, height: c.h, borderRadius: 40,
-          background: isSunset ? 'rgba(255,200,150,0.55)' : 'rgba(255,255,255,0.75)',
-          filter: 'blur(6px)',
+          background: isTransition ? 'rgba(255,180,120,0.6)' : 'rgba(255,255,255,0.8)',
+          filter: 'blur(7px)',
         }} />
       ))}
       {/* Far mountains */}
       {W > 0 && (
         <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '40%' }}
           viewBox={`0 0 ${W} 120`} preserveAspectRatio="none">
-          <polygon
-            points={`0,120 0,70 ${W*0.08},40 ${W*0.18},65 ${W*0.28},25 ${W*0.4},55 ${W*0.52},15 ${W*0.62},50 ${W*0.72},30 ${W*0.83},60 ${W*0.92},20 ${W},45 ${W},120`}
-            fill={isNight ? '#0d1f0d' : isSunset ? '#3d1a4a' : '#2d6b3a'} opacity={0.7} />
-          <polygon
-            points={`0,120 0,85 ${W*0.1},65 ${W*0.22},80 ${W*0.35},50 ${W*0.46},70 ${W*0.58},40 ${W*0.68},65 ${W*0.79},48 ${W*0.88},70 ${W},55 ${W},120`}
-            fill={isNight ? '#1a2e1a' : isSunset ? '#5c2d6b' : '#3a7a48'} opacity={0.8} />
+          <polygon points={`0,120 0,70 ${W*0.08},40 ${W*0.18},65 ${W*0.28},25 ${W*0.4},55 ${W*0.52},15 ${W*0.62},50 ${W*0.72},30 ${W*0.83},60 ${W*0.92},20 ${W},45 ${W},120`}
+            fill={mtFill} opacity={0.7} />
+          <polygon points={`0,120 0,85 ${W*0.1},65 ${W*0.22},80 ${W*0.35},50 ${W*0.46},70 ${W*0.58},40 ${W*0.68},65 ${W*0.79},48 ${W*0.88},70 ${W},55 ${W},120`}
+            fill={mt2Fill} opacity={0.8} />
         </svg>
       )}
       {/* Near hills */}
       {W > 0 && (
         <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '25%' }}
           viewBox={`0 0 ${W} 80`} preserveAspectRatio="none">
-          <path
-            d={`M0,80 Q${W*0.15},20 ${W*0.3},55 Q${W*0.45},10 ${W*0.6},50 Q${W*0.75},15 ${W*0.9},45 Q${W*0.95},35 ${W},40 L${W},80 Z`}
-            fill={isNight ? '#1e3d1e' : '#4a8c3f'} opacity={0.9} />
+          <path d={`M0,80 Q${W*0.15},20 ${W*0.3},55 Q${W*0.45},10 ${W*0.6},50 Q${W*0.75},15 ${W*0.9},45 Q${W*0.95},35 ${W},40 L${W},80 Z`}
+            fill={hillFill} opacity={0.9} />
         </svg>
       )}
       {/* Ground */}
@@ -869,41 +878,75 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <Sprite px={CHEST_PX} vw={24} vh={24} scale={1.2} style={{ transform: chestOpen ? 'scaleY(0.9)' : undefined }} />
         </div>
 
+        {/* ── Sheep (cute fluffy) ── */}
         <div style={{
           position: 'absolute', left: sheepX, bottom: 20, cursor: 'pointer',
-          transform: sheepBob ? 'translateY(-3px)' : 'translateY(0)', transition: 'transform 0.2s',
+          transform: sheepBob ? 'translateY(-4px)' : 'translateY(0)', transition: 'transform 0.18s',
         }} onClick={() => unlock('ach-schaf', 'Schaf-Flüsterin')} title="Baa!">
-          <svg viewBox="0 0 22 18" width={33} height={27}
+          <svg viewBox="0 0 32 26" width={52} height={42}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: sheepDir === 'l' ? 'scaleX(-1)' : undefined }}>
-            <rect x="2" y="4" width="14" height="8" fill="#e5e7eb"/>
-            <rect x="0" y="6" width="4" height="4" fill="#e5e7eb"/>
-            <rect x="14" y="6" width="4" height="4" fill="#e5e7eb"/>
-            <rect x="14" y="2" width="6" height="8" fill="#6b7280"/>
-            <rect x="15" y="4" width="1" height="1" fill="#fff"/>
-            <rect x="18" y="4" width="1" height="1" fill="#fff"/>
-            <rect x="16" y="7" width="3" height="1" fill="#374151"/>
-            <rect x="4" y="12" width="2" height="4" fill="#6b7280"/>
-            <rect x="8" y="12" width="2" height="4" fill="#6b7280"/>
-            <rect x="12" y="12" width="2" height="4" fill="#6b7280"/>
+            {/* Fluffy wool body — cloud bumps */}
+            <rect x="4" y="8" width="18" height="10" fill="#e8eaec"/>
+            <rect x="2" y="10" width="4" height="6" fill="#e8eaec"/>
+            <rect x="20" y="10" width="4" height="6" fill="#e8eaec"/>
+            <rect x="5" y="5" width="5" height="5" fill="#e8eaec"/>
+            <rect x="9" y="4" width="5" height="5" fill="#e8eaec"/>
+            <rect x="13" y="5" width="5" height="5" fill="#e8eaec"/>
+            <rect x="17" y="6" width="4" height="4" fill="#e8eaec"/>
+            {/* Shading */}
+            <rect x="4" y="15" width="18" height="3" fill="#c9cbcc"/>
+            {/* Head */}
+            <rect x="22" y="6" width="10" height="10" fill="#6b7280"/>
+            {/* Ears */}
+            <rect x="23" y="4" width="3" height="3" fill="#9ca3af"/>
+            <rect x="28" y="4" width="3" height="3" fill="#9ca3af"/>
+            {/* Eyes */}
+            <rect x="24" y="8" width="2" height="2" fill="#1f2937"/>
+            <rect x="29" y="8" width="2" height="2" fill="#1f2937"/>
+            <rect x="24" y="8" width="1" height="1" fill="#fff"/>
+            <rect x="29" y="8" width="1" height="1" fill="#fff"/>
+            {/* Mouth */}
+            <rect x="26" y="13" width="4" height="1" fill="#374151"/>
+            {/* Legs */}
+            <rect x="6" y="18" width="3" height="7" fill="#6b7280"/>
+            <rect x="11" y="18" width="3" height="7" fill="#6b7280"/>
+            <rect x="16" y="18" width="3" height="7" fill="#6b7280"/>
           </svg>
         </div>
 
+        {/* ── Pig (cute chubby) ── */}
         <div style={{ position: 'absolute', left: pigX, bottom: 20, cursor: 'pointer' }}
           onClick={() => unlock('ach-ferkel', 'Ferkel-Königin')} title="Oink!">
-          <svg viewBox="0 0 28 18" width={36} height={23}
+          <svg viewBox="0 0 36 28" width={56} height={44}
             style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', display: 'block',
               transform: pigDir === 'l' ? 'scaleX(-1)' : undefined }}>
-            <rect x="2" y="4" width="14" height="12" fill="#f9a8d4"/>
-            <rect x="16" y="0" width="12" height="12" fill="#f9a8d4"/>
-            <rect x="22" y="4" width="6" height="4" fill="#ec4899"/>
-            <rect x="23" y="5" width="2" height="2" fill="#7f1d1d"/>
-            <rect x="27" y="5" width="2" height="2" fill="#7f1d1d"/>
-            <rect x="17" y="0" width="3" height="4" fill="#ec4899"/>
-            <rect x="25" y="0" width="3" height="4" fill="#ec4899"/>
-            <rect x="19" y="2" width="2" height="2" fill="#111"/>
-            <rect x="3" y="14" width="3" height="4" fill="#f9a8d4"/>
-            <rect x="9" y="14" width="3" height="4" fill="#f9a8d4"/>
+            {/* Body */}
+            <rect x="2" y="6" width="20" height="14" fill="#fbb6c8"/>
+            <rect x="2" y="9" width="20" height="2" fill="#f9a8d4"/>
+            {/* Body shade */}
+            <rect x="2" y="17" width="20" height="3" fill="#f472b6" opacity="0.4"/>
+            {/* Head */}
+            <rect x="20" y="2" width="14" height="14" fill="#fbb6c8"/>
+            {/* Snout */}
+            <rect x="28" y="7" width="8" height="6" fill="#f472b6"/>
+            <rect x="29" y="8" width="2" height="2" fill="#9f1239"/>
+            <rect x="33" y="8" width="2" height="2" fill="#9f1239"/>
+            {/* Eyes */}
+            <rect x="21" y="4" width="3" height="3" fill="#1f2937"/>
+            <rect x="28" y="4" width="3" height="3" fill="#1f2937"/>
+            <rect x="21" y="4" width="1" height="1" fill="#fff"/>
+            <rect x="28" y="4" width="1" height="1" fill="#fff"/>
+            {/* Ears */}
+            <rect x="22" y="0" width="4" height="4" fill="#f472b6"/>
+            <rect x="30" y="0" width="4" height="4" fill="#f472b6"/>
+            {/* Legs */}
+            <rect x="4" y="20" width="4" height="7" fill="#fbb6c8"/>
+            <rect x="10" y="20" width="4" height="7" fill="#fbb6c8"/>
+            <rect x="16" y="20" width="4" height="7" fill="#fbb6c8"/>
+            {/* Curly tail */}
+            <rect x="0" y="8" width="3" height="3" fill="#fbb6c8"/>
+            <rect x="0" y="10" width="2" height="2" fill="#f472b6"/>
           </svg>
         </div>
 
@@ -929,7 +972,7 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
               background: 'rgba(250,204,21,0.2)', filter: 'blur(4px)',
             }} />
           )}
-          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={0.7}
+          <Sprite px={wolfPx} vw={wolfVW} vh={wolfVH} scale={noBackdrop ? 1.1 : 0.9}
             flip={wolfDir === 'l' && !isSitting} />
 
         </div>
@@ -968,55 +1011,61 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
           <div style={{ height: 8, background: '#6b3d10' }} />
         </div>
 
-        {/* ── HUD stats — top left overlay (hidden in backdrop/background mode) ── */}
-        {!noBackdrop && <div style={{
-          position: 'absolute', top: 8, left: 8, zIndex: 10,
-          background: 'rgba(26,18,6,0.88)', border: '2px solid #5D9E2E',
-          borderRadius: 6, padding: '5px 10px', fontFamily: 'monospace',
-          display: 'flex', flexDirection: 'column', gap: 4, maxWidth: 220,
+        {/* ── HUD stats — wolf info bar ── */}
+        <div style={{
+          position: 'absolute', zIndex: 10,
+          ...(noBackdrop
+            ? { bottom: 30, left: 6, maxWidth: 180 }
+            : { top: 8, left: 8, maxWidth: 220 }),
+          background: 'rgba(20,14,4,0.90)', border: '2px solid #5D9E2E',
+          borderRadius: 6, padding: noBackdrop ? '4px 8px' : '5px 10px', fontFamily: 'monospace',
+          display: 'flex', flexDirection: 'column', gap: 3,
         }}>
           {tamed ? (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ background: '#5D9E2E', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 3 }}>Lv.{level}</span>
-                <span style={{ color: '#FFD700', fontSize: 12, fontWeight: 700 }}>{wolfName}</span>
-                <span style={{ marginLeft: 'auto', color: '#5D9E2E', fontSize: 9 }}>{isNight ? '&#x1F319;' : '&#x2600;'}</span>
+                <span style={{ color: '#FFD700', fontSize: noBackdrop ? 10 : 12, fontWeight: 700 }}>{wolfName}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <span style={{ color: '#aaa', fontSize: 9 }}>XP</span>
-                <div style={{ flex: 1, height: 5, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ flex: 1, height: 4, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
                   <div style={{ width: `${(xpInLv / xpToNext) * 100}%`, height: '100%', background: '#5D9E2E', transition: 'width 0.3s' }} />
                 </div>
                 <span style={{ color: moodColor, fontSize: 9, fontWeight: 700 }}>{moodLabel}</span>
-                <div style={{ width: 36, height: 5, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ width: 32, height: 4, background: '#2a2010', borderRadius: 2, overflow: 'hidden' }}>
                   <div style={{ width: `${hunger}%`, height: '100%', background: moodColor, transition: 'width 0.3s' }} />
                 </div>
               </div>
             </>
           ) : (
-            <span style={{ color: '#888', fontSize: 10 }}>
-              {wolfBones < 3 ? `${wolfBones}/3 Knochen — Wolf zähmen!` : 'Klick auf den Wolf!'}
+            <span style={{ color: '#aaa', fontSize: noBackdrop ? 9 : 10 }}>
+              {wolfBones < 3 ? `${wolfBones}/3 Knochen` : 'Klick auf den Wolf!'}
             </span>
           )}
-        </div>}
+        </div>
 
-        {/* ── HUD controls — top right overlay (hidden in backdrop/background mode) ── */}
-        {!noBackdrop && <div style={{
-          position: 'absolute', top: 8, right: 8, zIndex: 10,
-          display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end',
+        {/* ── HUD controls ── */}
+        <div style={{
+          position: 'absolute', zIndex: 10,
+          ...(noBackdrop
+            ? { bottom: 30, right: 6, flexDirection: 'column', alignItems: 'flex-end', gap: 3 }
+            : { top: 8, right: 8, flexDirection: 'column', alignItems: 'flex-end', gap: 4 }),
+          display: 'flex',
         }}>
-          <div style={{ display: 'flex', gap: 4 }}>
+          <div style={{ display: 'flex', gap: 3 }}>
             {[
               { emoji: '&#x1F9B4;', label: 'Knochen', action: feedBone, always: true },
               { emoji: '&#x1F34E;', label: 'Apfel', action: feedApple, always: false },
-              { emoji: '&#x26BD;', label: 'Ball werfen', action: throwBall, always: false },
+              { emoji: '&#x26BD;', label: 'Ball', action: throwBall, always: false },
             ].map(item => (
               <button key={item.label} onClick={item.action}
                 title={!item.always && !tamed ? 'Wolf erst zähmen!' : item.label}
                 style={{
-                  background: 'rgba(42,32,16,0.92)', border: '2px solid #5D9E2E', borderRadius: 4,
-                  color: '#fff', fontSize: 16, width: 34, height: 34, cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'rgba(20,14,4,0.90)', border: '2px solid #5D9E2E', borderRadius: 4,
+                  color: '#fff', fontSize: noBackdrop ? 13 : 16,
+                  width: noBackdrop ? 28 : 34, height: noBackdrop ? 28 : 34,
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   opacity: !item.always && !tamed ? 0.35 : 1,
                 }}
                 dangerouslySetInnerHTML={{ __html: item.emoji }} />
@@ -1032,15 +1081,17 @@ export function CrmScene({ onAchUnlock, noBackdrop }: { onAchUnlock: (id: string
                 <button key={t.key} onClick={() => doTrick(t.key)}
                   disabled={wolfState !== 'idle'}
                   style={{
-                    background: 'rgba(42,32,16,0.92)', border: '2px solid #3a7D44', borderRadius: 4,
-                    color: wolfState !== 'idle' ? '#555' : '#aaa', fontSize: 10, fontWeight: 700,
-                    padding: '3px 8px', cursor: wolfState !== 'idle' ? 'not-allowed' : 'pointer',
+                    background: 'rgba(20,14,4,0.90)', border: '2px solid #3a7D44', borderRadius: 4,
+                    color: wolfState !== 'idle' ? '#555' : '#aaa',
+                    fontSize: noBackdrop ? 9 : 10, fontWeight: 700,
+                    padding: noBackdrop ? '2px 5px' : '3px 8px',
+                    cursor: wolfState !== 'idle' ? 'not-allowed' : 'pointer',
                     fontFamily: 'monospace',
                   }}>{t.label}</button>
               ))}
             </div>
           )}
-        </div>}
+        </div>
       </div>
 
       <style>{`
