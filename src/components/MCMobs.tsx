@@ -37,9 +37,6 @@ export function McBackdrop() {
       ? 'linear-gradient(180deg,#1a0a3e 0%,#c2410c 20%,#f97316 45%,#fbbf24 65%,#4a7c3f 85%,#2d5a27 100%)'
       : 'linear-gradient(180deg,#1e90e8 0%,#4db8ff 25%,#87ceeb 55%,#a8d8a8 75%,#4caf50 88%,#388e3c 100%)'
 
-  const mtFill   = isNight ? '#0d1f0d' : isTransition ? '#3d1a4a' : '#2d6b3a'
-  const mt2Fill  = isNight ? '#1a2e1a' : isTransition ? '#5c2d6b' : '#3a7a48'
-  const hillFill = isNight ? '#1e3d1e' : '#4a8c3f'
 
   return (
     <div ref={ref} style={{ position: 'absolute', inset: 0, background: skyBg, overflow: 'hidden', transition: 'background 8s ease' }}>
@@ -62,16 +59,23 @@ export function McBackdrop() {
           boxShadow: '0 0 32px #FFD700ee, 0 0 80px #FFD70077',
         }} />
       )}
-      {/* Moon arc (night) — crescent */}
+      {/* Moon arc (night) — SVG mask crescent */}
       {isNight && (
         <div style={{
           position: 'absolute', left: sunLeft, bottom: sunBottom,
           transform: 'translate(-50%, 50%)',
-          width: 32, height: 32,
-          overflow: 'hidden',
+          filter: 'drop-shadow(0 0 12px #fef08a88) drop-shadow(0 0 30px #fef08a44)',
+          pointerEvents: 'none',
         }}>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#fef9c3', boxShadow: '0 0 22px #fef08a99, 0 0 55px #fef08a44', position: 'absolute' }} />
-          <div style={{ width: 26, height: 26, borderRadius: '50%', background: '#05091a', position: 'absolute', top: -2, left: 8 }} />
+          <svg viewBox="0 0 32 32" width="32" height="32" style={{ imageRendering: 'auto', display: 'block' }}>
+            <defs>
+              <mask id="crescent-mask">
+                <rect width="32" height="32" fill="white"/>
+                <circle cx="22" cy="11" r="14" fill="black"/>
+              </mask>
+            </defs>
+            <circle cx="14" cy="16" r="14" fill="#fef9c3" mask="url(#crescent-mask)"/>
+          </svg>
         </div>
       )}
       {/* Clouds (day/transition) */}
@@ -87,45 +91,71 @@ export function McBackdrop() {
           filter: 'blur(7px)',
         }} />
       ))}
-      {/* Far mountains — stepped triangular peaks */}
+      {/* Far mountains — smooth, hazy, truly distant */}
       {W > 0 && (
-        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '40%', imageRendering: 'pixelated' }}
-          viewBox={`0 0 ${W} 120`} preserveAspectRatio="none" shapeRendering="crispEdges">
-          {/* Mountain 1: center~17%W, peak y=35, 4 steps sw=4%W sh=14 */}
-          <path d={`M${W*0.01},120 L${W*0.01},90 L${W*0.05},90 L${W*0.05},76 L${W*0.09},76 L${W*0.09},62 L${W*0.13},62 L${W*0.13},48 L${W*0.17},48 L${W*0.17},35 L${W*0.21},35 L${W*0.21},48 L${W*0.25},48 L${W*0.25},62 L${W*0.29},62 L${W*0.29},76 L${W*0.33},76 L${W*0.33},90 L${W*0.33},120 Z`}
-            fill={mtFill} opacity={0.65} />
-          <path d={`M${W*0.09},62 L${W*0.09},48 L${W*0.13},48 L${W*0.13},35 L${W*0.21},35 L${W*0.21},48 L${W*0.25},48 L${W*0.25},62 Z`}
-            fill="#e8edf0" opacity={0.85} />
-          {/* Mountain 2: center~43%W, peak y=10, 5 steps sw=4%W sh=16 */}
-          <path d={`M${W*0.23},120 L${W*0.23},90 L${W*0.27},90 L${W*0.27},74 L${W*0.31},74 L${W*0.31},58 L${W*0.35},58 L${W*0.35},42 L${W*0.39},42 L${W*0.39},26 L${W*0.43},26 L${W*0.43},10 L${W*0.47},10 L${W*0.47},26 L${W*0.51},26 L${W*0.51},42 L${W*0.55},42 L${W*0.55},58 L${W*0.59},58 L${W*0.59},74 L${W*0.63},74 L${W*0.63},90 L${W*0.63},120 Z`}
-            fill={mtFill} opacity={0.75} />
-          <path d={`M${W*0.35},42 L${W*0.35},26 L${W*0.39},26 L${W*0.39},10 L${W*0.47},10 L${W*0.47},26 L${W*0.51},26 L${W*0.51},42 Z`}
-            fill="#e8edf0" opacity={0.85} />
-          {/* Mountain 3: center~65%W, peak y=20, 5 steps sw=4%W sh=14 */}
-          <path d={`M${W*0.45},120 L${W*0.45},90 L${W*0.49},90 L${W*0.49},76 L${W*0.53},76 L${W*0.53},62 L${W*0.57},62 L${W*0.57},48 L${W*0.61},48 L${W*0.61},34 L${W*0.65},34 L${W*0.65},20 L${W*0.69},20 L${W*0.69},34 L${W*0.73},34 L${W*0.73},48 L${W*0.77},48 L${W*0.77},62 L${W*0.81},62 L${W*0.81},76 L${W*0.85},76 L${W*0.85},90 L${W*0.85},120 Z`}
-            fill={mt2Fill} opacity={0.75} />
-          <path d={`M${W*0.57},48 L${W*0.57},34 L${W*0.61},34 L${W*0.61},20 L${W*0.69},20 L${W*0.69},34 L${W*0.73},34 L${W*0.73},48 Z`}
-            fill="#e8edf0" opacity={0.85} />
-          {/* Mountain 4: center~85%W, peak y=26, 4 steps sw=4%W sh=16 */}
-          <path d={`M${W*0.69},120 L${W*0.69},90 L${W*0.73},90 L${W*0.73},74 L${W*0.77},74 L${W*0.77},58 L${W*0.81},58 L${W*0.81},42 L${W*0.85},42 L${W*0.85},26 L${W*0.89},26 L${W*0.89},42 L${W*0.93},42 L${W*0.93},58 L${W*0.97},58 L${W*0.97},74 L${W},74 L${W},90 L${W},120 Z`}
-            fill={mt2Fill} opacity={0.70} />
-          <path d={`M${W*0.77},58 L${W*0.77},42 L${W*0.81},42 L${W*0.81},26 L${W*0.89},26 L${W*0.89},42 L${W*0.93},42 L${W*0.93},58 Z`}
-            fill="#e8edf0" opacity={0.85} />
+        <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '10%',
+          filter: 'blur(5px) brightness(1.3) saturate(0.3) opacity(0.55)',
+          imageRendering: 'auto' }}
+          viewBox={`0 0 ${W} 100`} preserveAspectRatio="none">
+          {/* Background mountain range — very smooth, very distant */}
+          <polygon points={`0,100 0,60 ${W*0.05},35 ${W*0.1},55 ${W*0.16},18 ${W*0.2},50 ${W*0.27},8 ${W*0.31},42 ${W*0.38},22 ${W*0.43},55 ${W*0.49},4 ${W*0.53},38 ${W*0.59},28 ${W*0.64},55 ${W*0.7},12 ${W*0.74},48 ${W*0.81},20 ${W*0.85},52 ${W*0.91},6 ${W*0.95},44 ${W},30 ${W},100`}
+            fill={isNight ? '#0a1828' : isTransition ? '#3a2848' : '#5a7898'} />
+          {/* Foreground mountain range — slightly different silhouette */}
+          <polygon points={`0,100 0,72 ${W*0.07},55 ${W*0.14},68 ${W*0.22},42 ${W*0.29},65 ${W*0.37},35 ${W*0.44},62 ${W*0.52},45 ${W*0.58},68 ${W*0.65},30 ${W*0.71},60 ${W*0.78},48 ${W*0.84},65 ${W*0.9},38 ${W*0.96},60 ${W},50 ${W},100`}
+            fill={isNight ? '#0d2030' : isTransition ? '#4a3058' : '#6888a8'} opacity={0.9} />
         </svg>
       )}
-      {/* Near hills — stepped triangular peaks, no snow */}
+      {/* Near hills — 3-layer stepped, lush depth */}
       {W > 0 && (
         <svg style={{ position: 'absolute', bottom: 28, left: 0, width: '100%', height: '25%', imageRendering: 'pixelated' }}
           viewBox={`0 0 ${W} 80`} preserveAspectRatio="none" shapeRendering="crispEdges">
-          {/* Hill 1: center~20%W, peak y=26, 4 steps sw=5%W sh=11 */}
-          <path d={`M0,80 L0,70 L${W*0.05},70 L${W*0.05},59 L${W*0.10},59 L${W*0.10},48 L${W*0.15},48 L${W*0.15},37 L${W*0.20},37 L${W*0.20},26 L${W*0.25},26 L${W*0.25},37 L${W*0.30},37 L${W*0.30},48 L${W*0.35},48 L${W*0.35},59 L${W*0.40},59 L${W*0.40},70 L${W*0.40},80 Z`}
-            fill={hillFill} opacity={0.95} />
-          {/* Hill 2: center~55%W, peak y=15, 5 steps sw=5%W sh=11 */}
-          <path d={`M${W*0.30},80 L${W*0.30},70 L${W*0.35},70 L${W*0.35},59 L${W*0.40},59 L${W*0.40},48 L${W*0.45},48 L${W*0.45},37 L${W*0.50},37 L${W*0.50},26 L${W*0.55},26 L${W*0.55},15 L${W*0.60},15 L${W*0.60},26 L${W*0.65},26 L${W*0.65},37 L${W*0.70},37 L${W*0.70},48 L${W*0.75},48 L${W*0.75},59 L${W*0.80},59 L${W*0.80},70 L${W*0.80},80 Z`}
-            fill={hillFill} opacity={0.95} />
-          {/* Hill 3: center~85%W, peak y=31, 3 steps sw=5%W sh=13 */}
-          <path d={`M${W*0.70},80 L${W*0.70},70 L${W*0.75},70 L${W*0.75},57 L${W*0.80},57 L${W*0.80},44 L${W*0.85},44 L${W*0.85},31 L${W*0.90},31 L${W*0.90},44 L${W*0.95},44 L${W*0.95},57 L${W},57 L${W},70 L${W},80 Z`}
-            fill={hillFill} opacity={0.95} />
+
+          {/* ── Hill 1 (left, peak ~18%W) ── */}
+          {/* Base layer - darkest green (shadow/underside) */}
+          <path d={`M0,80 L0,72 L${W*0.025},72 L${W*0.025},64 L${W*0.05},64 L${W*0.05},56 L${W*0.075},56 L${W*0.075},48 L${W*0.10},48 L${W*0.10},40 L${W*0.125},40 L${W*0.125},33 L${W*0.15},33 L${W*0.15},27 L${W*0.175},27 L${W*0.175},33 L${W*0.20},33 L${W*0.20},40 L${W*0.225},40 L${W*0.225},48 L${W*0.25},48 L${W*0.25},56 L${W*0.275},56 L${W*0.275},64 L${W*0.30},64 L${W*0.30},72 L${W*0.30},80 Z`}
+            fill={isNight ? '#0e2a0e' : '#2d5a1a'} />
+          {/* Mid layer - medium green */}
+          <path d={`M${W*0.025},72 L${W*0.025},66 L${W*0.05},66 L${W*0.05},58 L${W*0.075},58 L${W*0.075},50 L${W*0.10},50 L${W*0.10},42 L${W*0.125},42 L${W*0.125},35 L${W*0.15},35 L${W*0.15},29 L${W*0.175},29 L${W*0.175},35 L${W*0.20},35 L${W*0.20},42 L${W*0.225},42 L${W*0.225},50 L${W*0.25},50 L${W*0.25},58 L${W*0.275},58 L${W*0.275},66 L${W*0.30},66 L${W*0.30},72 Z`}
+            fill={isNight ? '#173d17' : '#3d7a22'} />
+          {/* Top layer - bright green grass */}
+          <path d={`M${W*0.05},64 L${W*0.05},60 L${W*0.075},60 L${W*0.075},52 L${W*0.10},52 L${W*0.10},44 L${W*0.125},44 L${W*0.125},37 L${W*0.15},37 L${W*0.15},31 L${W*0.175},31 L${W*0.175},37 L${W*0.20},37 L${W*0.20},44 L${W*0.225},44 L${W*0.225},52 L${W*0.25},52 L${W*0.25},60 L${W*0.275},60 L${W*0.275},64 Z`}
+            fill={isNight ? '#1f5420' : '#4eaa2e'} />
+          {/* Highlight strip — very top steps */}
+          <path d={`M${W*0.125},38 L${W*0.125},36 L${W*0.15},36 L${W*0.15},30 L${W*0.175},30 L${W*0.175},36 L${W*0.20},36 L${W*0.20},38 Z`}
+            fill={isNight ? '#2a6e2a' : '#5ec435'} />
+          {/* Rock texture at base (dark gray-brown patches) */}
+          <rect x={W*0.03} y={70} width={W*0.02} height={5} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.6} />
+          <rect x={W*0.12} y={66} width={W*0.015} height={4} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.5} />
+          <rect x={W*0.23} y={68} width={W*0.02} height={4} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.5} />
+
+          {/* ── Hill 2 (center, peak ~52%W, tallest) ── */}
+          <path d={`M${W*0.25},80 L${W*0.25},72 L${W*0.275},72 L${W*0.275},64 L${W*0.30},64 L${W*0.30},56 L${W*0.325},56 L${W*0.325},48 L${W*0.35},48 L${W*0.35},40 L${W*0.375},40 L${W*0.375},32 L${W*0.40},32 L${W*0.40},24 L${W*0.425},24 L${W*0.425},16 L${W*0.45},16 L${W*0.45},10 L${W*0.50},10 L${W*0.50},16 L${W*0.525},16 L${W*0.525},24 L${W*0.55},24 L${W*0.55},32 L${W*0.575},32 L${W*0.575},40 L${W*0.60},40 L${W*0.60},48 L${W*0.625},48 L${W*0.625},56 L${W*0.65},56 L${W*0.65},64 L${W*0.675},64 L${W*0.675},72 L${W*0.70},72 L${W*0.70},80 Z`}
+            fill={isNight ? '#0e2a0e' : '#2d5a1a'} />
+          <path d={`M${W*0.275},72 L${W*0.275},66 L${W*0.30},66 L${W*0.30},58 L${W*0.325},58 L${W*0.325},50 L${W*0.35},50 L${W*0.35},42 L${W*0.375},42 L${W*0.375},34 L${W*0.40},34 L${W*0.40},26 L${W*0.425},26 L${W*0.425},18 L${W*0.45},18 L${W*0.45},12 L${W*0.50},12 L${W*0.50},18 L${W*0.525},18 L${W*0.525},26 L${W*0.55},26 L${W*0.55},34 L${W*0.575},34 L${W*0.575},42 L${W*0.60},42 L${W*0.60},50 L${W*0.625},50 L${W*0.625},58 L${W*0.65},58 L${W*0.65},66 L${W*0.675},66 L${W*0.675},72 Z`}
+            fill={isNight ? '#173d17' : '#3d7a22'} />
+          <path d={`M${W*0.30},64 L${W*0.30},58 L${W*0.325},58 L${W*0.325},50 L${W*0.35},50 L${W*0.35},42 L${W*0.375},42 L${W*0.375},34 L${W*0.40},34 L${W*0.40},26 L${W*0.425},26 L${W*0.425},18 L${W*0.45},18 L${W*0.45},14 L${W*0.50},14 L${W*0.50},18 L${W*0.525},18 L${W*0.525},26 L${W*0.55},26 L${W*0.55},34 L${W*0.575},34 L${W*0.575},42 L${W*0.60},42 L${W*0.60},50 L${W*0.625},50 L${W*0.625},58 L${W*0.65},58 L${W*0.65},64 Z`}
+            fill={isNight ? '#1f5420' : '#4eaa2e'} />
+          <path d={`M${W*0.40},28 L${W*0.40},22 L${W*0.425},22 L${W*0.425},14 L${W*0.45},14 L${W*0.45},10 L${W*0.50},10 L${W*0.50},14 L${W*0.525},14 L${W*0.525},22 L${W*0.55},22 L${W*0.55},28 Z`}
+            fill={isNight ? '#2a6e2a' : '#5ec435'} />
+          {/* Rock patches on hill 2 */}
+          <rect x={W*0.28} y={70} width={W*0.02} height={5} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.6} />
+          <rect x={W*0.38} y={62} width={W*0.015} height={4} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.5} />
+          <rect x={W*0.47} y={56} width={W*0.015} height={4} fill="#5a6040" opacity={0.4} />
+          <rect x={W*0.62} y={64} width={W*0.02} height={4} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.5} />
+
+          {/* ── Hill 3 (right, peak ~85%W) ── */}
+          <path d={`M${W*0.65},80 L${W*0.65},72 L${W*0.675},72 L${W*0.675},64 L${W*0.70},64 L${W*0.70},56 L${W*0.725},56 L${W*0.725},48 L${W*0.75},48 L${W*0.75},40 L${W*0.775},40 L${W*0.775},32 L${W*0.80},32 L${W*0.80},26 L${W*0.825},26 L${W*0.825},32 L${W*0.85},32 L${W*0.85},40 L${W*0.875},40 L${W*0.875},48 L${W*0.90},48 L${W*0.90},56 L${W*0.925},56 L${W*0.925},64 L${W*0.95},64 L${W*0.95},72 L${W},72 L${W},80 Z`}
+            fill={isNight ? '#0e2a0e' : '#2d5a1a'} />
+          <path d={`M${W*0.675},72 L${W*0.675},66 L${W*0.70},66 L${W*0.70},58 L${W*0.725},58 L${W*0.725},50 L${W*0.75},50 L${W*0.75},42 L${W*0.775},42 L${W*0.775},34 L${W*0.80},34 L${W*0.80},28 L${W*0.825},28 L${W*0.825},34 L${W*0.85},34 L${W*0.85},42 L${W*0.875},42 L${W*0.875},50 L${W*0.90},50 L${W*0.90},58 L${W*0.925},58 L${W*0.925},66 L${W*0.95},66 L${W*0.95},72 Z`}
+            fill={isNight ? '#173d17' : '#3d7a22'} />
+          <path d={`M${W*0.70},64 L${W*0.70},58 L${W*0.725},58 L${W*0.725},50 L${W*0.75},50 L${W*0.75},42 L${W*0.775},42 L${W*0.775},34 L${W*0.80},34 L${W*0.80},28 L${W*0.825},28 L${W*0.825},34 L${W*0.85},34 L${W*0.85},42 L${W*0.875},42 L${W*0.875},50 L${W*0.90},50 L${W*0.90},58 L${W*0.925},58 L${W*0.925},64 Z`}
+            fill={isNight ? '#1f5420' : '#4eaa2e'} />
+          <path d={`M${W*0.775},34 L${W*0.775},28 L${W*0.80},28 L${W*0.80},24 L${W*0.825},24 L${W*0.825},28 L${W*0.85},28 L${W*0.85},34 Z`}
+            fill={isNight ? '#2a6e2a' : '#5ec435'} />
+          {/* Rock patches on hill 3 */}
+          <rect x={W*0.68} y={70} width={W*0.02} height={5} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.6} />
+          <rect x={W*0.77} y={60} width={W*0.015} height={4} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.5} />
+          <rect x={W*0.88} y={62} width={W*0.02} height={4} fill={isNight ? '#0a1e0a' : '#4a6830'} opacity={0.5} />
         </svg>
       )}
       {/* Ground */}
