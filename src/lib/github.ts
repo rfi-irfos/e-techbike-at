@@ -13,13 +13,13 @@ const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'publ
 
 export { CONTENT_PATH, UPLOADS_DIR }
 
-// The admin password authenticates writes to the proxy. Kept in sessionStorage
-// (this tab only); never a GitHub token, never persisted to disk.
+// The admin password authenticates writes to the proxy. Persisted in localStorage
+// so the admin stays logged in across browser restarts.
 const PW_KEY = 'admin_pw'
 let _pw = ''
-try { _pw = sessionStorage.getItem(PW_KEY) || '' } catch { /* no storage */ }
-export function setAdminPw(p: string) { _pw = p; try { sessionStorage.setItem(PW_KEY, p) } catch { /* ignore */ } }
-export function clearAdminPw() { _pw = ''; try { sessionStorage.removeItem(PW_KEY) } catch { /* ignore */ } }
+try { _pw = localStorage.getItem(PW_KEY) || '' } catch { /* no storage */ }
+export function setAdminPw(p: string) { _pw = p; try { localStorage.setItem(PW_KEY, p) } catch { /* ignore */ } }
+export function clearAdminPw() { _pw = ''; try { localStorage.removeItem(PW_KEY) } catch { /* ignore */ } }
 export function hasAdminPw() { return !!_pw }
 
 const readHeaders = { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }
