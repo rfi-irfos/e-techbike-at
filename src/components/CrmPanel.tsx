@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import type { Customer, Transaction, CRMData } from '../types/crm'
-import { ghRead, ghWrite, b64Encode, b64Decode, ghTraffic } from '../lib/github'
+import { proxyRead, proxyWrite, b64Encode, b64Decode, ghTraffic } from '../lib/github'
 import { McBackdrop, CrmScene } from './MCMobs'
 
 interface GhTrafficData {
@@ -355,7 +355,7 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
   async function loadData() {
     setLoading(true)
     try {
-      const file = await ghRead(CUSTOMERS_PATH)
+      const file = await proxyRead(CUSTOMERS_PATH)
       shaRef.current = file.sha
       const json = b64Decode(file.content)
       const parsed = JSON.parse(json)
@@ -377,8 +377,8 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
     setSaving(true)
     try {
       const b64 = b64Encode(JSON.stringify(updated, null, 2))
-      const file = await ghWrite(CUSTOMERS_PATH, b64, shaRef.current, 'crm: update data')
-      shaRef.current = file?.sha ?? null
+      await proxyWrite(CUSTOMERS_PATH, b64)
+      shaRef.current = null
       setData(updated)
       return true
     } catch (e) {
