@@ -2596,11 +2596,11 @@
       },
       {
         "id": "p23",
-        "name": "Kuba GREE08",
+        "name": "<h1 class=\"product-details__product-title ec-header-h3\" itemprop=\"name\" style=\"margin: 0px 0px 16px; border: 0px; font-size: 22px; vertical-align: baseline; clear: none; line-height: 1.3; opacity: 1; min-width: 0px; max-width: none; min-height: 0px; max-height: none; background: none rgb(255, 255, 255); box-shadow: none; transform: none; transform-origin: center center; transition: none; overflow-wrap: break-word; color: rgb(51, 51, 51); font-family: &quot;Root UI&quot;, system-ui, &quot;Segoe UI&quot;, Roboto, Arial, sans-serif;\">E-Scooter, E-Moped Elektrischer Roller KUBA GREE08</h1>",
         "badge": "Beliebt",
-        "category": "E-Scooter 45 km/h",
+        "category": "E-Bikes",
         "description": "3000W, 236 kg Zuladung, nur €1,00 pro 100 km: der FALCON 3400 ist der stärkste 45-km/h-Scooter im Sortiment — Alarmanlage und L3e-Zulassung inbegriffen.",
-        "price": "€1.690,00",
+        "price": "€750",
         "image": "uploads/etb-moped-city.jpg",
         "specs": [
           "45 km/h",
@@ -2829,7 +2829,7 @@
       {
         "id": "p20",
         "name": "KUBA BLUES E-Moped",
-        "badge": "",
+        "badge": "Bestseller",
         "category": "E-Scooter 25 km/h",
         "description": "Kraftvolles 1200W E-Moped mit 25 km/h Zulassung. Wählbarer Akku: 40Ah oder 78Ah Reichweite.",
         "price": "€990,00",
