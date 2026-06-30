@@ -263,7 +263,7 @@ export function LaziPanel() {
           <div className="lazi-kontakte">
             <div className="lazi-contact-card">
               <div className="lazi-contact-name">Mama</div>
-              <div className="lazi-contact-email">lauzitimi2@gmail.com</div>
+              <div className="lazi-contact-email">lacitimi2@gmail.com</div>
             </div>
             <div className="lazi-contact-card">
               <div className="lazi-contact-name">Bikely Wien</div>

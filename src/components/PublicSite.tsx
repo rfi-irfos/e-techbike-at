@@ -241,51 +241,14 @@ function TrustIcon({ icon }: { icon: string }) {
 
 function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
-  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
 
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
-    if (!key) {
-      // Fallback: open mailto pre-filled
-      const body = encodeURIComponent(`Name: ${form.name}\nTelefon: ${form.phone}\n\n${form.message}`)
-      window.location.href = `mailto:graz@bikelyshop.at?subject=Kontaktanfrage von ${encodeURIComponent(form.name)}&body=${body}`
-      return
-    }
-    setStatus('sending')
-    try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: key,
-          subject: `Kontaktanfrage von ${form.name}`,
-          ...form,
-        }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        try {
-          const inbox = JSON.parse(localStorage.getItem('rfi_contact_inbox') || '[]')
-          inbox.unshift({ ...form, ts: new Date().toISOString() })
-          localStorage.setItem('rfi_contact_inbox', JSON.stringify(inbox))
-        } catch { /* non-critical */ }
-      }
-      setStatus(data.success ? 'ok' : 'err')
-    } catch {
-      setStatus('err')
-    }
-  }
-
-  if (status === 'ok') {
-    return (
-      <div className="site-contact-form-success">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <p>Danke! Wir melden uns bald bei Ihnen.</p>
-      </div>
-    )
+    const subject = `Kontaktanfrage von ${form.name}`
+    const body = `Name: ${form.name}\nE-Mail: ${form.email}\nTelefon: ${form.phone}\n\n${form.message}`
+    window.location.href = `mailto:lacitimi2@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   }
 
   return (
@@ -296,10 +259,9 @@ function ContactForm() {
       </div>
       <input placeholder="Telefon (optional)" value={form.phone} onChange={e => set('phone', e.target.value)} />
       <textarea placeholder="Ihre Nachricht …" rows={4} required value={form.message} onChange={e => set('message', e.target.value)} />
-      <button type="submit" disabled={status === 'sending'} className="site-contact-form-btn">
-        {status === 'sending' ? 'Wird gesendet…' : 'Nachricht senden'}
+      <button type="submit" className="site-contact-form-btn">
+        Nachricht senden
       </button>
-      {status === 'err' && <p className="site-contact-form-err">Fehler beim Senden. Bitte versuchen Sie es erneut.</p>}
     </form>
   )
 }

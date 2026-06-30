@@ -11,7 +11,6 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
   const [selectedId, setSelectedId] = useState(preselectedProductId ?? products[0]?.id ?? '')
   const [variantSelections, setVariantSelections] = useState<Record<number, string>>({})
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' })
-  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
 
   const selectedProduct = products.find(p => p.id === selectedId) ?? null
 
@@ -33,50 +32,19 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
 
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
     const productName = selectedProduct?.name ?? ''
 
     const variantenStr = selectedProduct?.variants
       ?.map((v, i) => `${v.label}: ${variantSelections[i] ?? v.options[0] ?? ''}`)
       .join(', ') ?? ''
 
-    if (!key) {
-      const body = encodeURIComponent(
-        `Produkt: ${productName}\n${variantenStr ? `Sonderausführungen: ${variantenStr}\n` : ''}Name: ${form.name}\nTelefon: ${form.phone}\n\n${form.message}`
-      )
-      window.location.href = `mailto:?subject=${encodeURIComponent(`Neue Anfrage: ${productName}`)}&body=${body}`
-      return
-    }
-
-    setStatus('sending')
-    try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: key,
-          subject: `Neue Anfrage: ${productName}`,
-          name: form.name,
-          email: form.email || 'keine angabe',
-          replyto: form.email || '',
-          produkt: productName,
-          varianten: variantenStr,
-          telefon: form.phone,
-          nachricht: form.message,
-        }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        setStatus('ok')
-        setTimeout(() => onClose(), 2500)
-      } else {
-        setStatus('err')
-      }
-    } catch {
-      setStatus('err')
-    }
+    const body =
+      `Produkt: ${productName}\n${variantenStr ? `Sonderausführungen: ${variantenStr}\n` : ''}` +
+      `Name: ${form.name}\nTelefon: ${form.phone}\nE-Mail: ${form.email}\n\n${form.message}`
+    window.location.href = `mailto:lacitimi2@gmail.com?subject=${encodeURIComponent(`Neue Anfrage: ${productName}`)}&body=${encodeURIComponent(body)}`
+    onClose()
   }
 
   return (
@@ -91,15 +59,7 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
           </button>
         </div>
 
-        {status === 'ok' ? (
-          <div className="inquiry-success">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-            <p>Danke! Wir melden uns bald.</p>
-          </div>
-        ) : (
-          <form className="inquiry-form" onSubmit={submit}>
+        <form className="inquiry-form" onSubmit={submit}>
             {/* Product selector */}
             <div className="inquiry-field">
               <label htmlFor="inq-product">Produkt</label>
@@ -183,15 +143,10 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
               />
             </div>
 
-            {status === 'err' && (
-              <p className="inquiry-error">Fehler beim Senden. Bitte versuchen Sie es erneut.</p>
-            )}
-
-            <button type="submit" className="inquiry-submit" disabled={status === 'sending'}>
-              {status === 'sending' ? 'Wird gesendet…' : 'Anfrage abschicken'}
+            <button type="submit" className="inquiry-submit">
+              Anfrage abschicken
             </button>
-          </form>
-        )}
+        </form>
       </div>
     </div>
   )
