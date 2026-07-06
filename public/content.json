@@ -766,10 +766,10 @@
         "category": "Kabinenroller",
         "description": "Zweisitziger Elektro-Kabinenroller als echte Auto-Alternative. 45 km/h, bis 120 km Reichweite mit 2 Akkus. Steuerfrei, Versicherung ab ~€60/Jahr, ~€1,10 Strom pro 100 km.",
         "price": "€7.099,00",
-        "image": "https://d2j6dbq0eux0bg.cloudfront.net/images/98192009/products/810761832/5535070268.jpg",
+        "image": "uploads/etb-futura-two-1.jpg",
         "images": [
-          "https://d2j6dbq0eux0bg.cloudfront.net/images/98192009/products/810761832/5535070268.jpg",
-          "https://d2j6dbq0eux0bg.cloudfront.net/images/98192009/products/810761798/5535038613.png"
+          "uploads/etb-futura-two-1.jpg",
+          "uploads/etb-futura-two-2.png"
         ],
         "specs": [
           "45 km/h",
