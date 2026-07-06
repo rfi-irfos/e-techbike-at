@@ -569,7 +569,7 @@
         "id": "p4",
         "name": "Bikely ZL9 E-Moped",
         "badge": "",
-        "category": "E-Scooter",
+        "category": "E-Scooter 25 km/h",
         "description": "Kompaktes E-Moped 25 km/h mit auswechselbarem Akku. Transportbox inklusive, ideal für die Stadt.",
         "price": "€890,00",
         "image": "uploads/etb-bikely-zl9.jpg",
@@ -2595,88 +2595,6 @@
         "delivery": "Kostenloser Versand. Lieferzeit 5–7 Werktage."
       },
       {
-        "id": "p23",
-        "name": "<h1 class=\"product-details__product-title ec-header-h3\" itemprop=\"name\" style=\"margin: 0px 0px 16px; border: 0px; font-size: 22px; vertical-align: baseline; clear: none; line-height: 1.3; opacity: 1; min-width: 0px; max-width: none; min-height: 0px; max-height: none; background: none rgb(255, 255, 255); box-shadow: none; transform: none; transform-origin: center center; transition: none; overflow-wrap: break-word; color: rgb(51, 51, 51); font-family: &quot;Root UI&quot;, system-ui, &quot;Segoe UI&quot;, Roboto, Arial, sans-serif;\">E-Scooter, E-Moped Elektrischer Roller KUBA GREE08</h1>",
-        "badge": "Beliebt",
-        "category": "E-Bikes",
-        "description": "3000W, 236 kg Zuladung, nur €1,00 pro 100 km: der FALCON 3400 ist der stärkste 45-km/h-Scooter im Sortiment — Alarmanlage und L3e-Zulassung inbegriffen.",
-        "price": "€750",
-        "image": "uploads/etb-moped-city.jpg",
-        "specs": [
-          "45 km/h",
-          "CE/EEC",
-          "Straßenzulassung"
-        ],
-        "specsTable": [
-          {
-            "label": "Motor",
-            "value": "72V 3000W"
-          },
-          {
-            "label": "Höchstgeschwindigkeit",
-            "value": "45 km/h"
-          },
-          {
-            "label": "Reichweite",
-            "value": "bis 60 km"
-          },
-          {
-            "label": "Akkukapazität",
-            "value": "72V 20Ah"
-          },
-          {
-            "label": "Batterietyp",
-            "value": "Li-Ion / Bleigel"
-          },
-          {
-            "label": "Ladezeit",
-            "value": "6–7 Stunden"
-          },
-          {
-            "label": "Ladegerät",
-            "value": "72V / 3A"
-          },
-          {
-            "label": "Reifen",
-            "value": "12 Zoll Tubeless (vorne & hinten)"
-          },
-          {
-            "label": "Bremsen",
-            "value": "Scheibenbremsen"
-          },
-          {
-            "label": "Max. Zuladung",
-            "value": "236 kg"
-          },
-          {
-            "label": "Steigung",
-            "value": "20%"
-          },
-          {
-            "label": "Gewicht",
-            "value": "95 kg"
-          },
-          {
-            "label": "Ausstattung",
-            "value": "2 Rückspiegel, Alarmanlage"
-          },
-          {
-            "label": "Betriebskosten",
-            "value": "ca. €1,00 / 100 km"
-          },
-          {
-            "label": "Zulassung",
-            "value": "CE/EEC · L3e · StVO-konform"
-          },
-          {
-            "label": "Führerschein",
-            "value": "Klasse A1 oder AM"
-          }
-        ],
-        "details": "<ul><li>Kraftvoller 3000W / 72V Motor</li><li>Sportliches Design mit maximaler Zuladung (236 kg)</li><li>Alarmanlage serienmäßig</li><li>Extrem günstige Betriebskosten: ca. €1,00 / 100 km</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Vormontierte Lieferung (ca. 90%)</li><li>Förderfähig: bis zu €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
-        "delivery": "Lieferung frei Haus österreichweit. Lieferzeit 5–7 Werktage."
-      },
-      {
         "id": "p24",
         "name": "Bikely E-Chopper Blake",
         "badge": "",
@@ -2759,7 +2677,7 @@
         "id": "p19",
         "name": "KUBA GREE08 E-Scooter",
         "badge": "Bestseller",
-        "category": "E-Scooter",
+        "category": "E-Scooter 25 km/h",
         "description": "Kompaktes Stadt-Elektromoped mit auswechselbarem Akku und großer Reichweite. 25–45 km/h, CE/EEC.",
         "price": "€749,00",
         "image": "uploads/etb-moped-city-silver.jpg",
