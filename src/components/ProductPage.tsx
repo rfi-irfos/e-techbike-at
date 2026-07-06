@@ -139,23 +139,19 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
               </Accordion>
             )}
 
-            {(product.variants?.length ?? 0) > 0 && (
-              <div className="prodpage-variants">
-                <div className="prodpage-variants-title">Sonderausführungen</div>
-                {product.variants!.map((v, vi) => (
-                  <div key={vi} className="prodpage-variant-row">
-                    <span className="prodpage-variant-label">{v.label}</span>
-                    <div className="prodpage-variant-chips">
-                      {v.options.map((opt, oi) => (
-                        <span key={oi} className="prodpage-variant-chip">
-                          {opt.value}{opt.price && <span className="prodpage-variant-chip-price"> — {opt.price}</span>}
-                        </span>
-                      ))}
-                    </div>
+            {product.variants?.map((v, vi) => (
+              (v.options?.length ?? 0) > 0 && (
+                <Accordion key={vi} title={v.label || 'Sonderausführungen'}>
+                  <div className="prodpage-variant-chips">
+                    {v.options.map((opt, oi) => (
+                      <span key={oi} className="prodpage-variant-chip">
+                        {opt.value}{opt.price && <span className="prodpage-variant-chip-price"> — {opt.price}</span>}
+                      </span>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
+                </Accordion>
+              )
+            ))}
 
             <div className="prod-modal-ctas prodpage-ctas">
               <button type="button" className="prodpage-inquiry-btn" onClick={() => setInquiryOpen(true)}>

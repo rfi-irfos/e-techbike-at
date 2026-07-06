@@ -2247,10 +2247,6 @@ button { cursor: pointer; font-family: inherit; }
 .mc-theme .builder-brand-dot { background: #5DC845; border-radius: 0; }
 
 /* ── Product page variants ───────────────────────────────────────────────── */
-.prodpage-variants { margin: 18px 0; padding: 16px; background: var(--surface-subtle, #f8f8f8); border-radius: 10px; border: 1px solid rgba(0,0,0,.07); }
-.prodpage-variants-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #777; margin-bottom: 12px; }
-.prodpage-variant-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
-.prodpage-variant-label { font-size: 13px; font-weight: 700; color: var(--text, #111); min-width: 80px; flex-shrink: 0; }
 .prodpage-variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .prodpage-variant-chip { display: inline-block; padding: 3px 10px; border-radius: 99px; background: var(--primary, #0073b1); color: #fff; font-size: 12px; font-weight: 600; }
 .prodpage-variant-chip-price { font-weight: 400; opacity: 0.85; }
