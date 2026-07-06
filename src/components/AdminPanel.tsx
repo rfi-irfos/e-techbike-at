@@ -699,7 +699,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                     </Field>
                     <Field label="Kategorie">
                       <select value={editingProd.category} onChange={e => updateProduct(editingProd.id, 'category', e.target.value)}>
-                        {(draft.products?.tabs?.filter(t => t !== 'Alle') ?? ['E-Bikes']).map(t => (
+                        {(draft.categories?.items?.map(c => c.name) ?? ['E-Bikes']).map(t => (
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
