@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { SiteContent, PageItem } from '../types/content'
+import { sanitizeHtml } from '../lib/sanitize'
 
 function isAdminLoggedIn(): boolean {
   try { return localStorage.getItem('rfi_admin_ok') === '1' } catch { return false }
@@ -33,7 +34,7 @@ export function DynamicPage({ page, content }: { page: PageItem; content: SiteCo
       <main className="static-page-main">
         <div className="static-page-content">
           <h1>{page.title}</h1>
-          <div className="dynamic-page-body" dangerouslySetInnerHTML={{ __html: page.body }} />
+          <div className="dynamic-page-body" dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body) }} />
         </div>
       </main>
     </div>

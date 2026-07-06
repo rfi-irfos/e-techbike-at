@@ -39,10 +39,23 @@ export function useContent() {
   const save = useCallback(async (updated: SiteContent): Promise<boolean> => {
     setSaving(true)
     try {
-      const sha = await ensureSha()
       const b64 = b64Encode(JSON.stringify(updated, null, 2))
-      const file = await ghWrite(CONTENT_PATH, b64, sha, 'content: update via admin panel')
-      shaRef.current = file?.sha ?? null
+      const sha = await ensureSha()
+      try {
+        const file = await ghWrite(CONTENT_PATH, b64, sha, 'content: update via admin panel')
+        shaRef.current = file?.sha ?? null
+      } catch (e) {
+        // Stale sha (someone else — e.g. a direct git push — updated content.json
+        // since this tab loaded): refetch the current sha and retry once.
+        if (e instanceof Error && e.message.includes('(409)')) {
+          shaRef.current = null
+          const freshSha = await ensureSha()
+          const file = await ghWrite(CONTENT_PATH, b64, freshSha, 'content: update via admin panel')
+          shaRef.current = file?.sha ?? null
+        } else {
+          throw e
+        }
+      }
       setContent(updated)
       return true
     } catch (e) {

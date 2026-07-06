@@ -5,6 +5,7 @@ import { PublicSite } from './PublicSite'
 import { CrmPanel } from './CrmPanel'
 import { useTestimonials } from '../lib/useTestimonials'
 import type { Testimonial } from '../types/testimonials'
+import { sanitizeHtml } from '../lib/sanitize'
 
 interface Props {
   content: SiteContent
@@ -199,6 +200,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [saved, setSaved] = useState(false)
   const [uploadTarget, setUploadTarget] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState(false)
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
   const [editingCategory, setEditingCategory] = useState<string | null>(null)
@@ -211,7 +213,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
   const [saveError, setSaveError] = useState(false)
-  const { testimonials, saving: testimonialsSaving, add: addTestimonial, update: updateTestimonial, remove: removeTestimonial } = useTestimonials()
+  const { testimonials, saving: testimonialsSaving, saveError: testimonialsSaveError, add: addTestimonial, update: updateTestimonial, remove: removeTestimonial } = useTestimonials()
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null)
   const [testimonialDraft, setTestimonialDraft] = useState<Testimonial | null>(null)
   const [newTestimonialForm, setNewTestimonialForm] = useState({ name: '', rating: 5, text: '', date: '' })
@@ -373,6 +375,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     setUploading(true)
     const url = await onUpload(file)
     if (url) {
+      setUploadError(false)
       if (uploadTarget.startsWith('product:')) {
         const pid = uploadTarget.replace('product:', '')
         updateProduct(pid, 'image', url)
@@ -385,6 +388,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       } else {
         update(uploadTarget, url)
       }
+    } else {
+      setUploadError(true)
     }
     setUploading(false)
     e.target.value = ''
@@ -665,6 +670,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           </div>
 
           {/* Panel content */}
+          {uploadError && <div className="panel-saving-error" style={{ padding: '6px 12px' }}>Bild-Upload fehlgeschlagen — bitte nochmal versuchen</div>}
           <div className="builder-panel-body" ref={panelBodyRef}>
 
             {/* ── PRODUCTS TAB ──────────────────────────────────────────── */}
@@ -1212,7 +1218,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                             className="rte-body"
                             contentEditable
                             suppressContentEditableWarning
-                            dangerouslySetInnerHTML={{ __html: editingPageItem.body }}
+                            dangerouslySetInnerHTML={{ __html: sanitizeHtml(editingPageItem.body) }}
                             onBlur={e => updatePage(editingPageItem.id, 'body', e.currentTarget.innerHTML)}
                           />
                         </div>
@@ -1353,6 +1359,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
               <div className="panel-sections">
                 <PanelSection title={`Kundenbewertungen (${testimonials.length})`}>
                   {testimonialsSaving && <div className="panel-saving">Speichert…</div>}
+                  {testimonialsSaveError && <div className="panel-saving panel-saving-error">Fehler beim Speichern — bitte nochmal versuchen</div>}
                   {testimonials.map(r => (
                     <div key={r.id} className="panel-cert-row">
                       {editingTestimonial?.id === r.id && testimonialDraft ? (
@@ -1587,29 +1594,63 @@ function ProductEditModal({
             </div>
 
             <div className="pem-field">
-              <label>Sonderausführungen <span style={{ fontWeight: 400, color: '#888', fontSize: 11 }}>(z.B. Farben, Batterietypen)</span></label>
+              <label>Sonderausführungen <span style={{ fontWeight: 400, color: '#888', fontSize: 11 }}>(z.B. Farben, Batterietypen — optional mit Aufpreis)</span></label>
               {(product.variants ?? []).map((v, vi) => (
-                <div key={vi} className="pem-variant-row">
-                  <input
-                    className="pem-variant-label-input"
-                    value={v.label}
-                    placeholder="Bezeichnung (z.B. Farbe)"
-                    onChange={e => {
-                      const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, label: e.target.value } : vv)
+                <div key={vi} className="pem-variant-group">
+                  <div className="pem-variant-row">
+                    <input
+                      className="pem-variant-label-input"
+                      value={v.label}
+                      placeholder="Bezeichnung (z.B. Batterie)"
+                      onChange={e => {
+                        const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, label: e.target.value } : vv)
+                        u('variants', updated)
+                      }}
+                    />
+                    <button className="pem-variant-del" onClick={() => u('variants', (product.variants ?? []).filter((_, i) => i !== vi))} title="Ausführung entfernen">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                  {v.options.map((opt, oi) => (
+                    <div key={oi} className="pem-variant-opt-row">
+                      <input
+                        className="pem-variant-opt-value-input"
+                        value={opt.value}
+                        placeholder="z.B. 40Ah"
+                        onChange={e => {
+                          const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, value: e.target.value } : oo) } : vv)
+                          u('variants', updated)
+                        }}
+                      />
+                      <input
+                        className="pem-variant-opt-price-input"
+                        value={opt.price ?? ''}
+                        placeholder="Preis (optional, z.B. +150 €)"
+                        onChange={e => {
+                          const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, price: e.target.value } : oo) } : vv)
+                          u('variants', updated)
+                        }}
+                      />
+                      <button
+                        className="pem-variant-del"
+                        title="Option entfernen"
+                        onClick={() => {
+                          const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.filter((_, j) => j !== oi) } : vv)
+                          u('variants', updated)
+                        }}
+                      >
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    className="pem-variant-opt-add"
+                    onClick={() => {
+                      const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: [...vv.options, { value: '', price: '' }] } : vv)
                       u('variants', updated)
                     }}
-                  />
-                  <input
-                    className="pem-variant-opts-input"
-                    value={v.options.join(', ')}
-                    placeholder="Optionen, kommagetrennt"
-                    onChange={e => {
-                      const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: e.target.value.split(',').map(s => s.trim()).filter(Boolean) } : vv)
-                      u('variants', updated)
-                    }}
-                  />
-                  <button className="pem-variant-del" onClick={() => u('variants', (product.variants ?? []).filter((_, i) => i !== vi))} title="Entfernen">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  >
+                    + Option hinzufügen
                   </button>
                 </div>
               ))}

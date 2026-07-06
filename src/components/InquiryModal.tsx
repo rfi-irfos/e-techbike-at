@@ -18,7 +18,7 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
   useEffect(() => {
     const defaults: Record<number, string> = {}
     selectedProduct?.variants?.forEach((v, i) => {
-      defaults[i] = v.options[0] ?? ''
+      defaults[i] = v.options[0]?.value ?? ''
     })
     setVariantSelections(defaults)
   }, [selectedId])
@@ -37,7 +37,11 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
     const productName = selectedProduct?.name ?? ''
 
     const variantenStr = selectedProduct?.variants
-      ?.map((v, i) => `${v.label}: ${variantSelections[i] ?? v.options[0] ?? ''}`)
+      ?.map((v, i) => {
+        const selectedValue = variantSelections[i] ?? v.options[0]?.value ?? ''
+        const opt = v.options.find(o => o.value === selectedValue)
+        return `${v.label}: ${selectedValue}${opt?.price ? ` (${opt.price})` : ''}`
+      })
       .join(', ') ?? ''
 
     const body =
@@ -85,11 +89,11 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
                     <select
                       id={`inq-variant-${i}`}
                       className="inquiry-select"
-                      value={variantSelections[i] ?? v.options[0] ?? ''}
+                      value={variantSelections[i] ?? v.options[0]?.value ?? ''}
                       onChange={e => setVariantSelections(prev => ({ ...prev, [i]: e.target.value }))}
                     >
                       {v.options.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
+                        <option key={opt.value} value={opt.value}>{opt.value}{opt.price ? ` — ${opt.price}` : ''}</option>
                       ))}
                     </select>
                   </div>

@@ -4,6 +4,8 @@ import type { Testimonial } from '../types/testimonials'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 import { InquiryModal } from './InquiryModal'
+import { OWNER, REPO } from '../lib/github'
+import { sanitizeHtml } from '../lib/sanitize'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
 
@@ -45,7 +47,7 @@ function E({ field, value, as, className, style, href, title }: EProps) {
   if (!isEditingRef.current) htmlRef.current = { __html: value }
 
   if (!editMode) {
-    const props: Record<string, unknown> = { className, style, dangerouslySetInnerHTML: { __html: value }, 'data-cid': field }
+    const props: Record<string, unknown> = { className, style, dangerouslySetInnerHTML: { __html: sanitizeHtml(value) }, 'data-cid': field }
     if (href) props.href = href
     if (title) props.title = title
     return <Tag {...props} />
@@ -643,7 +645,7 @@ function Stars({ rating }: { rating: number }) {
 function ReviewsSection({ editMode }: { editMode: boolean }) {
   const [testimonials, setTestimonials] = React.useState<Testimonial[]>([])
   React.useEffect(() => {
-    fetch(`/testimonials.json?t=${Date.now()}`)
+    fetch(`https://raw.githubusercontent.com/${OWNER}/${REPO}/main/public/testimonials.json?t=${Date.now()}`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : [])
       .then(setTestimonials)
       .catch(() => setTestimonials([]))
@@ -740,19 +742,19 @@ export function PublicSite({
 
   // Hero height drag
   useEffect(() => {
-    if (!heightDragRef.current) return
     const onMove = (e: MouseEvent) => {
       if (!heightDragRef.current) return
       setHeroHeight(Math.max(300, heightDragRef.current.startH + e.clientY - heightDragRef.current.startY))
     }
     const onUp = () => {
+      if (!heightDragRef.current) return // not a height-drag mouseup, skip
       heightDragRef.current = null
       setHeroHeight(h => { onUpdate?.('hero.minHeight', h); return h })
     }
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
     return () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp) }
-  })
+  }, [onUpdate])
 
   // ── Canvas position helpers ─────────────────────────────────────────────────
 
@@ -820,19 +822,19 @@ export function PublicSite({
         {/* HERO ELEMENTS */}
         {hero.tag && (
           <CanvasEl id="hero.tag" pos={pos('hero.tag', { x: 80, y: 200 })} onMove={p => moveEl('hero.tag', p)} minWidth={300} noPad label="Hero Tag">
-            <div className="site-hero-tag" dangerouslySetInnerHTML={{ __html: hero.tag }} />
+            <div className="site-hero-tag" dangerouslySetInnerHTML={{ __html: sanitizeHtml(hero.tag) }} />
           </CanvasEl>
         )}
         <CanvasEl id="hero.headline" pos={pos('hero.headline', { x: 80, y: 260 })} onMove={p => moveEl('hero.headline', p)} minWidth={400} noPad label="Überschrift">
-          <h1 className="site-hero-h1" dangerouslySetInnerHTML={{ __html: hero.headline }} />
+          <h1 className="site-hero-h1" dangerouslySetInnerHTML={{ __html: sanitizeHtml(hero.headline) }} />
         </CanvasEl>
         <CanvasEl id="hero.subheadline" pos={pos('hero.subheadline', { x: 80, y: 390 })} onMove={p => moveEl('hero.subheadline', p)} minWidth={400} noPad label="Unterüberschrift">
-          <p className="site-hero-sub" dangerouslySetInnerHTML={{ __html: hero.subheadline }} />
+          <p className="site-hero-sub" dangerouslySetInnerHTML={{ __html: sanitizeHtml(hero.subheadline) }} />
         </CanvasEl>
         <CanvasEl id="hero.cta" pos={pos('hero.cta', { x: 80, y: 490 })} onMove={p => moveEl('hero.cta', p)} minWidth={280} label="Buttons">
           <div className="site-hero-btns">
-            <a className="site-btn-lime-lg" dangerouslySetInnerHTML={{ __html: hero.ctaLabel }} />
-            {hero.ctaSecLabel && <a className="site-btn-ghost-lg" dangerouslySetInnerHTML={{ __html: hero.ctaSecLabel }} />}
+            <a className="site-btn-lime-lg" dangerouslySetInnerHTML={{ __html: sanitizeHtml(hero.ctaLabel) }} />
+            {hero.ctaSecLabel && <a className="site-btn-ghost-lg" dangerouslySetInnerHTML={{ __html: sanitizeHtml(hero.ctaSecLabel) }} />}
           </div>
         </CanvasEl>
 
@@ -848,7 +850,7 @@ export function PublicSite({
 
         {/* CATEGORIES TITLE */}
         <CanvasEl id="categories.title" pos={pos('categories.title', { x: 80, y: H + 140 })} onMove={p => moveEl('categories.title', p)} minWidth={300} noPad label="Kategorien Titel">
-          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: categories?.title ?? '' }} />
+          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(categories?.title) }} />
         </CanvasEl>
 
         {/* CATEGORY CARDS */}
@@ -866,7 +868,7 @@ export function PublicSite({
 
         {/* PRODUCTS TITLE */}
         <CanvasEl id="products.title" pos={pos('products.title', { x: 80, y: H + 870 })} onMove={p => moveEl('products.title', p)} minWidth={300} noPad label="Produkte Titel">
-          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: products?.title ?? '' }} />
+          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(products?.title) }} />
         </CanvasEl>
 
         {/* PRODUCT CARDS */}
@@ -886,7 +888,7 @@ export function PublicSite({
 
         {/* USP TITLE */}
         <CanvasEl id="usp.title" pos={pos('usp.title', { x: 80, y: H + 1700 })} onMove={p => moveEl('usp.title', p)} minWidth={300} noPad label="Vorteile Titel">
-          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: usp?.title ?? '' }} />
+          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(usp?.title) }} />
         </CanvasEl>
 
         {/* USP CARDS */}
@@ -901,7 +903,7 @@ export function PublicSite({
 
         {/* NEWS TITLE */}
         <CanvasEl id="news.title" pos={pos('news.title', { x: 80, y: H + 2440 })} onMove={p => moveEl('news.title', p)} minWidth={300} noPad label="Neuigkeiten Titel">
-          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: news?.title ?? '' }} />
+          <h2 className="canvas-section-h2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(news?.title) }} />
         </CanvasEl>
 
         {/* NEWS CARDS */}
@@ -1082,7 +1084,7 @@ export function PublicSite({
                 <button
                   type="button"
                   className="site-btn-ghost-lg"
-                  dangerouslySetInnerHTML={{ __html: hero.ctaSecLabel }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(hero.ctaSecLabel) }}
                   onClick={() => { setInquiryProductId(undefined); setInquiryOpen(true) }}
                 />
               )}
@@ -1382,8 +1384,8 @@ export function PublicSite({
               )}
               <div className="site-modal-body">
                 <div className="site-news-date">{new Date(modalArticle.date).toLocaleDateString('de-AT', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-                <h3 className="site-modal-title" dangerouslySetInnerHTML={{ __html: modalArticle.title }} />
-                <div className="site-modal-article-body" dangerouslySetInnerHTML={{ __html: modalArticle.body }} />
+                <h3 className="site-modal-title" dangerouslySetInnerHTML={{ __html: sanitizeHtml(modalArticle.title) }} />
+                <div className="site-modal-article-body" dangerouslySetInnerHTML={{ __html: sanitizeHtml(modalArticle.body) }} />
               </div>
             </div>
           </div>

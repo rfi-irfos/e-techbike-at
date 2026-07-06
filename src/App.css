@@ -2253,11 +2253,17 @@ button { cursor: pointer; font-family: inherit; }
 .prodpage-variant-label { font-size: 13px; font-weight: 700; color: var(--text, #111); min-width: 80px; flex-shrink: 0; }
 .prodpage-variant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .prodpage-variant-chip { display: inline-block; padding: 3px 10px; border-radius: 99px; background: var(--primary, #0073b1); color: #fff; font-size: 12px; font-weight: 600; }
+.prodpage-variant-chip-price { font-weight: 400; opacity: 0.85; }
 
 /* ── Product edit modal — variants editor ────────────────────────────────── */
+.pem-variant-group { margin-bottom: 10px; padding: 8px; background: #fafafa; border: 1px solid #eee; border-radius: 6px; }
 .pem-variant-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
-.pem-variant-label-input { flex: 0 0 120px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; }
-.pem-variant-opts-input { flex: 1; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; }
+.pem-variant-label-input { flex: 1; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; font-weight: 600; }
+.pem-variant-opt-row { display: flex; gap: 6px; align-items: center; margin: 0 0 4px 14px; }
+.pem-variant-opt-value-input { flex: 1; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; }
+.pem-variant-opt-price-input { flex: 0 0 130px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 12px; }
+.pem-variant-opt-add { margin: 0 0 0 14px; font-size: 11px; padding: 4px 8px; border: 1px dashed #bbb; border-radius: 5px; background: none; cursor: pointer; color: #555; }
+.pem-variant-opt-add:hover { background: #f5f5f5; border-color: #888; }
 .pem-variant-del { flex-shrink: 0; width: 22px; height: 22px; border: none; background: #fee; border-radius: 4px; color: #c00; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .pem-variant-del:hover { background: #fcc; }
 .pem-variant-add { margin-top: 4px; font-size: 12px; padding: 5px 10px; border: 1px dashed #bbb; border-radius: 5px; background: none; cursor: pointer; color: #555; }
@@ -2992,3 +2998,5 @@ button { cursor: pointer; font-family: inherit; }
   .site-about-inner { grid-template-columns: 1fr; gap: 24px; }
   .site-about-photo { height: 220px; }
 }
+
+.panel-saving-error { color: #c00; font-weight: 600; }

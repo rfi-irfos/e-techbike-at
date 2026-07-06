@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://e-techbike.at/sitemap.xml
+Sitemap: https://e-techbike-graz.at/sitemap.xml

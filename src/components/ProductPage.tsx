@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { SiteContent, ProductItem } from '../types/content'
 import { InquiryModal } from './InquiryModal'
+import { sanitizeHtml } from '../lib/sanitize'
 
 function Accordion({ title, children, open: defaultOpen }: { title: string; children: React.ReactNode; open?: boolean }) {
   const [open, setOpen] = useState(defaultOpen ?? false)
@@ -25,6 +26,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
     const prev = document.title
     document.title = `${product.name} — ${content.meta?.title ?? nav.brand}`
     const onKey = (e: KeyboardEvent) => {
+      if (!allImages.length) return
       if (e.key === 'ArrowRight') setImgIdx(i => (i + 1) % allImages.length)
       if (e.key === 'ArrowLeft') setImgIdx(i => (i - 1 + allImages.length) % allImages.length)
     }
@@ -127,7 +129,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
             {product.details && (
               <Accordion title="Produktdetails">
-                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: product.details }} />
+                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.details) }} />
               </Accordion>
             )}
 
@@ -145,7 +147,9 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
                     <span className="prodpage-variant-label">{v.label}</span>
                     <div className="prodpage-variant-chips">
                       {v.options.map((opt, oi) => (
-                        <span key={oi} className="prodpage-variant-chip">{opt}</span>
+                        <span key={oi} className="prodpage-variant-chip">
+                          {opt.value}{opt.price && <span className="prodpage-variant-chip-price"> — {opt.price}</span>}
+                        </span>
                       ))}
                     </div>
                   </div>

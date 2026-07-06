@@ -8,6 +8,7 @@ export function useTestimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [sha, setSha] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(false)
 
   useEffect(() => {
     ghRead(PATH)
@@ -20,6 +21,10 @@ export function useTestimonials() {
     try {
       const f = await ghWrite(PATH, b64Encode(JSON.stringify(next, null, 2)), currentSha, 'update testimonials')
       setSha((f as { sha: string }).sha)
+      setSaveError(false)
+    } catch (e) {
+      console.error('Testimonial save failed:', e)
+      setSaveError(true)
     } finally { setSaving(false) }
   }
 
@@ -35,5 +40,5 @@ export function useTestimonials() {
     const next = testimonials.filter(r => r.id !== id)
     setTestimonials(next); persist(next, sha)
   }
-  return { testimonials, saving, add, update, remove }
+  return { testimonials, saving, saveError, add, update, remove }
 }

@@ -25,7 +25,7 @@ export interface ProductItem {
   specsTable?: { label: string; value: string }[]
   details?: string
   delivery?: string
-  variants?: Array<{ label: string; options: string[] }>
+  variants?: Array<{ label: string; options: Array<{ value: string; price?: string }> }>
 }
 
 export interface CategoryItem {
