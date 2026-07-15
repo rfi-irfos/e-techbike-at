@@ -1147,13 +1147,13 @@ export function PublicSite({
         )}
         {editMode && !hiddenSections.includes('categories') && (categories?.items?.length ?? 0) > 0 && (
           <section className="site-section site-browser site-edit-section site-edit-section--cats-real"
-            onClick={e => { e.stopPropagation(); onSectionClick?.('categories') }}>
+            data-cid="categories.title">
             <div className="site-edit-section-badge">Kategorien</div>
-            {categories.eyebrow && <div className="site-eyebrow">{categories.eyebrow}</div>}
-            <h2 className="site-browser-title">{categories.title}</h2>
+            {categories.eyebrow && <div className="site-eyebrow" data-cid="categories.title">{categories.eyebrow}</div>}
+            <h2 className="site-browser-title" data-cid="categories.title">{categories.title}</h2>
             <div className="site-browser-cat-grid">
-              {categories.items.map(c => (
-                <div key={c.id} className="site-browser-cat-tile">
+              {categories.items.map((c, i) => (
+                <div key={c.id} className="site-browser-cat-tile" data-cid={`categories.items.${i}`}>
                   <div className="site-browser-cat-img-wrap">
                     {c.image
                       ? <img src={c.image} alt={c.name} className="site-browser-cat-img" />

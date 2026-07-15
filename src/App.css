@@ -1728,7 +1728,8 @@ button { cursor: pointer; font-family: inherit; }
   opacity: 0; transition: opacity .15s;
 }
 .site-edit-section:hover .site-edit-section-badge { opacity: 1; }
-.site-edit-section--cats-real .site-browser-cat-tile { pointer-events: none; cursor: pointer; }
+.site-edit-section--cats-real .site-browser-cat-tile { cursor: pointer; }
+.site-edit-section--cats-real .site-browser-cat-tile:hover { outline: 2px dashed rgba(0,153,204,.5); outline-offset: -2px; }
 
 /* ── Panel inline list (trust, usp, nav) ─────────────────────────────────── */
 .panel-inline-list { display: flex; flex-direction: column; gap: 12px; padding: 4px 0; }
