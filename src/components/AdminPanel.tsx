@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import type { SiteContent, SectionId, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem, AboutStat, CertificateItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
-import { CrmPanel } from './CrmPanel'
 import { useTestimonials } from '../lib/useTestimonials'
 import type { Testimonial } from '../types/testimonials'
 import { sanitizeHtml } from '../lib/sanitize'
@@ -16,7 +15,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'kunden' | 'inbox' | 'about' | 'pricing' | 'reviews'
+type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'inbox' | 'about' | 'pricing' | 'reviews'
 
 interface ContactInboxItem { name: string; email: string; phone?: string; message: string; ts: string }
 function loadInbox(): ContactInboxItem[] { try { return JSON.parse(localStorage.getItem('rfi_contact_inbox') || '[]') } catch { return [] } }
@@ -513,9 +512,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       { id: 'nav',        label: 'Navigation' },
       { id: 'contact',    label: 'Kontakt' },
       { id: 'style',      label: 'Stil' },
-    ] },
-    { group: 'Kunden', tabs: [
-      { id: 'kunden',     label: 'Kunden' },
     ] },
   ]
 
@@ -1433,9 +1429,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 </PanelSection>
               </div>
             )}
-
-            {/* ── KUNDEN TAB ────────────────────────────────────────────── */}
-            {activeTab === 'kunden' && <CrmPanel />}
 
           </div>
 
