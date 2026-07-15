@@ -736,9 +736,16 @@ button { cursor: pointer; font-family: inherit; }
 
 /* Section tabs — Minecraft hotbar style */
 .builder-tabs {
-  display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 12px;
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 4px; padding: 10px 12px;
   border-bottom: 2px solid #878787; background: #B0B0B0; flex-shrink: 0;
 }
+.builder-tab-group { display: flex; flex-direction: column; gap: 3px; }
+.builder-tab-group-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #6b6b6b; padding: 0 2px;
+}
+.builder-tab-group-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.builder-tab-divider { display: none; }
 .builder-tab {
   background: none; border: 1.5px solid transparent; border-radius: 4px;
   padding: 5px 11px; font-size: 12px; font-weight: 600; color: #444;
@@ -1726,10 +1733,15 @@ button { cursor: pointer; font-family: inherit; }
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 60px;
 }
 .site-edit-cat-chip {
+  display: flex; align-items: center; gap: 8px;
   background: #fff; border: 1px solid #dde; border-radius: 20px;
-  padding: 4px 14px; font-size: 13px; color: #444;
+  padding: 4px 14px 4px 4px; font-size: 13px; color: #444;
 }
-.site-edit-cat-chip--more { background: #EEF8FF; border-color: #C8E6F7; color: #0077AA; font-weight: 600; }
+.site-edit-cat-chip-img {
+  width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+}
+.site-edit-cat-chip-img--empty { background: #EAEAEA; }
+.site-edit-cat-chip--more { background: #EEF8FF; border-color: #C8E6F7; color: #0077AA; font-weight: 600; padding: 4px 14px; }
 
 /* ── Panel inline list (trust, usp, nav) ─────────────────────────────────── */
 .panel-inline-list { display: flex; flex-direction: column; gap: 12px; padding: 4px 0; }
@@ -2016,7 +2028,10 @@ button { cursor: pointer; font-family: inherit; }
     #A07040;
   border-bottom: 4px solid #5A3010;
   padding: 8px 8px 6px;
-  gap: 3px;
+  gap: 8px 3px;
+}
+.mc-theme .builder-tab-group-label {
+  color: #E8D8B0; font-family: 'Courier New', monospace; text-shadow: 1px 1px 0 #3A2010;
 }
 .mc-theme .builder-tab {
   background: #8B6020;

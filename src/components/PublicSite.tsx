@@ -1151,7 +1151,13 @@ export function PublicSite({
             <div className="site-edit-section-badge">Kategorien</div>
             <div className="site-edit-section-preview">
               {categories.items.slice(0, 4).map(c => (
-                <div key={c.id} className="site-edit-cat-chip">{c.name}</div>
+                <div key={c.id} className="site-edit-cat-chip">
+                  {c.image
+                    ? <img src={c.image} alt="" className="site-edit-cat-chip-img" />
+                    : <div className="site-edit-cat-chip-img site-edit-cat-chip-img--empty" />
+                  }
+                  {c.name}
+                </div>
               ))}
               {categories.items.length > 4 && <div className="site-edit-cat-chip site-edit-cat-chip--more">+{categories.items.length - 4}</div>}
             </div>

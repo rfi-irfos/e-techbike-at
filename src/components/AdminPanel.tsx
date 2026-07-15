@@ -496,23 +496,29 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     else if (action === 'navlink') { addNavLink(); setActiveTab('nav') }
   }
 
-  const tabs: Array<{ id: PanelTab; label: string; badge?: number }> = [
-    { id: 'inbox',      label: 'Inbox', badge: contactInbox.length },
-    { id: 'products',   label: 'Produkte' },
-    { id: 'categories', label: 'Kategorien' },
-    { id: 'hero',       label: 'Hero' },
-    { id: 'trust',      label: 'Vorteile' },
-    { id: 'usp',        label: 'USPs' },
-    { id: 'news',       label: 'Aktuelles' },
-    { id: 'pages',      label: 'Seiten' },
-    { id: 'contact',    label: 'Kontakt' },
-    { id: 'nav',        label: 'Navigation' },
-    { id: 'style',      label: 'Stil' },
-    { id: 'kunden',     label: 'Kunden' },
-    { id: 'about',      label: 'Über uns' },
-    { id: 'pricing',    label: 'Preise' },
-    { id: 'reviews',    label: 'Bewertungen', badge: testimonials.length },
+  const tabGroups: Array<{ group: string; tabs: Array<{ id: PanelTab; label: string; badge?: number }> }> = [
+    { group: 'Inhalt', tabs: [
+      { id: 'products',   label: 'Produkte' },
+      { id: 'categories', label: 'Kategorien' },
+      { id: 'hero',       label: 'Hero' },
+      { id: 'about',      label: 'Über uns' },
+      { id: 'trust',      label: 'Vorteile' },
+      { id: 'usp',        label: 'USPs' },
+      { id: 'news',       label: 'Aktuelles' },
+      { id: 'pricing',    label: 'Preise' },
+      { id: 'reviews',    label: 'Bewertungen', badge: testimonials.length },
+      { id: 'pages',      label: 'Seiten' },
+    ] },
+    { group: 'Website', tabs: [
+      { id: 'nav',        label: 'Navigation' },
+      { id: 'contact',    label: 'Kontakt' },
+      { id: 'style',      label: 'Stil' },
+    ] },
+    { group: 'Kunden', tabs: [
+      { id: 'kunden',     label: 'Kunden' },
+    ] },
   ]
+  const tabs = tabGroups.flatMap(g => g.tabs)
 
   const editingProd = editingProduct ? draft.products?.items?.find(p => p.id === editingProduct) : null
   const editingNewsItem = editingNews ? draft.news?.items?.find(n => n.id === editingNews) : null
@@ -659,13 +665,21 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           <div className="builder-panel-resize" onMouseDown={startPanelResize} />
           {/* Tab bar */}
           <div className="builder-tabs">
-            {tabs.map(t => (
-              <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)} style={{ position: 'relative' }}>
-                {t.label}
-                {(t.badge ?? 0) > 0 && (
-                  <span style={{ position: 'absolute', top: 2, right: 2, background: '#c53030', color: '#fff', borderRadius: '50%', fontSize: 9, fontWeight: 700, minWidth: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 2px' }}>{t.badge}</span>
-                )}
-              </button>
+            {tabGroups.map((g, gi) => (
+              <div key={g.group} className="builder-tab-group">
+                {gi > 0 && <span className="builder-tab-divider" aria-hidden="true" />}
+                <span className="builder-tab-group-label">{g.group}</span>
+                <div className="builder-tab-group-row">
+                  {g.tabs.map(t => (
+                    <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)} style={{ position: 'relative' }}>
+                      {t.label}
+                      {(t.badge ?? 0) > 0 && (
+                        <span style={{ position: 'absolute', top: 2, right: 2, background: '#c53030', color: '#fff', borderRadius: '50%', fontSize: 9, fontWeight: 700, minWidth: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 2px' }}>{t.badge}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
 
@@ -710,6 +724,21 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                         ))}
                       </select>
                     </Field>
+                    {(() => {
+                      const activeCat = draft.categories?.items?.find(c => c.name === editingProd.category)
+                      const subcats = activeCat?.subcategories ?? []
+                      if (subcats.length === 0) return null
+                      return (
+                        <Field label="Unterkategorie">
+                          <select value={editingProd.subcategory ?? ''} onChange={e => updateProduct(editingProd.id, 'subcategory', e.target.value)}>
+                            <option value="">— keine —</option>
+                            {subcats.map(sc => (
+                              <option key={sc.id} value={sc.id}>{sc.name}</option>
+                            ))}
+                          </select>
+                        </Field>
+                      )
+                    })()}
                     <Field label="Bezeichnung">
                       <input value={editingProd.badge ?? ''} onChange={e => updateProduct(editingProd.id, 'badge', e.target.value)} placeholder="Bestseller, Beliebt …" />
                     </Field>
@@ -738,6 +767,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                     </Field>
                     <Field label="Beschreibung">
                       <textarea rows={3} value={editingProd.description} onChange={e => updateProduct(editingProd.id, 'description', e.target.value)} placeholder="Kurze Produktbeschreibung" />
+                    </Field>
+                    <Field label="Produktdetails">
+                      <textarea rows={4} value={editingProd.details ?? ''} onChange={e => updateProduct(editingProd.id, 'details', e.target.value)} placeholder="Technische Details, Ausstattung …" />
+                    </Field>
+                    <Field label="Lieferung & Versand">
+                      <textarea rows={3} value={editingProd.delivery ?? ''} onChange={e => updateProduct(editingProd.id, 'delivery', e.target.value)} placeholder="Lieferzeit, Versandkosten …" />
                     </Field>
 
                     <button className="panel-delete-btn" onClick={() => deleteProduct(editingProd.id)}>
