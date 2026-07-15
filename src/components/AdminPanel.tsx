@@ -518,7 +518,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       { id: 'kunden',     label: 'Kunden' },
     ] },
   ]
-  const tabs = tabGroups.flatMap(g => g.tabs)
 
   const editingProd = editingProduct ? draft.products?.items?.find(p => p.id === editingProduct) : null
   const editingNewsItem = editingNews ? draft.news?.items?.find(n => n.id === editingNews) : null
