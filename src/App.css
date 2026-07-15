@@ -1728,20 +1728,7 @@ button { cursor: pointer; font-family: inherit; }
   opacity: 0; transition: opacity .15s;
 }
 .site-edit-section:hover .site-edit-section-badge { opacity: 1; }
-.site-edit-section--cats {
-  padding: 18px 24px; background: #f8f9fa; border-radius: 8px; margin: 12px 0;
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 60px;
-}
-.site-edit-cat-chip {
-  display: flex; align-items: center; gap: 8px;
-  background: #fff; border: 1px solid #dde; border-radius: 20px;
-  padding: 4px 14px 4px 4px; font-size: 13px; color: #444;
-}
-.site-edit-cat-chip-img {
-  width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
-}
-.site-edit-cat-chip-img--empty { background: #EAEAEA; }
-.site-edit-cat-chip--more { background: #EEF8FF; border-color: #C8E6F7; color: #0077AA; font-weight: 600; padding: 4px 14px; }
+.site-edit-section--cats-real .site-browser-cat-tile { pointer-events: none; cursor: pointer; }
 
 /* ── Panel inline list (trust, usp, nav) ─────────────────────────────────── */
 .panel-inline-list { display: flex; flex-direction: column; gap: 12px; padding: 4px 0; }

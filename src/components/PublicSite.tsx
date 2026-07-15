@@ -1146,22 +1146,37 @@ export function PublicSite({
           <CategoryBrowser categories={categories} products={products} />
         )}
         {editMode && !hiddenSections.includes('categories') && (categories?.items?.length ?? 0) > 0 && (
-          <div className="site-edit-section site-edit-section--cats"
+          <section className="site-section site-browser site-edit-section site-edit-section--cats-real"
             onClick={e => { e.stopPropagation(); onSectionClick?.('categories') }}>
             <div className="site-edit-section-badge">Kategorien</div>
-            <div className="site-edit-section-preview">
-              {categories.items.slice(0, 4).map(c => (
-                <div key={c.id} className="site-edit-cat-chip">
-                  {c.image
-                    ? <img src={c.image} alt="" className="site-edit-cat-chip-img" />
-                    : <div className="site-edit-cat-chip-img site-edit-cat-chip-img--empty" />
-                  }
-                  {c.name}
+            {categories.eyebrow && <div className="site-eyebrow">{categories.eyebrow}</div>}
+            <h2 className="site-browser-title">{categories.title}</h2>
+            <div className="site-browser-cat-grid">
+              {categories.items.map(c => (
+                <div key={c.id} className="site-browser-cat-tile">
+                  <div className="site-browser-cat-img-wrap">
+                    {c.image
+                      ? <img src={c.image} alt={c.name} className="site-browser-cat-img" />
+                      : <div className="site-browser-cat-img-ph" />
+                    }
+                    <div className="site-browser-cat-overlay">
+                      <span className="site-browser-cat-name">{c.name}</span>
+                      <span className="site-browser-cat-sub">{c.sub}</span>
+                      {(c.subcategories?.length ?? 0) === 0 && (
+                        <span className="site-browser-cat-count">
+                          {products.items.filter(p => p.category === c.name).length} Artikel
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="site-browser-cat-foot">
+                    <span className="site-browser-cat-foot-name">{c.name}</span>
+                    <span className="site-browser-cat-foot-arrow"><IconChevron /></span>
+                  </div>
                 </div>
               ))}
-              {categories.items.length > 4 && <div className="site-edit-cat-chip site-edit-cat-chip--more">+{categories.items.length - 4}</div>}
             </div>
-          </div>
+          </section>
         )}
 
         {/* Edit mode: keep flat product grid for admin editing */}
