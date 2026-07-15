@@ -761,7 +761,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                       </div>
                     </Field>
                     <Field label="Beschreibung">
-                      <textarea rows={3} value={editingProd.description} onChange={e => updateProduct(editingProd.id, 'description', e.target.value)} placeholder="Kurze Produktbeschreibung" />
+                      <RteField value={editingProd.description} onChange={html => updateProduct(editingProd.id, 'description', html)} />
                     </Field>
                     <Field label="Produktdetails">
                       <RteField value={editingProd.details ?? ''} onChange={html => updateProduct(editingProd.id, 'details', html)} />
@@ -1613,17 +1613,17 @@ function ProductEditModal({
 
             <div className="pem-field">
               <label>Beschreibung</label>
-              <textarea rows={3} value={product.description} onChange={e => u('description', e.target.value)} />
+              <RteField value={product.description} onChange={html => u('description', html)} />
             </div>
 
             <div className="pem-field">
-              <label>Details (HTML erlaubt)</label>
-              <textarea rows={3} value={product.details ?? ''} onChange={e => u('details', e.target.value)} placeholder="Optionale Detailinfos…" />
+              <label>Details</label>
+              <RteField value={product.details ?? ''} onChange={html => u('details', html)} />
             </div>
 
             <div className="pem-field">
               <label>Lieferung</label>
-              <textarea rows={2} value={product.delivery ?? ''} onChange={e => u('delivery', e.target.value)} placeholder="Lieferinfos…" />
+              <RteField value={product.delivery ?? ''} onChange={html => u('delivery', html)} />
             </div>
 
             <div className="pem-field">
