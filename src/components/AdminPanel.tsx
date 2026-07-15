@@ -764,10 +764,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                       <textarea rows={3} value={editingProd.description} onChange={e => updateProduct(editingProd.id, 'description', e.target.value)} placeholder="Kurze Produktbeschreibung" />
                     </Field>
                     <Field label="Produktdetails">
-                      <textarea rows={4} value={editingProd.details ?? ''} onChange={e => updateProduct(editingProd.id, 'details', e.target.value)} placeholder="Technische Details, Ausstattung …" />
+                      <RteField value={editingProd.details ?? ''} onChange={html => updateProduct(editingProd.id, 'details', html)} />
                     </Field>
                     <Field label="Lieferung & Versand">
-                      <textarea rows={3} value={editingProd.delivery ?? ''} onChange={e => updateProduct(editingProd.id, 'delivery', e.target.value)} placeholder="Lieferzeit, Versandkosten …" />
+                      <RteField value={editingProd.delivery ?? ''} onChange={html => updateProduct(editingProd.id, 'delivery', html)} />
                     </Field>
 
                     <button className="panel-delete-btn" onClick={() => deleteProduct(editingProd.id)}>
@@ -1232,26 +1232,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                         <input value={editingPageItem.metaTitle ?? ''} onChange={e => updatePage(editingPageItem.id, 'metaTitle', e.target.value)} placeholder={`${editingPageItem.title} — ${draft.meta?.title ?? ''}`} />
                       </Field>
                       <Field label="Seiteninhalt">
-                        <div className="rte-wrap">
-                          <div className="rte-toolbar">
-                            {[
-                              { cmd: 'bold', label: 'B', title: 'Fett' },
-                              { cmd: 'italic', label: 'I', title: 'Kursiv' },
-                              { cmd: 'insertUnorderedList', label: '•—', title: 'Liste' },
-                            ].map(({ cmd, label, title }) => (
-                              <button key={cmd} type="button" title={title}
-                                onMouseDown={e => { e.preventDefault(); document.execCommand(cmd, false) }}
-                              >{label}</button>
-                            ))}
-                          </div>
-                          <div
-                            className="rte-body"
-                            contentEditable
-                            suppressContentEditableWarning
-                            dangerouslySetInnerHTML={{ __html: sanitizeHtml(editingPageItem.body) }}
-                            onBlur={e => updatePage(editingPageItem.id, 'body', e.currentTarget.innerHTML)}
-                          />
-                        </div>
+                        <RteField value={editingPageItem.body} onChange={html => updatePage(editingPageItem.id, 'body', html)} />
                       </Field>
                       <button className="panel-delete-btn" onClick={() => deletePage(editingPageItem.id)}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -1473,6 +1454,31 @@ function PanelSection({ title, children }: { title: string; children: React.Reac
     <div className="panel-section">
       {title && <div className="panel-section-title">{title}</div>}
       {children}
+    </div>
+  )
+}
+
+function RteField({ value, onChange }: { value: string; onChange: (html: string) => void }) {
+  return (
+    <div className="rte-wrap">
+      <div className="rte-toolbar">
+        {[
+          { cmd: 'bold', label: 'B', title: 'Fett' },
+          { cmd: 'italic', label: 'I', title: 'Kursiv' },
+          { cmd: 'insertUnorderedList', label: '•—', title: 'Liste' },
+        ].map(({ cmd, label, title }) => (
+          <button key={cmd} type="button" title={title}
+            onMouseDown={e => { e.preventDefault(); document.execCommand(cmd, false) }}
+          >{label}</button>
+        ))}
+      </div>
+      <div
+        className="rte-body"
+        contentEditable
+        suppressContentEditableWarning
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}
+        onBlur={e => onChange(e.currentTarget.innerHTML)}
+      />
     </div>
   )
 }
