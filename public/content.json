@@ -2742,7 +2742,22 @@
           }
         ],
         "details": "<ul><li>CE/EEC zertifiziert, auf Radweg zugelassen</li><li>Auswechselbarer Akku — laden am Fahrzeug oder zu Hause</li><li>Stahlfelgen für langlebigen Betrieb</li><li>Diebstahlalarmanlage inklusive</li><li>Förderfähig: €600 E-Mobilitätsbonus (L1e, eRide 2025)</li><li>Vormontierte Lieferung (ca. 90%)</li></ul>",
-        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage.",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 78Ah Lithium Reichweite: 225Km",
+                "price": "1730"
+              },
+              {
+                "value": "72V 78Ah Lithium Reichweite: 240KM",
+                "price": "1900"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "p20",
