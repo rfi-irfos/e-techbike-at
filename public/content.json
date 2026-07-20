@@ -2942,9 +2942,9 @@
       },
       {
         "id": "p1784544250170",
-        "name": "Neues Produkt",
+        "name": ".",
         "description": "",
-        "price": "",
+        "price": "400",
         "image": "",
         "category": "E-Bikes",
         "specs": [],
