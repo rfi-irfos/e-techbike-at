@@ -2749,11 +2749,11 @@
             "options": [
               {
                 "value": "60V 78Ah Lithium Reichweite: 225Km",
-                "price": "1730€"
+                "price": "1730"
               },
               {
                 "value": "72V 78Ah Lithium Reichweite: 240KM",
-                "price": "1900€"
+                "price": "1900"
               }
             ]
           }
@@ -2947,7 +2947,8 @@
         "price": "1490",
         "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1784025363532-cc2518cd-4f21-43cd-a13e-328a6d6a9aa1-1-.png",
         "category": "E-Scooter 25 km/h",
-        "specs": []
+        "specs": [],
+        "details": "<ul style=\"margin: 0px 0px 0px 30px; padding: 0px; color: rgb(50, 51, 53); font-family: Lato; font-size: medium; background-color: rgb(255, 255, 255);\"><li style=\"font-size: 18px !important;\">Motor: 72V 500W</li><li style=\"font-size: 18px !important;\">Reichweite:&nbsp;</li></ul><p style=\"margin: 0px; transition: font-size 0.2s ease-in-out; line-height: 1.6; color: rgb(50, 51, 53); font-family: Lato; background-color: rgb(255, 255, 255); font-size: 18px !important;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Lithium Akkus:</p><p style=\"margin: 0px; transition: font-size 0.2s ease-in-out; line-height: 1.6; color: rgb(50, 51, 53); font-family: Lato; background-color: rgb(255, 255, 255); font-size: 18px !important;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;20Ah 72V bis 70km (1)</p><p style=\"margin: 0px; transition: font-size 0.2s ease-in-out; line-height: 1.6; color: rgb(50, 51, 53); font-family: Lato; background-color: rgb(255, 255, 255); font-size: 18px !important;\">&nbsp;maximale Geschwindigkeit: 25-45 Km/h</p><ul style=\"margin: 0px 0px 0px 30px; padding: 0px; color: rgb(50, 51, 53); font-family: Lato; font-size: medium; background-color: rgb(255, 255, 255);\"><li style=\"font-size: 18px !important;\">maximale Belastung: 236 kg</li><li style=\"font-size: 18px !important;\">Steigung: 15%</li><li style=\"font-size: 18px !important;\">Batterietyp:Lifepo4 oder Li-ionTragbar</li><li style=\"font-size: 18px !important;\">Ladezeit: 6-8 Stunde</li><li style=\"font-size: 18px !important;\">Ladegerät: 72 V&nbsp;</li><li style=\"font-size: 18px !important;\">Reifen: Vorder- und Hinterrad 12 Zoll&nbsp;</li><li style=\"font-size: 18px !important;\">&nbsp;Tubeless</li><li style=\"font-size: 18px !important;\">Bremse:Scheibenbremse</li><li style=\"font-size: 18px !important;\">Ausstattung: 2 Rückspiegel, Hupe und Alarmanlage</li></ul><p class=\"text-align-center\" style=\"margin: 0px; transition: font-size 0.2s ease-in-out; line-height: 1.6; text-align: center; color: rgb(50, 51, 53); font-family: Lato; background-color: rgb(255, 255, 255); font-size: 18px !important;\">&nbsp;(1)Variiert je nach Straße, Wetter und Nutzungsbedingungen.&nbsp;</p>"
       }
     ]
   },
