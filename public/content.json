@@ -682,7 +682,18 @@
           }
         ],
         "details": "<ul><li>Wartungsfrei, auslaufsicher</li><li>Integrierter BMS-Schutz: Überspannung, Tiefentladung, Kurzschluss</li><li>Kein Memory-Effekt — jederzeit nachladbar</li><li>Geeignet für E-Bikes, E-Scooter, Elektromobile, Reha-Technik</li><li>Hinweis: nicht als Starterbatterie verwenden</li></ul>",
-        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 3–5 Werktage."
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 3–5 Werktage.",
+        "variants": [
+          {
+            "label": "",
+            "options": [
+              {
+                "value": "",
+                "price": ""
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "p6",
