@@ -682,18 +682,7 @@
           }
         ],
         "details": "<ul><li>Wartungsfrei, auslaufsicher</li><li>Integrierter BMS-Schutz: Überspannung, Tiefentladung, Kurzschluss</li><li>Kein Memory-Effekt — jederzeit nachladbar</li><li>Geeignet für E-Bikes, E-Scooter, Elektromobile, Reha-Technik</li><li>Hinweis: nicht als Starterbatterie verwenden</li></ul>",
-        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 3–5 Werktage.",
-        "variants": [
-          {
-            "label": "",
-            "options": [
-              {
-                "value": "",
-                "price": ""
-              }
-            ]
-          }
-        ]
+        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 3–5 Werktage."
       },
       {
         "id": "p6",
@@ -2686,11 +2675,11 @@
       },
       {
         "id": "p19",
-        "name": "KUBA GREE08 E-Scooter",
+        "name": "KUBA GREE08",
         "badge": "Bestseller",
         "category": "E-Scooter 25 km/h",
         "description": "Kompaktes Stadt-Elektromoped mit auswechselbarem Akku und großer Reichweite. 25–45 km/h, CE/EEC.",
-        "price": "€749,00",
+        "price": "€750,00",
         "image": "uploads/etb-moped-city-silver.jpg",
         "specs": [
           "25–45 km/h",
