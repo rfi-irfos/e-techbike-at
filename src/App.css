@@ -2279,6 +2279,23 @@ button { cursor: pointer; font-family: inherit; }
 .pem-variant-add { margin-top: 4px; font-size: 12px; padding: 5px 10px; border: 1px dashed #bbb; border-radius: 5px; background: none; cursor: pointer; color: #555; }
 .pem-variant-add:hover { background: #f5f5f5; border-color: #888; }
 
+/* ── Sidebar (panel) scoped variant editor — clean, matches sidebar accent ── */
+.panel-product-form .pem-variant-group { background: #f7fafc; border: 1px solid #e1e8ee; border-radius: 8px; padding: 10px; }
+.panel-product-form .pem-variant-row { align-items: center; margin-bottom: 8px; }
+.panel-product-form .pem-variant-label-input { border: 1px solid #cfd8e0; font-size: 13px; }
+.panel-product-form .pem-variant-opt-row { margin: 0 0 6px 0; }
+.panel-product-form .pem-variant-opt-value-input,
+.panel-product-form .pem-variant-opt-price-input { border: 1px solid #cfd8e0; font-size: 13px; }
+.panel-product-form .pem-variant-opt-add,
+.panel-product-form .pem-variant-add {
+  display: block; width: 100%; text-align: center;
+  background: #0099CC; color: #fff; border: none; border-radius: 7px;
+  padding: 7px 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; margin: 0;
+}
+.panel-product-form .pem-variant-opt-add:hover,
+.panel-product-form .pem-variant-add:hover { background: #007BA8; }
+.panel-product-form .pem-variant-add { margin-top: 6px; }
+
 /* ── Footer lazi link ────────────────────────────────────────────────────── */
 .site-footer-lazi-link { opacity: .25; font-size: 11px; transition: opacity .2s; }
 .site-footer-lazi-link:hover { opacity: .7; }
