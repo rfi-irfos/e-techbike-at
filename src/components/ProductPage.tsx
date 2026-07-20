@@ -127,6 +127,20 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
               </Accordion>
             )}
 
+            {product.variants?.map((v, vi) => (
+              (v.options?.length ?? 0) > 0 && (
+                <Accordion key={vi} title={v.label || 'Preise & Akkus'}>
+                  <div className="prodpage-variant-chips">
+                    {v.options.map((opt, oi) => (
+                      <span key={oi} className="prodpage-variant-chip">
+                        {opt.value}{opt.price && <span className="prodpage-variant-chip-price"> — {opt.price}</span>}
+                      </span>
+                    ))}
+                  </div>
+                </Accordion>
+              )
+            ))}
+
             {product.details && (
               <Accordion title="Produktdetails">
                 <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.details) }} />
@@ -138,20 +152,6 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
                 <p className="prod-accordion-text">{product.delivery}</p>
               </Accordion>
             )}
-
-            {product.variants?.map((v, vi) => (
-              (v.options?.length ?? 0) > 0 && (
-                <Accordion key={vi} title={v.label || 'Sonderausführungen'}>
-                  <div className="prodpage-variant-chips">
-                    {v.options.map((opt, oi) => (
-                      <span key={oi} className="prodpage-variant-chip">
-                        {opt.value}{opt.price && <span className="prodpage-variant-chip-price"> — {opt.price}</span>}
-                      </span>
-                    ))}
-                  </div>
-                </Accordion>
-              )
-            ))}
 
             <div className="prod-modal-ctas prodpage-ctas">
               <button type="button" className="prodpage-inquiry-btn" onClick={() => setInquiryOpen(true)}>

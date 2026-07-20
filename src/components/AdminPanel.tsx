@@ -760,6 +760,73 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                         <button className="pem-tag-add" onClick={() => { const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } }}>+</button>
                       </div>
                     </Field>
+                    <Field label="Preise & Akkus">
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <span style={{ fontSize: 11, color: '#888' }}>Sonderausfertigungen &amp; Sonderpreise (z.B. andere Batterie, Farbe — optional mit Aufpreis)</span>
+                        {(editingProd.variants ?? []).map((v, vi) => (
+                          <div key={vi} className="pem-variant-group">
+                            <div className="pem-variant-row">
+                              <input
+                                className="pem-variant-label-input"
+                                value={v.label}
+                                placeholder="Bezeichnung (z.B. Batterie)"
+                                onChange={e => {
+                                  const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, label: e.target.value } : vv)
+                                  updateProduct(editingProd.id, 'variants', updated)
+                                }}
+                              />
+                              <button className="pem-variant-del" onClick={() => updateProduct(editingProd.id, 'variants', (editingProd.variants ?? []).filter((_, i) => i !== vi))} title="Ausführung entfernen">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                              </button>
+                            </div>
+                            {v.options.map((opt, oi) => (
+                              <div key={oi} className="pem-variant-opt-row">
+                                <input
+                                  className="pem-variant-opt-value-input"
+                                  value={opt.value}
+                                  placeholder="z.B. 40Ah"
+                                  onChange={e => {
+                                    const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, value: e.target.value } : oo) } : vv)
+                                    updateProduct(editingProd.id, 'variants', updated)
+                                  }}
+                                />
+                                <input
+                                  className="pem-variant-opt-price-input"
+                                  value={opt.price ?? ''}
+                                  placeholder="Preis (optional, z.B. +150 €)"
+                                  onChange={e => {
+                                    const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, price: e.target.value } : oo) } : vv)
+                                    updateProduct(editingProd.id, 'variants', updated)
+                                  }}
+                                />
+                                <button
+                                  className="pem-variant-del"
+                                  title="Option entfernen"
+                                  onClick={() => {
+                                    const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.filter((_, j) => j !== oi) } : vv)
+                                    updateProduct(editingProd.id, 'variants', updated)
+                                  }}
+                                >
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              className="pem-variant-opt-add"
+                              onClick={() => {
+                                const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: [...vv.options, { value: '', price: '' }] } : vv)
+                                updateProduct(editingProd.id, 'variants', updated)
+                              }}
+                            >
+                              + Option hinzufügen
+                            </button>
+                          </div>
+                        ))}
+                        <button className="pem-variant-add" onClick={() => updateProduct(editingProd.id, 'variants', [...(editingProd.variants ?? []), { label: '', options: [] }])}>
+                          + Ausführung hinzufügen
+                        </button>
+                      </div>
+                    </Field>
                     <Field label="Beschreibung">
                       <RteField value={editingProd.description} onChange={html => updateProduct(editingProd.id, 'description', html)} />
                     </Field>
