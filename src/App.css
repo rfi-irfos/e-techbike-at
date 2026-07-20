@@ -2284,8 +2284,8 @@ button { cursor: pointer; font-family: inherit; }
 .panel-product-form .pem-variant-row { align-items: center; margin-bottom: 8px; }
 .panel-product-form .pem-variant-label-input { border: 1px solid #cfd8e0; font-size: 13px; }
 .panel-product-form .pem-variant-opt-row { margin: 0 0 6px 0; }
-.panel-product-form .pem-variant-opt-value-input,
-.panel-product-form .pem-variant-opt-price-input { border: 1px solid #cfd8e0; font-size: 13px; }
+.panel-product-form .pem-variant-opt-value-input { flex: 1 1 auto; min-width: 0; border: 1px solid #cfd8e0; font-size: 13px; }
+.panel-product-form .pem-variant-opt-price-input { flex: 0 1 120px; min-width: 0; border: 1px solid #cfd8e0; font-size: 13px; }
 .panel-product-form .pem-variant-opt-add,
 .panel-product-form .pem-variant-add {
   display: block; width: 100%; text-align: center;
