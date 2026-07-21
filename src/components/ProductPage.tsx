@@ -114,16 +114,18 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
             {(product.specsTable?.length ?? 0) > 0 && (
               <Accordion title="Produktinformationen" open={true}>
-                <table className="prod-modal-specs-table">
-                  <tbody>
-                    {product.specsTable!.map((row, i) => (
-                      <tr key={i}>
-                        <td className="prod-specs-label">{row.label}</td>
-                        <td className="prod-specs-value">{row.value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="prodpage-specs-table-wrap">
+                  <table className="prod-modal-specs-table">
+                    <tbody>
+                      {(product.specsTable ?? []).map((row, i) => (
+                        <tr key={i}>
+                          <td className="prod-specs-label">{row.label}</td>
+                          <td className="prod-specs-value">{row.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </Accordion>
             )}
 

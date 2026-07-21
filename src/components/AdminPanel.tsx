@@ -760,6 +760,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                         <button className="pem-tag-add" onClick={() => { const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } }}>+</button>
                       </div>
                     </Field>
+                    <Field label="Produktinformationen">
+                      <SpecsTableField
+                        rows={editingProd.specsTable ?? []}
+                        onChange={(rows) => updateProduct(editingProd.id, 'specsTable', rows)}
+                      />
+                    </Field>
                     <Field label="Preise & Akkus">
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         <span style={{ fontSize: 11, color: '#888' }}>Sonderausfertigungen &amp; Sonderpreise (z.B. andere Batterie, Farbe — optional mit Aufpreis)</span>
@@ -1580,6 +1586,76 @@ function UploadRow({ src, onUpload, uploading }: { src: string; onUpload: () => 
   )
 }
 
+function SpecsTableField({ rows, onChange }: { rows: { label: string; value: string }[]; onChange: (rows: { label: string; value: string }[]) => void }) {
+  const [labelInput, setLabelInput] = useState('')
+  const [valueInput, setValueInput] = useState('')
+
+  const addRow = () => {
+    const label = labelInput.trim()
+    const value = valueInput.trim()
+    if (!label && !value) return
+    onChange([...rows, { label: label || '...', value: value || '' }])
+    setLabelInput('')
+    setValueInput('')
+  }
+
+  const updateRow = (idx: number, field: 'label' | 'value', val: string) => {
+    onChange(rows.map((r, i) => i === idx ? { ...r, [field]: val } : r))
+  }
+
+  const removeRow = (idx: number) => {
+    onChange(rows.filter((_, i) => i !== idx))
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {(rows ?? []).map((row, idx) => (
+          <div key={idx} className="pem-variant-row">
+            <input
+              className="pem-variant-label-input"
+              value={row.label}
+              placeholder="Bezeichnung (z.B. Motor)"
+              onChange={e => updateRow(idx, 'label', e.target.value)}
+              style={{ flex: 1, minWidth: 0 }}
+            />
+            <input
+              className="pem-variant-opt-value-input"
+              value={row.value}
+              placeholder="Wert (z.B. 250–600W)"
+              onChange={e => updateRow(idx, 'value', e.target.value)}
+              style={{ flex: 1.2, minWidth: 0 }}
+            />
+            <button
+              className="pem-variant-del"
+              type="button"
+              title="Zeile entfernen"
+              onClick={() => removeRow(idx)}
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="pem-tag-input-row" style={{ marginTop: 8 }}>
+        <input
+          value={labelInput}
+          onChange={e => setLabelInput(e.target.value)}
+          placeholder="Bezeichnung"
+          style={{ flex: 1, minWidth: 0 }}
+        />
+        <input
+          value={valueInput}
+          onChange={e => setValueInput(e.target.value)}
+          placeholder="Wert"
+          style={{ flex: 1.2, minWidth: 0 }}
+        />
+        <button className="pem-tag-add" onClick={addRow} type="button">+</button>
+      </div>
+    </div>
+  )
+}
+
 // ── Product Edit Modal ─────────────────────────────────────────────────────────
 
 function ProductEditModal({
@@ -1780,6 +1856,14 @@ function ProductEditModal({
                 />
                 <button className="pem-tag-add" onClick={addSpec}>+</button>
               </div>
+            </div>
+
+            <div className="pem-field">
+              <label>Produktinformationen</label>
+              <SpecsTableField
+                rows={product.specsTable ?? []}
+                onChange={(rows) => u('specsTable', rows)}
+              />
             </div>
           </div>
         </div>
