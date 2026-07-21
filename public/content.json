@@ -2939,6 +2939,37 @@
         ],
         "details": "<ul><li>Vollwertiges Elektromotorrad mit 100 km/h Topspeed</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Ratenzahlung auf Anfrage möglich</li><li>Lieferzeit 8–14 Werktage (Online Only)</li><li>Förderfähig: bis zu €1.800 E-Mobilitätsbonus (L3e, eRide 2025)</li></ul>",
         "delivery": "Lieferung frei Haus österreichweit. Lieferzeit 8–14 Werktage. Probefahrt in Graz nach Vereinbarung."
+      },
+      {
+        "id": "p1784625567535",
+        "name": "Kuba GREE08",
+        "description": "Kompaktes Stadt-Elektromoped mit auswechselbarem Akku und großer Reichweite.<div>25-45 km/h, CE/EEC.</div>",
+        "price": "750€",
+        "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1784625614387-6c365ebd-c97c-407c-bbe1-7e6e906fc8d6-1-.jpg",
+        "category": "E-Scooter 45 km/h",
+        "specs": [
+          "25-45 km/h",
+          "bis 240Km",
+          "CE/EEC",
+          "1200W"
+        ],
+        "badge": "Bestseller",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 78Ah Lithium Reichweite: 225Km",
+                "price": "1730€"
+              },
+              {
+                "value": "72V 78Ah Lithium Reichweite: 240Km",
+                "price": "1900€"
+              }
+            ]
+          }
+        ],
+        "details": ""
       }
     ]
   },
