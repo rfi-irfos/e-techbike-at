@@ -1635,6 +1635,14 @@ button { cursor: pointer; font-family: inherit; }
 .crm-mc .rte-toolbar button, .mc-theme .rte-toolbar button { background: #2a2010; border-color: #5D9E2E; color: #fff; }
 .crm-mc .rte-toolbar button:hover, .mc-theme .rte-toolbar button:hover { background: #3a3020; }
 .crm-mc .rte-body, .mc-theme .rte-body { background: #2a2010; color: #fff; }
+.crm-mc .pem-specs-table-field .pem-variant-row,
+.mc-theme .pem-specs-table-field .pem-variant-row { background: #2a2010; border-color: #5D9E2E; }
+.crm-mc .pem-specs-table-field .pem-variant-label-input,
+.crm-mc .pem-specs-table-field .pem-variant-opt-value-input,
+.mc-theme .pem-specs-table-field .pem-variant-label-input,
+.mc-theme .pem-specs-table-field .pem-variant-opt-value-input { background: #1a1206; border-color: #5D9E2E; color: #fff; }
+.crm-mc .pem-specs-table-field .pem-tag-input-row,
+.mc-theme .pem-specs-table-field .pem-tag-input-row { background: #1a1206; border-color: #5D9E2E; }
 .pem-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 22px 14px; border-bottom: 1px solid #eee; flex-shrink: 0;
@@ -1668,6 +1676,13 @@ button { cursor: pointer; font-family: inherit; }
 .pem-fields { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .pem-field { display: flex; flex-direction: column; gap: 4px; }
 .pem-field label { font-size: 11px; font-weight: 600; color: #777; text-transform: uppercase; letter-spacing: .04em; }
+.pem-specs-table-field { display: flex; flex-direction: column; gap: 8px; }
+.pem-specs-table-field .pem-variant-row { background: #f6f7f8; border: 1px solid #eee; border-radius: 8px; padding: 6px; }
+.pem-specs-table-field .pem-variant-label-input { background: #fff; }
+.pem-specs-table-field .pem-variant-opt-value-input { background: #fff; }
+.pem-specs-table-field .pem-tag-input-row { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 6px; }
+.pem-specs-table-field .pem-tag-input-row input { background: transparent; border: none; padding: 6px 4px; }
+.pem-specs-table-field .pem-tag-input-row input:focus { border: none; box-shadow: none; }
 .pem-field input, .pem-field select, .pem-field textarea {
   border: 1px solid #ddd; border-radius: 7px; padding: 7px 10px;
   font-size: 14px; color: #111; background: #fff; outline: none; font-family: inherit; resize: vertical;
