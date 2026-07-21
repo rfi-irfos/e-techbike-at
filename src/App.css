@@ -1640,9 +1640,11 @@ button { cursor: pointer; font-family: inherit; }
 .crm-mc .pem-specs-table-field .pem-variant-label-input,
 .crm-mc .pem-specs-table-field .pem-variant-opt-value-input,
 .mc-theme .pem-specs-table-field .pem-variant-label-input,
-.mc-theme .pem-specs-table-field .pem-variant-opt-value-input { background: #1a1206; border-color: #5D9E2E; color: #fff; }
+.mc-theme .pem-specs-table-field .pem-variant-opt-value-input { background: #1a1206; border-color: #5D9E2E; color: #fff; font-size: 12px; }
 .crm-mc .pem-specs-table-field .pem-tag-input-row,
 .mc-theme .pem-specs-table-field .pem-tag-input-row { background: #1a1206; border-color: #5D9E2E; }
+.crm-mc .pem-specs-table-field .pem-tag-input-row input,
+.mc-theme .pem-specs-table-field .pem-tag-input-row input { background: transparent; color: #fff; font-size: 12px; }
 .pem-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 22px 14px; border-bottom: 1px solid #eee; flex-shrink: 0;
