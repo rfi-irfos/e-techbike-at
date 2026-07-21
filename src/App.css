@@ -1644,7 +1644,14 @@ button { cursor: pointer; font-family: inherit; }
 .crm-mc .pem-specs-table-field .pem-tag-input-row,
 .mc-theme .pem-specs-table-field .pem-tag-input-row { background: #1a1206; border-color: #5D9E2E; }
 .crm-mc .pem-specs-table-field .pem-tag-input-row input,
-.mc-theme .pem-specs-table-field .pem-tag-input-row input { background: transparent; color: #fff; font-size: 12px; }
+.mc-theme .pem-specs-table-field .pem-tag-input-row input { background: #1a1206; color: #fff; font-size: 12px; border-color: #5D9E2E; }
+.crm-mc .pem-specs-table-field .pem-specs-add-row input,
+.mc-theme .pem-specs-table-field .pem-specs-add-row input { background: #1a1206; border-color: #5D9E2E; color: #fff; font-size: 12px; }
+.crm-mc, .mc-theme { caret-color: #B3E600; }
+.crm-mc ::selection, .mc-theme ::selection { background: rgba(179, 230, 0, 0.35); color: #fff; }
+.crm-mc .rte-body ::-webkit-scrollbar, .mc-theme .rte-body ::-webkit-scrollbar { width: 8px; }
+.crm-mc .rte-body ::-webkit-scrollbar-track, .mc-theme .rte-body ::-webkit-scrollbar-track { background: #1a1206; }
+.crm-mc .rte-body ::-webkit-scrollbar-thumb, .mc-theme .rte-body ::-webkit-scrollbar-thumb { background: #5D9E2E; border-radius: 0; }
 .pem-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 22px 14px; border-bottom: 1px solid #eee; flex-shrink: 0;
