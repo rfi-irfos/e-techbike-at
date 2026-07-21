@@ -1608,23 +1608,21 @@ function SpecsTableField({ rows, onChange }: { rows: { label: string; value: str
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <div className="pem-specs-table-field">
+      <div className="pem-specs-table-rows">
         {(rows ?? []).map((row, idx) => (
-          <div key={idx} className="pem-variant-row">
+          <div key={idx} className="pem-specs-table-row">
             <input
               className="pem-variant-label-input"
               value={row.label}
-              placeholder="Bezeichnung (z.B. Motor)"
+              placeholder="Bezeichnung"
               onChange={e => updateRow(idx, 'label', e.target.value)}
-              style={{ flex: 1, minWidth: 0 }}
             />
             <input
               className="pem-variant-opt-value-input"
               value={row.value}
-              placeholder="Wert (z.B. 250–600W)"
+              placeholder="Wert"
               onChange={e => updateRow(idx, 'value', e.target.value)}
-              style={{ flex: 1.2, minWidth: 0 }}
             />
             <button
               className="pem-variant-del"
@@ -1632,12 +1630,12 @@ function SpecsTableField({ rows, onChange }: { rows: { label: string; value: str
               title="Zeile entfernen"
               onClick={() => removeRow(idx)}
             >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
         ))}
       </div>
-      <div className="pem-tag-input-row" style={{ marginTop: 8 }}>
+      <div className="pem-specs-add-row" style={{ marginTop: 10 }}>
         <input
           value={labelInput}
           onChange={e => setLabelInput(e.target.value)}
