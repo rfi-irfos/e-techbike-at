@@ -2761,12 +2761,12 @@
       },
       {
         "id": "p20",
-        "name": "KUBA BLUES E-Moped",
+        "name": "KUBA BLUES",
         "badge": "Bestseller",
         "category": "E-Scooter 25 km/h",
         "description": "Kraftvolles 1200W E-Moped mit 25 km/h Zulassung. Wählbarer Akku: 40Ah oder 78Ah Reichweite.",
         "price": "€990,00",
-        "image": "uploads/etb-moped-city-silver-front.jpg",
+        "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1785162997735-96c6bdb8-0941-4f1f-84de-ffab177e3a0f-1-.png",
         "specs": [
           "25 km/h",
           "1200W",
