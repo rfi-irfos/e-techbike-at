@@ -2828,7 +2828,22 @@
           }
         ],
         "details": "<ul><li>CE/EEC zertifiziert, auf Radweg zugelassen</li><li>Führerscheinfrei (L1e) mit 25 km/h Drosselung</li><li>Akku-Variante wählbar für maximale Reichweite</li><li>Auswechselbarer Akku — laden am Fahrzeug oder zu Hause</li><li>Sofort abholbar in Graz</li><li>Förderfähig: €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
-        "delivery": "Kostenloser Versand österreichweit oder sofortige Abholung in Graz. Lieferzeit 5–7 Werktage."
+        "delivery": "Kostenloser Versand österreichweit oder sofortige Abholung in Graz. Lieferzeit 5–7 Werktage.",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 40Ah Lithium Reichweite:110Km",
+                "price": "1690€"
+              },
+              {
+                "value": "60V 78Ah Lithium Reichweite; 225Km",
+                "price": "1990€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "p21",
