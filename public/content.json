@@ -2816,6 +2816,76 @@
         ],
         "details": "<ul><li>CE/EEC zertifiert, auf Radweg zugelassen</li><li>Auswechselbarer Akku - laden am Fahrzeug oder zu Hause</li><li>Stahlfelgen für langlebigen Betrieb</li><li>Diebstalalarmanlage inklusieve</li><li>Förderfähig: €600 E-Mobilitätsbonus (L1e, eRide 2025)</li><li>Vormontierte Lieferung (ca. 90%)</li></ul>",
         "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5-7 Werktage."
+      },
+      {
+        "id": "p1785400709878",
+        "name": "Falcon SW 500",
+        "description": "",
+        "price": "1490€",
+        "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1785400735329-cc2518cd-4f21-43cd-a13e-328a6d6a9aa1-1-.png",
+        "category": "E-Bikes",
+        "specs": [],
+        "specsTable": [
+          {
+            "label": "Motor:",
+            "value": "72V 500W"
+          },
+          {
+            "label": "Reichweite:",
+            "value": "70Km - 240Km"
+          },
+          {
+            "label": "maximale Geschwindigkeit:",
+            "value": "25-45Km/"
+          },
+          {
+            "label": "maximale Belastung:",
+            "value": "236kg"
+          },
+          {
+            "label": "Steigung:",
+            "value": "15%"
+          },
+          {
+            "label": "Batterietyp:",
+            "value": "Lifepo4 oder Li-ion Tragbar"
+          },
+          {
+            "label": "Ladezeit:",
+            "value": "6-8 Stunden"
+          },
+          {
+            "label": "Ladegerät:",
+            "value": "72V"
+          },
+          {
+            "label": "Reifen:",
+            "value": "Vorder und Hinterrad 12 Zoll Tubeless"
+          },
+          {
+            "label": "Bremse:",
+            "value": "Scheibenbremse"
+          },
+          {
+            "label": "Ausstattung:",
+            "value": "2 Rückspiegel, Hupe und Alarmanlage"
+          }
+        ],
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "72V 20Ah Lithium Reichweite: 70Km",
+                "price": "2290€"
+              },
+              {
+                "value": "72V 78Ah Lithium Reichweit: 240Km",
+                "price": "2990€"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
