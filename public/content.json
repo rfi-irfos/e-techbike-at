@@ -1064,11 +1064,11 @@
       {
         "id": "p13",
         "name": "Bikely E-Chopper HL 6.0",
-        "badge": "Neu",
-        "category": "E-Scooter 25 km/h",
+        "badge": "",
+        "category": "E-Scooter 45 km/h",
         "description": "Kraftvoller Chopper-style E-Moped mit Harley-Silhouette. 3000W, 45 km/h, Straßenzulassung.",
         "price": "€2.599,00",
-        "image": "uploads/etb-chopper-black.jpg",
+        "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1785398141148-95540b78-65e4-4f3a-9c7c-30834a3cf8fb-1-.jpg",
         "images": [
           "uploads/etb-chopper-black.jpg",
           "uploads/etb-chopper-black-side.jpg",
@@ -1115,7 +1115,22 @@
           }
         ],
         "details": "<ul><li>Harley-Davidson Chopper-Silhouette im Elektromotorrad</li><li>Vollständige österreichische Straßenzulassung</li><li>EEC-zertifiziert</li><li>LED-Scheinwerfer rundherum</li><li>Alarmanlage inklusive</li><li>Erhältlich in Schwarz und Rot</li></ul>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung und Probefahrt in Graz."
+        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung und Probefahrt in Graz.",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 30Ah Lithium Reichweite: 70Km",
+                "price": "2600€"
+              },
+              {
+                "value": "60V 45Ah Lithium Reichweite: 100Km",
+                "price": "2700€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "p14",
