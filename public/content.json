@@ -363,142 +363,8 @@
         "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
       },
       {
-        "id": "p27",
-        "name": "RSIII PRO Shimano",
-        "badge": "",
-        "category": "Elektrofahrrad Klappbar",
-        "description": "Falt-E-Bike mit 20\" × 4.0\" Fat Tires und HUPO Akku bis 240 km Reichweite. Shimano MF-TZ500, USB-Port.",
-        "price": "€1.040,00",
-        "image": "uploads/etb-rks-fat-grey.png",
-        "specs": [
-          "250W",
-          "36V 10/35Ah",
-          "bis 240 km",
-          "4.0\" Fat Tire"
-        ],
-        "specsTable": [
-          {
-            "label": "Motor",
-            "value": "250W"
-          },
-          {
-            "label": "Akku",
-            "value": "HUPO 36V 10 Ah / 35 Ah (wählbar)"
-          },
-          {
-            "label": "Reichweite",
-            "value": "bis 240 km (mit 35Ah)"
-          },
-          {
-            "label": "Ladezeit",
-            "value": "4–6 Stunden"
-          },
-          {
-            "label": "Höchstgeschwindigkeit",
-            "value": "25 km/h"
-          },
-          {
-            "label": "Rahmen",
-            "value": "20 Zoll Aluminium, faltbar"
-          },
-          {
-            "label": "Reifen",
-            "value": "20 × 4.0"
-          },
-          {
-            "label": "Schaltung",
-            "value": "Shimano MF-TZ500 7-Gang"
-          },
-          {
-            "label": "Bremsen",
-            "value": "Scheibenbremsen vorne & hinten"
-          },
-          {
-            "label": "Display",
-            "value": "LCD integriert"
-          },
-          {
-            "label": "Federgabel",
-            "value": "einstellbar"
-          },
-          {
-            "label": "Ausstattung",
-            "value": "Gepäckträger, Licht, Reflektoren, Hupe, USB"
-          }
-        ],
-        "details": "<ul><li>Maximale Reichweite bis 240 km mit 35Ah Akku</li><li>Fat Tire 20\" × 4.0\" für Stadt und Gelände</li><li>USB-Port am Akku zum Laden von Geräten</li><li>Batterie mit Sicherheitsschloss</li><li>CE-zertifiziert, führerscheinfrei</li><li>Förderfähig: €500 E-Klapprad Förderung</li></ul>",
-        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
-      },
-      {
-        "id": "p28",
-        "name": "RSI-X PRO Shimano",
-        "badge": "",
-        "category": "Elektrofahrrad Klappbar",
-        "description": "Falt-E-Bike mit 20\" × 4.0\" Fat Tires und HUPO Akku bis 240 km. Shimano MF-TZ500, USB-Port.",
-        "price": "€1.040,00",
-        "image": "uploads/etb-rks-fat-black.jpg",
-        "specs": [
-          "250W",
-          "36V 10/35Ah",
-          "bis 240 km",
-          "4.0\" Fat Tire"
-        ],
-        "specsTable": [
-          {
-            "label": "Motor",
-            "value": "250W"
-          },
-          {
-            "label": "Akku",
-            "value": "HUPO 36V 10 Ah / 35 Ah (wählbar)"
-          },
-          {
-            "label": "Reichweite",
-            "value": "bis 240 km (mit 35Ah)"
-          },
-          {
-            "label": "Ladezeit",
-            "value": "4–6 Stunden"
-          },
-          {
-            "label": "Höchstgeschwindigkeit",
-            "value": "25 km/h"
-          },
-          {
-            "label": "Rahmen",
-            "value": "20 Zoll Aluminium, faltbar"
-          },
-          {
-            "label": "Reifen",
-            "value": "20 × 4.0"
-          },
-          {
-            "label": "Schaltung",
-            "value": "Shimano MF-TZ500 7-Gang"
-          },
-          {
-            "label": "Bremsen",
-            "value": "Scheibenbremsen vorne & hinten"
-          },
-          {
-            "label": "Display",
-            "value": "LCD integriert"
-          },
-          {
-            "label": "Federgabel",
-            "value": "einstellbar"
-          },
-          {
-            "label": "Ausstattung",
-            "value": "Gepäckträger, Licht, Reflektoren, Hupe, USB"
-          }
-        ],
-        "details": "<ul><li>Sportlichere Variante des RSIII PRO</li><li>Fat Tire 20\" × 4.0\" für Stadt und Gelände</li><li>USB-Port am Akku</li><li>Batterie mit Sicherheitsschloss</li><li>CE-zertifiziert, führerscheinfrei</li><li>Förderfähig: €500 E-Klapprad Förderung</li></ul>",
-        "delivery": "Kostenloser Versand österreichweit. Lieferzeit 5–7 Werktage."
-      },
-      {
         "id": "p3",
-        "name": "TailG E-Moped Runner",
+        "name": "E-Moped Runner",
         "badge": "",
         "category": "E-Scooter 45 km/h",
         "description": "Straßenzugelassenes E-Moped mit Topcase inklusive. 45 km/h, volle StVO-Zulassung.",
@@ -565,7 +431,22 @@
           }
         ],
         "details": "<ul><li>Kraftvoller 2000W Motor, beschleunigt auf 45 km/h</li><li>Reichweite bis 100 km mit optionaler 2. Batterie</li><li>Hydraulische Federung, ergonomisches Sitzpolster</li><li>Verlängerter Radstand für Stabilität und agiles Handling</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Vormontierte Lieferung (ca. 90%)</li><li>Förderfähig: bis zu €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
-        "delivery": "Lieferung frei Haus österreichweit, 5–7 Werktage. Montage und Einweisung in Graz möglich."
+        "delivery": "Lieferung frei Haus österreichweit, 5–7 Werktage. Montage und Einweisung in Graz möglich.",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "1x 72V 25Ah Lithium Reichweite: 60Km",
+                "price": "2050€"
+              },
+              {
+                "value": "2x 72V 25Ah Lithium Reichweite: 100Km",
+                "price": "2590€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "p4",
