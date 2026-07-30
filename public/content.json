@@ -305,7 +305,7 @@
         "category": "Elektrofahrrad Klappbar",
         "description": "Kompaktes 16\" Falt-E-Bike — das kleinste und leichteste im Sortiment. Ideal für U-Bahn und Büro.",
         "price": "€590,00",
-        "image": "uploads/etb-rks-mx25.jpg",
+        "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1785397849531-af46be3a-d11f-454c-b180-46ed0cd17941-1-.png",
         "specs": [
           "250–600W",
           "36V 7,8Ah",
