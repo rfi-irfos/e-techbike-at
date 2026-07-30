@@ -2499,7 +2499,7 @@
         "category": "E-Scooter 45 km/h",
         "description": "Premium Chopper E-Moped mit 3000W und bis 120 km Reichweite. Das Flaggschiff der Bikely Chopper-Linie.",
         "price": "€2.999,00",
-        "image": "uploads/etb-chopper-black-side.jpg",
+        "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1785398441900-8e45afd9-5f4f-4d67-aa42-2fd0fb8b591c-1-.jpg",
         "images": [
           "uploads/etb-chopper-black-side.jpg",
           "uploads/etb-chopper-black.jpg"
@@ -2569,7 +2569,18 @@
           }
         ],
         "details": "<ul><li>Premium-Variante der Bikely Chopper-Linie</li><li>3000W Motor für kraftvollen Antrieb</li><li>Bis 120 km Reichweite</li><li>Chopper-Design mit breiten Reifen</li><li>CE/EEC zertifiziert, vollständige Straßenzulassung</li><li>Förderfähig: bis zu €600 E-Mobilitätsbonus (eRide 2025)</li></ul>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz möglich."
+        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz möglich.",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 40Ah Lithium Reichweite: 100Km",
+                "price": "2999€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "p19",
