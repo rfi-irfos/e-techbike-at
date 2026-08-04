@@ -2820,10 +2820,10 @@
       {
         "id": "p1785400709878",
         "name": "Falcon SW 500",
-        "description": "Bikely E-Fahrrad E-Scooter Elektrischer Roller FALCON-SW-500 25 Km/h",
+        "description": "Bikely E-Fahrrad E-Scooter Elektrischer Roller FALCON-SW-500 25 Km/h<div><br></div>",
         "price": "1490€",
         "image": "https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/uploads/1785400735329-cc2518cd-4f21-43cd-a13e-328a6d6a9aa1-1-.png",
-        "category": "E-Scooter 25 km/h",
+        "category": "E-Bikes",
         "specs": [
           "25-45Km/h",
           "240Km"
