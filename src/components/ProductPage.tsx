@@ -110,7 +110,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
               </div>
             )}
 
-            <p className="prod-modal-desc">{product.description}</p>
+            <div className="prod-modal-desc" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }} />
 
             {(product.specsTable?.length ?? 0) > 0 && (
               <Accordion title="Produktinformationen" open={true}>
@@ -151,7 +151,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
             {product.delivery && (
               <Accordion title="Lieferung & Versand">
-                <p className="prod-accordion-text">{product.delivery}</p>
+                <div className="prod-accordion-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.delivery) }} />
               </Accordion>
             )}
 
