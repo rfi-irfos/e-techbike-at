@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { SiteContent, ProductItem } from '../types/content'
 import { InquiryModal } from './InquiryModal'
 import { sanitizeHtml } from '../lib/sanitize'
+import { useTheme } from '../hooks/useTheme'
 
 function Accordion({ title, children, open: defaultOpen }: { title: string; children: React.ReactNode; open?: boolean }) {
   const [open, setOpen] = useState(defaultOpen ?? false)
@@ -17,10 +18,15 @@ function Accordion({ title, children, open: defaultOpen }: { title: string; chil
 }
 
 export function ProductPage({ product, content, products = [] }: { product: ProductItem; content: SiteContent; products?: ProductItem[] }) {
-  const { nav, contact } = content
+  const { nav, contact, meta } = content
   const allImages = product.images?.length ? product.images : [product.image].filter(Boolean)
   const [imgIdx, setImgIdx] = useState(0)
   const [inquiryOpen, setInquiryOpen] = useState(false)
+  const { theme } = useTheme()
+  // Standalone route (App.tsx renders this outside PublicSite's tree), so it needs
+  // its own copy of the .site theme scope — otherwise every var(--accent)/var(--border)
+  // on this page resolves to nothing (transparent badges, invisible borders).
+  const vars = { '--primary': meta.primaryColor, '--accent': meta.accentColor, fontFamily: meta.font } as React.CSSProperties
 
   useEffect(() => {
     const prev = document.title
@@ -53,7 +59,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
     : undefined
 
   return (
-    <div className="prodpage">
+    <div className="site prodpage" data-theme={theme} style={vars}>
       {/* Nav */}
       <header className="static-page-nav">
         <a href="#" className="static-page-brand">
