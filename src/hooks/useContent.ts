@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { SiteContent } from '../types/content'
-import { ghRead, ghWrite, b64Encode, CONTENT_PATH, UPLOADS_DIR, OWNER, REPO } from '../lib/github'
+import { ghRead, ghWrite, b64Encode, CONTENT_PATH, UPLOADS_DIR } from '../lib/github'
 
 export function useContent() {
   const [content, setContent]   = useState<SiteContent | null>(null)
@@ -11,8 +11,11 @@ export function useContent() {
   useEffect(() => {
     ;(async () => {
       try {
-        const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${CONTENT_PATH}?t=${Date.now()}`
-        const res = await fetch(rawUrl, { cache: 'no-store' })
+        // Same-origin, served by the GitHub Pages deploy itself. raw.githubusercontent.com
+        // was fetched here previously on every page load; under real traffic that pattern
+        // gets rate-limited (429) by GitHub's abuse detection, and the catch below then
+        // silently served stale bundled demo content with no visible error.
+        const res = await fetch(`${import.meta.env.BASE_URL}content.json`, { cache: 'no-store' })
         if (!res.ok) throw new Error('missing')
         setContent(await res.json())
       } catch {
@@ -76,7 +79,10 @@ export function useContent() {
           const filename = `${Date.now()}-${safe}`
           const path = `${UPLOADS_DIR}/${filename}`
           await ghWrite(path, b64, null, `upload: ${filename}`)
-          resolve(`https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${path}`)
+          // Relative path, resolved same-origin against the deploy — matches every
+          // other image reference in content.json. Now that content/uploads changes
+          // trigger a real deploy again, this file will actually exist there.
+          resolve(`${UPLOADS_DIR.replace(/^public\//, '')}/${filename}`)
         } catch (e) {
           console.error('Upload failed:', e)
           resolve(null)

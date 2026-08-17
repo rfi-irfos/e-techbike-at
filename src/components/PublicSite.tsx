@@ -4,7 +4,6 @@ import type { Testimonial } from '../types/testimonials'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 import { InquiryModal } from './InquiryModal'
-import { OWNER, REPO } from '../lib/github'
 import { sanitizeHtml } from '../lib/sanitize'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
@@ -645,7 +644,7 @@ function Stars({ rating }: { rating: number }) {
 function ReviewsSection({ editMode }: { editMode: boolean }) {
   const [testimonials, setTestimonials] = React.useState<Testimonial[]>([])
   React.useEffect(() => {
-    fetch(`https://raw.githubusercontent.com/${OWNER}/${REPO}/main/public/testimonials.json?t=${Date.now()}`, { cache: 'no-store' })
+    fetch(`${import.meta.env.BASE_URL}testimonials.json`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : [])
       .then(setTestimonials)
       .catch(() => setTestimonials([]))

@@ -3,10 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'public/content.json'
-      - 'public/testimonials.json'
-      - 'public/uploads/**'
   workflow_dispatch:
 
 permissions:
