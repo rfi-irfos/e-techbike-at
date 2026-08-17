@@ -177,12 +177,6 @@
         "image": "uploads/Kunststoff-Body-Ersatzteile-Ree1500-kunststoff-body--ers-36-1.jpg"
       },
       {
-        "id": "cat-kunststoff-body---gree-08-f52",
-        "name": "Ersatzteile GREE-08 - Kunststoff",
-        "sub": "",
-        "image": "uploads/Blinker-Verbindung-vorne-GREE-08-F52-blinker-verbindung-v-02.jpg"
-      },
-      {
         "id": "cat-lithium-akkus",
         "name": "Lithium-Akkus",
         "sub": "",
@@ -205,12 +199,6 @@
         "name": "Mountain E-Bikes",
         "sub": "",
         "image": "uploads/Elektrofahrrad-XR-6-Shimano-elektrofahrrad-xr-6--01.png"
-      },
-      {
-        "id": "cat-ree1500-x3be",
-        "name": "Ersatzteile REE1500",
-        "sub": "",
-        "image": ""
       }
     ]
   },
@@ -237,8 +225,7 @@
       "Lithium-Akkus",
       "Ersatzteile MyForce QJ - Mechanik",
       "Ersatzteile REE1500 - Mechanik",
-      "Mountain E-Bikes",
-      "Ersatzteile REE1500"
+      "Mountain E-Bikes"
     ],
     "items": [
       {
@@ -468,7 +455,7 @@
       {
         "id": "e-bike-allride-aperyder-baboon",
         "name": "E-Bike Allride Aperyder BABOON",
-        "description": "Nicht verfügbarLieferzeit 4 - 14 Werktage",
+        "description": "Nicht verfügbar Lieferzeit 4 - 14 Werktage",
         "price": "€ 1.490,00",
         "image": "uploads/E-Bike-Allride-Aperyder-BABOON-e-bike-allride-apery-02-1.jpg",
         "images": [
@@ -1761,7 +1748,7 @@
       {
         "id": "e-fahrrad-e-scooter-elektrischer-roller-dama-wg-25-km-h",
         "name": "E-FAHRRAD E-SCOOTER ELEKTRISCHER ROLLER Dama WG 25 KM/H",
-        "description": "FarbeWeißGrunSchwarz Nicht verfügbarLieferzeit 4 - 14 Werktage",
+        "description": "Farbe Weiß Grun Schwarz Nicht verfügbar Lieferzeit 4 - 14 Werktage",
         "price": "€ 940,00",
         "image": "uploads/E-FAHRRAD-E-SCOOTER-ELEKTRISCHER-ROLLER-Dama-WG-25-e-fahrrad-e-scooter--02.jpg",
         "images": [
