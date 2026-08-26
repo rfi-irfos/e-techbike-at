@@ -2900,7 +2900,8 @@ button { cursor: pointer; font-family: inherit; }
   box-shadow: 0 24px 70px rgba(20, 43, 58, .10);
   isolation: isolate;
 }
-.prodpage-img { filter: drop-shadow(0 22px 18px rgba(30, 45, 55, .16)); }
+.prodpage-img { filter: drop-shadow(0 22px 18px rgba(30, 45, 55, .16)); animation: prod-image-in .32s ease-out both; }
+@keyframes prod-image-in { from { opacity: .25; transform: scale(.985); } to { opacity: 1; transform: scale(1); } }
 .prodpage-gallery .prod-modal-thumbs { gap: 10px; padding-top: 16px; }
 .prodpage-gallery .prod-modal-thumb {
   width: 66px; height: 66px; padding: 5px; border: 1px solid var(--border);

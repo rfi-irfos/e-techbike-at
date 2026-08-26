@@ -99,7 +99,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
           <div className="prodpage-gallery">
             <div className="prodpage-img-wrap">
               {allImages[imgIdx] && (
-                <img src={allImages[imgIdx]} alt={product.name} className="prodpage-img" />
+                <img key={allImages[imgIdx]} src={allImages[imgIdx]} alt={product.name} className="prodpage-img" />
               )}
               {allImages.length > 1 && (
                 <>
@@ -141,7 +141,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
             <div className="prod-modal-desc" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }} />
 
             {(product.specsTable?.length ?? 0) > 0 && (
-              <Accordion title="Produktinformationen" open={true}>
+              <Accordion title="Produktinformationen">
                 <div className="prodpage-specs-table-wrap">
                   <table className="prod-modal-specs-table">
                     <tbody>
