@@ -1841,6 +1841,13 @@ button { cursor: pointer; font-family: inherit; }
 /* ── Product Detail Page ─────────────────────────────────────────────────── */
 .prodpage { min-height: 100vh; background: var(--bg, #fff); color: var(--text, #111); }
 .prodpage-main { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+.prodpage-back {
+  display: inline-flex; align-items: center; gap: 6px; margin: 0 0 18px;
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); color: var(--text-soft); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: color .2s, border-color .2s, transform .2s;
+}
+.prodpage-back:hover { color: var(--primary); border-color: var(--primary); transform: translateX(-2px); }
 .prodpage-inner {
   display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: flex-start;
 }

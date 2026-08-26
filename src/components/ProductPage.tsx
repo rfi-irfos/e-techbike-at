@@ -94,12 +94,21 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
     }
   }
 
+  const goBackToShop = () => {
+    if (window.history.length > 1) window.history.back()
+    else window.location.hash = 'products'
+  }
+
   return (
     <div className="site prodpage" data-theme={theme} style={vars}>
       <InfoPageNav nav={nav} theme={theme} setTheme={setTheme} />
 
       {/* Main */}
       <main className="prodpage-main">
+        <button type="button" className="prodpage-back" onClick={goBackToShop}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Zurück zum Sortiment
+        </button>
         <div className="prodpage-inner">
 
           {/* Left: images */}
