@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { SiteContent } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
 
@@ -11,9 +11,21 @@ interface StaticPageProps {
 }
 
 export function InfoPageNav({ nav, theme, setTheme }: { nav: SiteContent['nav']; theme: Theme; setTheme: (theme: Theme) => void }) {
-  return <header className="static-page-nav site-nav"><div className="site-nav-inner">
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+  const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href !== '#products' || window.history.length <= 1) return
+    e.preventDefault()
+    window.history.back()
+  }
+  return <header className={`static-page-nav site-nav ${scrolled ? 'is-scrolled' : ''}`}><div className="site-nav-inner">
     <a href="#" className="static-page-brand">{nav.logo ? <img src={nav.logo} alt={nav.brand} className="site-logo-img" /> : nav.brand}</a>
-    <nav className="site-main-nav">{nav.links.map((link, i) => <a key={i} href={link.href}>{link.label}</a>)}</nav>
+    <nav className="site-main-nav">{nav.links.map((link, i) => <a key={i} href={link.href} onClick={e => handleNav(e, link.href)}>{link.label}</a>)}</nav>
     <div className="site-nav-right static-page-nav-right">
       {nav.phone && <a href={`tel:${nav.phone}`} className="site-nav-phone">{nav.phone}</a>}
       <button type="button" className="static-page-theme" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label="Farbschema wechseln">{theme === 'dark' ? '☀' : '◐'}</button>

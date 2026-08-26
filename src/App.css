@@ -102,10 +102,10 @@ button { cursor: pointer; font-family: inherit; }
   padding: 0 60px; height: 70px;
   display: flex; align-items: center; justify-content: space-between;
 }
-.site-nav-inner { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+.site-nav-inner { width: 100%; display: flex; align-items: center; justify-content: space-between; position: relative; }
 .site-logo-img { height: 50px; }
 .site-logo-text { font-size: 20px; font-weight: 900; color: var(--primary); }
-.site-main-nav { display: flex; gap: 26px; }
+.site-main-nav { display: flex; gap: 26px; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; }
 .site-main-nav a { font-size: 14px; font-weight: 500; color: var(--text-soft); transition: color .2s; }
 .site-main-nav a:hover { color: var(--primary); }
 .site-nav-right { display: flex; gap: 12px; align-items: center; }
@@ -1529,9 +1529,11 @@ button { cursor: pointer; font-family: inherit; }
 .static-page { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
 .static-page-nav {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 40px; min-height: 62px; border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; background: var(--surface); z-index: 10;
+  padding: 0 40px; min-height: 62px; border-bottom: 1px solid transparent;
+  position: fixed; inset: 0 0 auto; background: transparent; z-index: 300;
+  transition: background .28s ease, border-color .28s ease, box-shadow .28s ease;
 }
+.static-page-nav.is-scrolled { background: var(--nav-bg); border-color: var(--nav-border); box-shadow: 0 8px 24px rgba(0,0,0,.06); backdrop-filter: blur(12px); }
 .static-page-nav .site-nav-inner { width: 100%; }
 .static-page-nav .site-logo-img { height: 42px; }
 .static-page-nav-right { gap: 12px; }
@@ -1547,7 +1549,12 @@ button { cursor: pointer; font-family: inherit; }
   color: var(--primary); text-decoration: none; transition: opacity .2s;
 }
 .static-page-back:hover { opacity: .75; }
-.static-page-main { max-width: 780px; margin: 0 auto; padding: 48px 24px 80px; }
+.static-page-main {
+  max-width: 1080px; margin: 108px auto 48px; padding: 52px 64px 80px;
+  border: 1px solid var(--border); border-radius: 18px; background: var(--surface);
+  animation: static-page-enter .45s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes static-page-enter { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: translateX(0); } }
 .static-page-content h1 { font-size: 36px; font-weight: 900; margin-bottom: 24px; line-height: 1.2; }
 .static-page-content h2 { font-size: 20px; font-weight: 800; margin: 32px 0 12px; }
 .static-page-content h3 { font-size: 16px; font-weight: 700; margin: 20px 0 8px; }

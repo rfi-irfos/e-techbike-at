@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { SiteContent, ProductItem } from '../types/content'
 import { InquiryModal } from './InquiryModal'
 import { sanitizeHtml } from '../lib/sanitize'
+import { InfoPageNav } from './StaticPage'
 
 function cleanProductHtml(html: string | undefined): string {
   if (!html) return ''
@@ -38,7 +39,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
   const [imgIdx, setImgIdx] = useState(0)
   const [inquiryOpen, setInquiryOpen] = useState(false)
   const [shareCopied, setShareCopied] = useState(false)
-  const { theme } = useTheme()
+  const { theme, setTheme } = useTheme()
   // Standalone route (App.tsx renders this outside PublicSite's tree), so it needs
   // its own copy of the .site theme scope — otherwise every var(--accent)/var(--border)
   // on this page resolves to nothing (transparent badges, invisible borders).
@@ -93,26 +94,9 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
     }
   }
 
-  const returnToShop = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    // Preserve the exact catalogue scroll/filter state when this page was
-    // opened from the shop. Direct visits still get the normal catalogue hash.
-    if (window.history.length > 1) window.history.back()
-    else window.location.hash = 'products'
-  }
-
   return (
     <div className="site prodpage" data-theme={theme} style={vars}>
-      {/* Nav */}
-      <header className="static-page-nav">
-        <a href="#" className="static-page-brand">
-          {nav.logo ? <img src={nav.logo} alt={nav.brand} style={{ height: 36 }} /> : nav.brand}
-        </a>
-        <a href="#products" className="static-page-back" onClick={returnToShop}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          Zurück zum Sortiment
-        </a>
-      </header>
+      <InfoPageNav nav={nav} theme={theme} setTheme={setTheme} />
 
       {/* Main */}
       <main className="prodpage-main">
