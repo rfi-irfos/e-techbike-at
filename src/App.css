@@ -2925,7 +2925,7 @@ button { cursor: pointer; font-family: inherit; }
     radial-gradient(circle at 12% 12%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34rem),
     linear-gradient(180deg, var(--surface) 0, var(--bg) 34rem);
 }
-.prodpage-main { max-width: 1320px; padding: 56px 32px 100px; }
+.prodpage-main { max-width: 1320px; padding: 104px 32px 100px; }
 .prodpage-inner { grid-template-columns: minmax(0, 1.08fr) minmax(420px, .92fr); gap: clamp(42px, 6vw, 84px); }
 .prodpage-gallery { top: 96px; align-self: start; height: fit-content; }
 .prodpage-img-wrap {
