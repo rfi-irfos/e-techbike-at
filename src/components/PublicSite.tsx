@@ -957,7 +957,6 @@ export function PublicSite({
             </nav>
             <div className="site-nav-right">
               <div className="site-nav-desktop">
-                <ThemeToggle theme={theme} setTheme={setTheme} />
                 {nav.phone && (
                   <a href={`tel:${nav.phone}`} className="site-nav-phone">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.1-.45c.908.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -969,6 +968,7 @@ export function PublicSite({
                     ? <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
                     : <a href={nav.ctaHref ?? '#'} className="site-nav-cta site-nav-contact-icon" aria-label={nav.ctaLabel} title={nav.ctaLabel}><IconMail /></a>
                 )}
+                <ThemeToggle theme={theme} setTheme={setTheme} />
               </div>
               <div className="site-nav-lang-topbar">
                 <LanguageToggle />

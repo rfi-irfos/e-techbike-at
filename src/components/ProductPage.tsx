@@ -2,6 +2,17 @@ import { useState, useEffect } from 'react'
 import type { SiteContent, ProductItem } from '../types/content'
 import { InquiryModal } from './InquiryModal'
 import { sanitizeHtml } from '../lib/sanitize'
+
+function cleanProductHtml(html: string | undefined): string {
+  if (!html) return ''
+  return sanitizeHtml(html, { stripLayout: true })
+    // Scraped product pages contain spacer paragraphs that otherwise become
+    // huge empty gaps once their inline layout styles are removed.
+    .replace(/<(p|div|section)[^>]*>\s*(?:&nbsp;|\u00a0|<br\s*\/?>|\s)*<\/\1>/gi, '')
+    // These labels are already supplied by our accordions and only duplicate
+    // the source site's headings inside the content.
+    .replace(/<h[1-6][^>]*>\s*(?:Produktinformationen|Produktdetails|Lieferung(?:\s*&amp;?|\s+und)?\s*Versand)\s*<\/h[1-6]>/gi, '')
+}
 import { useTheme } from '../hooks/useTheme'
 
 function Accordion({ title, children, open: defaultOpen }: { title: string; children: React.ReactNode; open?: boolean }) {
@@ -173,13 +184,13 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
             {product.details && (
               <Accordion title="Produktdetails">
-                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.details, { stripLayout: true }) }} />
+                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.details) }} />
               </Accordion>
             )}
 
             {product.delivery && (
               <Accordion title="Lieferung & Versand">
-                <div className="prod-accordion-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.delivery, { stripLayout: true }) }} />
+                <div className="prod-accordion-text" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.delivery) }} />
               </Accordion>
             )}
 

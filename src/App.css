@@ -130,7 +130,15 @@ button { cursor: pointer; font-family: inherit; }
 .site-nav-cta:hover { filter: brightness(.9); }
 .site-nav-contact-icon { width: 42px; height: 42px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; }
 .site-nav-contact-icon svg { width: 19px; height: 19px; }
-.theme-toggle-single { appearance: none; border: 1px solid var(--border); cursor: pointer; }
+.theme-toggle-single {
+  appearance: none; border: 1px solid var(--border); cursor: pointer;
+  width: 42px; height: 42px; padding: 0; border-radius: 10px;
+  align-items: center; justify-content: center; flex-shrink: 0;
+  color: var(--primary); background: var(--surface-sunken);
+  transition: border-color .2s, color .2s, transform .2s;
+}
+.theme-toggle-single:hover { border-color: var(--primary); color: var(--text); transform: translateY(-1px); }
+.theme-toggle-single svg { width: 18px; height: 18px; }
 
 /* Hamburger (mobile only — toggled by container query below) */
 .site-nav-burger {
