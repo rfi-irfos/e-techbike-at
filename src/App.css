@@ -2873,6 +2873,130 @@ button { cursor: pointer; font-family: inherit; }
 .prodpage-inquiry-btn:hover { background: #007aaa; }
 .crm-empty-hint { font-size: 12px; margin-top: 8px; font-style: italic; }
 
+/* ── Storefront polish: product showcase, trust points and footer ─────────── */
+.site-browser-prodcard { border-radius: 18px; box-shadow: 0 8px 28px rgba(20, 43, 58, .06); }
+.site-browser-prodcard:hover { box-shadow: 0 18px 48px rgba(20, 43, 58, .13); }
+.site-browser-prodcard-img-wrap { isolation: isolate; }
+.site-browser-prodcard-badge,
+.site-pcard-badge { z-index: 3; box-shadow: 0 5px 14px rgba(91, 135, 49, .24); }
+.site-browser-prodcard-img { position: relative; z-index: 1; }
+
+.prodpage {
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 12% 12%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34rem),
+    linear-gradient(180deg, var(--surface) 0, var(--bg) 34rem);
+}
+.prodpage-main { max-width: 1320px; padding: 56px 32px 100px; }
+.prodpage-inner { grid-template-columns: minmax(0, 1.08fr) minmax(420px, .92fr); gap: clamp(42px, 6vw, 84px); }
+.prodpage-gallery { top: 96px; }
+.prodpage-img-wrap {
+  aspect-ratio: 1.08 / 1;
+  padding: clamp(24px, 4vw, 54px);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 42%, var(--surface) 0, var(--surface-sunken) 72%);
+  box-shadow: 0 24px 70px rgba(20, 43, 58, .10);
+  isolation: isolate;
+}
+.prodpage-img { filter: drop-shadow(0 22px 18px rgba(30, 45, 55, .16)); }
+.prodpage-gallery .prod-modal-thumbs { gap: 10px; padding-top: 16px; }
+.prodpage-gallery .prod-modal-thumb {
+  width: 66px; height: 66px; padding: 5px; border: 1px solid var(--border);
+  border-radius: 12px; background: var(--surface); box-shadow: 0 4px 12px var(--shadow);
+}
+.prodpage-gallery .prod-modal-thumb.active { border: 2px solid var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+.prodpage-gallery .prod-modal-thumb img { object-fit: contain; }
+.prodpage-gallery .prod-modal-arrow { width: 44px; height: 44px; background: rgba(16, 31, 40, .66); backdrop-filter: blur(8px); }
+.prodpage-gallery .prod-modal-arrow-l { left: 18px; }
+.prodpage-gallery .prod-modal-arrow-r { right: 18px; }
+
+.prodpage-info {
+  min-width: 0;
+  padding: clamp(26px, 3vw, 42px);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 24px 70px rgba(20, 43, 58, .09);
+}
+.prodpage-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.prodpage-meta-row .prod-modal-cat { margin: 0; }
+.prodpage-availability {
+  display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0;
+  padding: 7px 11px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  color: color-mix(in srgb, var(--accent) 62%, #1f4d20); font-size: 10px; font-weight: 900;
+  letter-spacing: .08em; text-transform: uppercase; border: 1px solid color-mix(in srgb, var(--accent) 44%, transparent);
+}
+.prodpage-availability i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent); }
+.prodpage-name { font-size: clamp(28px, 3vw, 42px); font-weight: 900; letter-spacing: -.035em; line-height: 1.08; margin: 0 0 18px; text-wrap: balance; }
+.prodpage-info .prod-modal-price { font-size: clamp(30px, 3vw, 42px); letter-spacing: -.025em; }
+.prodpage-specs { gap: 8px; margin: 20px 0; }
+.prodpage-specs .site-spec { padding: 6px 10px; border-radius: 8px; background: color-mix(in srgb, var(--primary) 6%, var(--surface-sunken)); }
+.prodpage-info .prod-modal-desc { padding: 16px 18px; margin: 8px 0 20px; border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; background: var(--surface-sunken); color: var(--text-soft); }
+.prodpage-info .prod-accordion { margin-bottom: 10px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.prodpage-info .prod-accordion-head { padding: 16px 18px; font-weight: 800; }
+.prodpage-info .prod-accordion-body { padding: 0 18px 18px; }
+.prodpage-info .prod-modal-specs-table tr:nth-child(odd) { background: color-mix(in srgb, var(--primary) 3.5%, transparent); }
+.prodpage-info .prod-modal-specs-table { table-layout: fixed; }
+.prodpage-info .prod-specs-label,
+.prodpage-info .prod-specs-value { padding: 11px 12px; line-height: 1.35; }
+.prodpage-info .prod-specs-label { color: var(--text-soft); }
+.prodpage-ctas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding-top: 22px; }
+.prodpage-ctas .prodpage-inquiry-btn { grid-column: 1 / -1; min-height: 52px; margin: 0 0 2px; border-radius: 13px; box-shadow: 0 9px 22px color-mix(in srgb, var(--primary) 24%, transparent); }
+.prodpage-ctas .prod-modal-cta { border-radius: 13px; background: var(--surface); }
+.prod-modal-cta-share { font-family: inherit; }
+.prod-modal-cta-share svg { color: var(--accent); }
+
+.site-usp { background: linear-gradient(180deg, var(--surface-sunken), color-mix(in srgb, var(--primary) 4%, var(--surface))); }
+.site-usp-grid { gap: 16px; }
+.site-usp-card {
+  min-height: 150px; padding: 24px; display: grid; grid-template-columns: 58px 1fr;
+  grid-template-rows: auto 1fr; column-gap: 18px; row-gap: 7px; align-items: start;
+  border-radius: 18px; box-shadow: 0 10px 30px rgba(20, 43, 58, .06);
+}
+.site-usp-icon {
+  grid-row: 1 / span 2; width: 58px; height: 58px; padding: 14px; border-radius: 16px;
+  color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+}
+.site-usp-card:nth-child(2n) .site-usp-icon { color: #5b8731; background: rgba(173, 230, 0, .12); border-color: rgba(91, 135, 49, .22); }
+.site-usp-card:nth-child(3n) .site-usp-icon { color: #ef8b19; background: rgba(239, 139, 25, .10); border-color: rgba(239, 139, 25, .22); }
+.site-usp-card h3 { font-size: 17px; margin-top: 5px; }
+.site-usp-card p { font-size: 14px; line-height: 1.65; }
+
+.site-location-info { padding: clamp(48px, 5vw, 76px); background: radial-gradient(circle at 10% 10%, rgba(0, 153, 204, .28), transparent 28rem), linear-gradient(145deg, #00384d, #00627d); }
+.site-location-partner { border-left: 1px solid rgba(255,255,255,.12); background: radial-gradient(circle at 90% 10%, rgba(173, 230, 0, .14), transparent 25rem), linear-gradient(145deg, #003246, #004d68); }
+.site-cinfo-item svg { width: 22px; height: 22px; }
+.site-contact-form input,
+.site-contact-form textarea { min-height: 50px; border-radius: 12px; background: rgba(255,255,255,.09); }
+.site-contact-form textarea { min-height: 120px; }
+.site-contact-form-btn { min-height: 52px; border-radius: 12px; box-shadow: 0 10px 25px rgba(173, 230, 0, .13); }
+
+.site-footer { background: radial-gradient(circle at 8% 0, #17333b 0, #111719 30rem, #0c1011 70%); padding-top: 68px; }
+.site-footer-grid { max-width: 1500px; margin-left: auto; margin-right: auto; border-bottom-color: rgba(255,255,255,.10); }
+.site-footer-logo { height: 52px; padding: 6px; border-radius: 10px; background: #fff; }
+.site-footer-brand-name { color: rgba(255,255,255,.92); font-size: 18px; }
+.site-footer-brand-desc { max-width: 420px; color: rgba(255,255,255,.55); font-size: 14px; }
+.site-footer-col h4 { color: var(--accent); }
+.site-footer-col a { color: rgba(255,255,255,.52); font-size: 14px; }
+.site-footer-bottom { max-width: 1500px; margin: 0 auto; color: rgba(255,255,255,.38); }
+.site-footer-links a { color: rgba(255,255,255,.44); }
+
+@media (max-width: 980px) {
+  .prodpage-inner { grid-template-columns: 1fr; }
+  .prodpage-gallery { position: static; }
+}
+@media (max-width: 680px) {
+  .prodpage-main { padding: 24px 14px 64px; }
+  .prodpage-img-wrap { border-radius: 20px; padding: 20px; }
+  .prodpage-info { padding: 22px 16px; border-radius: 20px; }
+  .prodpage-meta-row { align-items: flex-start; }
+  .prodpage-ctas { grid-template-columns: repeat(2, 1fr); }
+  .site-usp-card { grid-template-columns: 52px 1fr; padding: 20px; }
+  .site-usp-icon { width: 52px; height: 52px; padding: 12px; }
+}
+
 /* Partner badge */
 .site-partner-badge { display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5B8731;border:1.5px solid #5B8731;border-radius:3px;padding:2px 8px;margin-bottom:8px; }
 

@@ -22,6 +22,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
   const allImages = product.images?.length ? product.images : [product.image].filter(Boolean)
   const [imgIdx, setImgIdx] = useState(0)
   const [inquiryOpen, setInquiryOpen] = useState(false)
+  const [shareCopied, setShareCopied] = useState(false)
   const { theme } = useTheme()
   // Standalone route (App.tsx renders this outside PublicSite's tree), so it needs
   // its own copy of the .site theme scope — otherwise every var(--accent)/var(--border)
@@ -58,6 +59,25 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
     ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hallo! Ich interessiere mich für "${product.name}"${product.price !== 'auf Anfrage' ? ` (${product.price})` : ''}${specsSummary ? ` — ${specsSummary}` : ''}. Können Sie mich beraten?`)}`
     : undefined
 
+  const shareProduct = async () => {
+    const url = `${window.location.origin}${window.location.pathname}#product/${product.id}`
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: product.name, text: product.name, url })
+      } else {
+        await navigator.clipboard.writeText(url)
+        setShareCopied(true)
+        window.setTimeout(() => setShareCopied(false), 1800)
+      }
+    } catch (error) {
+      if ((error as DOMException).name !== 'AbortError') {
+        await navigator.clipboard.writeText(url)
+        setShareCopied(true)
+        window.setTimeout(() => setShareCopied(false), 1800)
+      }
+    }
+  }
+
   return (
     <div className="site prodpage" data-theme={theme} style={vars}>
       {/* Nav */}
@@ -78,7 +98,6 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
           {/* Left: images */}
           <div className="prodpage-gallery">
             <div className="prodpage-img-wrap">
-              {product.badge && <span className="prod-modal-badge">{product.badge}</span>}
               {allImages[imgIdx] && (
                 <img src={allImages[imgIdx]} alt={product.name} className="prodpage-img" />
               )}
@@ -102,7 +121,10 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
           {/* Right: info */}
           <div className="prodpage-info">
-            <div className="prod-modal-cat">{product.category}</div>
+            <div className="prodpage-meta-row">
+              <div className="prod-modal-cat">{product.category}</div>
+              {product.badge && <span className="prodpage-availability"><i />{product.badge}</span>}
+            </div>
             <h1 className="prodpage-name">{product.name}</h1>
             <div className="prod-modal-price-row">
               <span className="prod-modal-price">{product.price}</span>
@@ -182,11 +204,10 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                 E-Mail
               </a>
-            </div>
-
-            <div className="prodpage-permalink">
-              <span>Direktlink:</span>
-              <code>{window.location.origin}{window.location.pathname}#product/{product.id}</code>
+              <button type="button" className="prod-modal-cta prod-modal-cta-share" onClick={shareProduct}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                {shareCopied ? 'Link kopiert' : 'Teilen'}
+              </button>
             </div>
           </div>
         </div>
