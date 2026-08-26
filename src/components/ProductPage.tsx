@@ -5,7 +5,11 @@ import { sanitizeHtml } from '../lib/sanitize'
 
 function cleanProductHtml(html: string | undefined): string {
   if (!html) return ''
-  return sanitizeHtml(html, { stripLayout: true })
+  // Jimdo exports the visible product details first, then appends a second
+  // tree of empty accordion shells and marketing blocks. Keep the primary
+  // details block so every product gets the same compact presentation.
+  const primary = html.split(/<div\s+class=["']uiWj1\b/i)[0]
+  return sanitizeHtml(primary, { stripLayout: true })
     // Scraped product pages contain spacer paragraphs that otherwise become
     // huge empty gaps once their inline layout styles are removed.
     .replace(/<(p|div|section)[^>]*>\s*(?:&nbsp;|\u00a0|<br\s*\/?>|\s)*<\/\1>/gi, '')
@@ -89,6 +93,14 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
     }
   }
 
+  const returnToShop = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    // Preserve the exact catalogue scroll/filter state when this page was
+    // opened from the shop. Direct visits still get the normal catalogue hash.
+    if (window.history.length > 1) window.history.back()
+    else window.location.hash = 'products'
+  }
+
   return (
     <div className="site prodpage" data-theme={theme} style={vars}>
       {/* Nav */}
@@ -96,7 +108,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
         <a href="#" className="static-page-brand">
           {nav.logo ? <img src={nav.logo} alt={nav.brand} style={{ height: 36 }} /> : nav.brand}
         </a>
-        <a href="#products" className="static-page-back">
+        <a href="#products" className="static-page-back" onClick={returnToShop}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           Zurück zum Sortiment
         </a>

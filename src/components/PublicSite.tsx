@@ -963,11 +963,7 @@ export function PublicSite({
                     <E field="nav.phone" value={nav.phone} as="span" />
                   </a>
                 )}
-                {nav.ctaLabel && (
-                  editMode
-                    ? <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
-                    : <a href={nav.ctaHref ?? '#'} className="site-nav-cta site-nav-contact-icon" aria-label={nav.ctaLabel} title={nav.ctaLabel}><IconMail /></a>
-                )}
+                {editMode && nav.ctaLabel && <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />}
                 <ThemeToggle theme={theme} setTheme={setTheme} />
               </div>
               <div className="site-nav-lang-topbar">

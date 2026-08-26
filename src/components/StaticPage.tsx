@@ -16,7 +16,6 @@ export function InfoPageNav({ nav, theme, setTheme }: { nav: SiteContent['nav'];
     <nav className="site-main-nav">{nav.links.map((link, i) => <a key={i} href={link.href}>{link.label}</a>)}</nav>
     <div className="site-nav-right static-page-nav-right">
       {nav.phone && <a href={`tel:${nav.phone}`} className="site-nav-phone">{nav.phone}</a>}
-      {nav.ctaLabel && <a href={nav.ctaHref ?? '#'} className="static-page-contact" aria-label="Kontakt"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>}
       <button type="button" className="static-page-theme" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label="Farbschema wechseln">{theme === 'dark' ? '☀' : '◐'}</button>
     </div>
   </div></header>

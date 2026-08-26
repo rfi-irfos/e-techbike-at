@@ -139,6 +139,8 @@ button { cursor: pointer; font-family: inherit; }
 }
 .theme-toggle-single:hover { border-color: var(--primary); color: var(--text); transform: translateY(-1px); }
 .theme-toggle-single svg { width: 18px; height: 18px; }
+.site[data-theme="light"] .theme-toggle-single,
+.static-page[data-theme="light"] .static-page-theme { color: #111; }
 
 /* Hamburger (mobile only — toggled by container query below) */
 .site-nav-burger {
