@@ -99,7 +99,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
           <div className="prodpage-gallery">
             <div className="prodpage-img-wrap">
               {allImages[imgIdx] && (
-                <img key={allImages[imgIdx]} src={allImages[imgIdx]} alt={product.name} className="prodpage-img" />
+                <img key={allImages[imgIdx]} src={allImages[imgIdx]} alt={product.name} className="prodpage-img" loading="eager" decoding="async" />
               )}
               {allImages.length > 1 && (
                 <>
@@ -112,7 +112,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
               <div className="prod-modal-thumbs">
                 {allImages.map((src, i) => (
                   <button type="button" key={i} className={`prod-modal-thumb${i === imgIdx ? ' active' : ''}`} onClick={() => setImgIdx(i)}>
-                    <img src={src} alt={`${product.name} ${i + 1}`} />
+                    <img src={src} alt={`${product.name} ${i + 1}`} loading={i === imgIdx ? 'eager' : 'lazy'} decoding="async" />
                   </button>
                 ))}
               </div>
@@ -173,13 +173,13 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
             {product.details && (
               <Accordion title="Produktdetails">
-                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.details) }} />
+                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.details, { stripLayout: true }) }} />
               </Accordion>
             )}
 
             {product.delivery && (
               <Accordion title="Lieferung & Versand">
-                <div className="prod-accordion-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.delivery) }} />
+                <div className="prod-accordion-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.delivery, { stripLayout: true }) }} />
               </Accordion>
             )}
 

@@ -87,6 +87,7 @@ export default function App() {
       <StaticPage
         pageId={route.staticPageId}
         brand={content.nav?.brand}
+        nav={content.nav}
         phone={content.contact?.phone}
         email={content.contact?.email}
         address={content.contact?.address}

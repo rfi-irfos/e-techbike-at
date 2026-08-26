@@ -306,23 +306,9 @@ const THEME_OPTS: { id: Theme; label: string; icon: React.ReactNode }[] = [
 ]
 
 function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
-  return (
-    <div className="theme-toggle" role="group" aria-label="Farbschema wählen">
-      {THEME_OPTS.map(o => (
-        <button
-          key={o.id}
-          type="button"
-          className={`theme-toggle-btn ${theme === o.id ? 'active' : ''}`}
-          aria-pressed={theme === o.id}
-          aria-label={o.label}
-          title={o.label}
-          onClick={() => setTheme(o.id)}
-        >
-          {o.icon}
-        </button>
-      ))}
-    </div>
-  )
+  const current = THEME_OPTS.find(o => o.id === theme) ?? THEME_OPTS[0]
+  const next = THEME_OPTS[(THEME_OPTS.findIndex(o => o.id === theme) + 1) % THEME_OPTS.length]
+  return <button type="button" className="theme-toggle theme-toggle-single" aria-label={`${current.label}. Zum nächsten Farbschema wechseln`} title={`${current.label} · nächstes Farbschema`} onClick={() => setTheme(next.id)}>{current.icon}</button>
 }
 
 // ── Category Browser (3-level drill-down) ────────────────────────────────────
@@ -979,7 +965,9 @@ export function PublicSite({
                   </a>
                 )}
                 {nav.ctaLabel && (
-                  <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
+                  editMode
+                    ? <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
+                    : <a href={nav.ctaHref ?? '#'} className="site-nav-cta site-nav-contact-icon" aria-label={nav.ctaLabel} title={nav.ctaLabel}><IconMail /></a>
                 )}
               </div>
               <div className="site-nav-lang-topbar">
