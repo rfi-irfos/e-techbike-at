@@ -2959,12 +2959,15 @@ button { cursor: pointer; font-family: inherit; }
 .prodpage-utility a { color: var(--text-soft); text-decoration: none; }
 .prodpage-utility a:hover { color: var(--primary); }
 .prodpage .static-page-nav { top: 28px; }
-.prodpage-main { max-width: 1240px; padding: 126px 32px 100px; }
+.prodpage-main {
+  width: 100%; max-width: 1600px; box-sizing: border-box;
+  padding: 112px clamp(24px, 3.2vw, 52px) 64px;
+}
 .prodpage-breadcrumb { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0 0 22px; color: var(--text-soft); font-size: 11px; white-space: nowrap; overflow: hidden; }
 .prodpage-breadcrumb button { border: 0; background: none; color: var(--text-soft); font: inherit; cursor: pointer; }
 .prodpage-breadcrumb button:hover { color: var(--primary); }
 .prodpage-breadcrumb strong { min-width: 0; color: var(--text); font-weight: 700; text-overflow: ellipsis; overflow: hidden; }
-.prodpage-inner { grid-template-columns: minmax(0, 1.12fr) minmax(400px, .78fr); gap: clamp(28px, 3.5vw, 48px); align-items: start; }
+.prodpage-inner { grid-template-columns: minmax(0, 1.18fr) minmax(460px, .82fr); gap: clamp(24px, 2.6vw, 42px); align-items: start; }
 .prodpage-gallery {
   position: static; align-self: start; height: fit-content;
   display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: start;
@@ -3042,7 +3045,7 @@ button { cursor: pointer; font-family: inherit; }
 
 .prodpage-information {
   display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 14px;
-  margin-top: 38px; padding: 14px; border: 1px solid var(--border); border-radius: 18px;
+  margin-top: 24px; padding: 12px; border: 1px solid var(--border); border-radius: 18px;
   background: color-mix(in srgb, var(--surface-sunken) 58%, var(--surface));
 }
 .prodpage-detail-column, .prodpage-support-column { min-width: 0; padding: 22px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface); }
@@ -3106,7 +3109,7 @@ button { cursor: pointer; font-family: inherit; }
 @media (max-width: 680px) {
   .prodpage-utility { display: none; }
   .prodpage .static-page-nav { top: 0; }
-  .prodpage-main { padding: 82px 14px 64px; }
+  .prodpage-main { max-width: none; padding: 82px 14px 48px; }
   .prodpage-gallery { display: flex; flex-direction: column; gap: 0; }
   .prodpage-gallery .prod-modal-thumbs {
     width: 100%; max-height: none; padding-top: 12px; flex-direction: row; overflow-x: auto; overflow-y: hidden;
