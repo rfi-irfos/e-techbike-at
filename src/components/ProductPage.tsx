@@ -207,21 +207,27 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
         <section className="prodpage-information" aria-label="Produktinformationen">
           <div className="prodpage-detail-column">
-            <h2>Produktdetails</h2>
             {(product.specsTable?.length ?? 0) > 0 ? (
-              <div className="prodpage-specs-table-wrap">
-                <table className="prod-modal-specs-table">
-                  <tbody>
-                    {(product.specsTable ?? []).map((row, i) => (
-                      <tr key={i}><td className="prod-specs-label">{row.label}</td><td className="prod-specs-value">{row.value}</td></tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <Accordion title="Produktdetails">
+                <div className="prodpage-specs-table-wrap">
+                  <table className="prod-modal-specs-table">
+                    <tbody>
+                      {(product.specsTable ?? []).map((row, i) => (
+                        <tr key={i}><td className="prod-specs-label">{row.label}</td><td className="prod-specs-value">{row.value}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Accordion>
             ) : product.details ? (
-              <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.details) }} />
+              <Accordion title="Produktdetails">
+                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.details) }} />
+              </Accordion>
             ) : (
-              <p className="prodpage-empty-detail">Weitere technische Informationen erhalten Sie direkt von unserem Team.</p>
+              <>
+                <h2>Produktdetails</h2>
+                <p className="prodpage-empty-detail">Weitere technische Informationen erhalten Sie direkt von unserem Team.</p>
+              </>
             )}
             {product.details && (product.specsTable?.length ?? 0) > 0 && (
               <Accordion title="Weitere Produktdetails"><div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.details) }} /></Accordion>
