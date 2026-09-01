@@ -206,7 +206,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [device, setDevice] = useState<DeviceView>('edit')
   const [productModal, setProductModal] = useState<string | null>(null)
   const [specsInput, setSpecsInput] = useState('')
-  const [panelWidth, setPanelWidth] = useState(340)
+  const [panelWidth, setPanelWidth] = useState(400)
   const [editingPage, setEditingPage] = useState<string | null>(null)
   const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(() => loadInbox())
   const [addMenuOpen, setAddMenuOpen] = useState(false)
@@ -218,6 +218,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [newTestimonialForm, setNewTestimonialForm] = useState({ name: '', rating: 5, text: '', date: '' })
   const [mcTheme, setMcTheme] = useState(() => localStorage.getItem('mc-theme') !== 'false')
   const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isDirty = JSON.stringify(draft) !== JSON.stringify(content)
 
   function triggerAchievement(text: string) {
     if (mcTimerRef.current) clearTimeout(mcTimerRef.current)
@@ -244,6 +245,15 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     document.addEventListener('mousedown', onDown)
     return () => document.removeEventListener('mousedown', onDown)
   }, [addMenuOpen])
+
+  useEffect(() => {
+    const warnBeforeLeave = (event: BeforeUnloadEvent) => {
+      if (!isDirty) return
+      event.preventDefault()
+    }
+    window.addEventListener('beforeunload', warnBeforeLeave)
+    return () => window.removeEventListener('beforeunload', warnBeforeLeave)
+  }, [isDirty])
 
   const startPanelResize = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -308,16 +318,33 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   }
 
   const handleSave = async () => {
+    if (!isDirty || saving) return
     setSaveError(false)
     const ok = await onSave(draft)
     if (ok) {
       setSaved(true)
       setTimeout(() => setSaved(false), 2500)
-      triggerAchievement('Achievement Get!  Website gespeichert — Live in ~2 Min aktuell')
+      triggerAchievement('Website gespeichert — Veröffentlichung läuft')
     } else {
       setSaveError(true)
       setTimeout(() => setSaveError(false), 3500)
     }
+  }
+
+  const handleDiscard = () => {
+    if (!isDirty || !window.confirm('Alle ungespeicherten Änderungen verwerfen?')) return
+    setDraft(structuredClone(content))
+    setEditingProduct(null)
+    setEditingNews(null)
+    setEditingCategory(null)
+    setEditingPage(null)
+    setSaved(false)
+    setSaveError(false)
+  }
+
+  const handleLogout = () => {
+    if (isDirty && !window.confirm('Es gibt ungespeicherte Änderungen. Trotzdem abmelden?')) return
+    onLogout()
   }
 
   const handleImageClick = (field: string) => {
@@ -526,11 +553,11 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       {/* ── TOPBAR ──────────────────────────────────────────────────────── */}
       <div className="builder-topbar">
         {mcTheme && <MCTopbarTrees />}
-        <EnderDragon onCatch={() => triggerAchievement('Achievement Get!  Enderdrachen gefangen!')} />
+        {mcTheme && <EnderDragon onCatch={() => triggerAchievement('Achievement Get!  Enderdrachen gefangen!')} />}
         <div className="builder-brand">
           <span className="builder-brand-dot" />
           <strong>{draft.nav?.brand || 'Meine Website'}</strong>
-          <span className="builder-crafting-badge">Crafting Table Edition</span>
+          {mcTheme && <span className="builder-crafting-badge">Crafting Table Edition</span>}
         </div>
         <div className="builder-device-switch" role="group" aria-label="Ansicht wählen">
           {DEVICE_OPTS.map(d => (
@@ -599,14 +626,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
               </div>
             )}
           </div>
-          <button
-            className={`builder-save-btn-top ${saving ? 'loading' : ''} ${saved ? 'done' : ''} ${saveError ? 'error' : ''}`}
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? 'Speichern…' : saved ? 'Gespeichert' : saveError ? 'Fehler!' : 'Speichern'}
-          </button>
-          <button className="builder-logout-btn" onClick={onLogout} title="Abmelden">
+          <span className={`builder-dirty-state${isDirty ? ' is-dirty' : ''}`} role="status">
+            <i />{isDirty ? 'Ungespeichert' : 'Aktuell'}
+          </span>
+          <button className="builder-logout-btn" onClick={handleLogout} title="Abmelden">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
@@ -1488,13 +1511,22 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
 
           {/* SAVE FOOTER */}
           <div className="builder-panel-foot">
+            <div className="builder-save-state" aria-live="polite">
+              <strong>{isDirty ? 'Änderungen noch nicht gespeichert' : 'Alle Änderungen gespeichert'}</strong>
+              <span>{saveError ? 'Speichern fehlgeschlagen. Bitte erneut versuchen.' : saved ? 'Gespeichert. Veröffentlichung wurde gestartet.' : 'Die Vorschau zeigt deinen aktuellen Entwurf.'}</span>
+            </div>
+            <div className="builder-panel-actions">
+              <button className="builder-discard-btn" onClick={handleDiscard} disabled={!isDirty || saving}>
+                Verwerfen
+              </button>
             <button
               className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''} ${saveError ? 'error' : ''}`}
               onClick={handleSave}
-              disabled={saving}
+              disabled={!isDirty || saving}
             >
               {saving ? 'Speichern…' : saved ? 'Gespeichert!' : saveError ? 'Fehler beim Speichern' : 'Speichern'}
             </button>
+            </div>
           </div>
         </aside>
       </div>

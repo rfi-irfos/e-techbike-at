@@ -4,10 +4,11 @@ import type { ProductItem } from '../types/content'
 export interface InquiryModalProps {
   products: ProductItem[]
   preselectedProductId?: string
+  recipientEmail: string
   onClose: () => void
 }
 
-export function InquiryModal({ products, preselectedProductId, onClose }: InquiryModalProps) {
+export function InquiryModal({ products, preselectedProductId, recipientEmail, onClose }: InquiryModalProps) {
   const [selectedId, setSelectedId] = useState(preselectedProductId ?? products[0]?.id ?? '')
   const [variantSelections, setVariantSelections] = useState<Record<number, string>>({})
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' })
@@ -47,7 +48,7 @@ export function InquiryModal({ products, preselectedProductId, onClose }: Inquir
     const body =
       `Produkt: ${productName}\n${variantenStr ? `Sonderausführungen: ${variantenStr}\n` : ''}` +
       `Name: ${form.name}\nTelefon: ${form.phone}\nE-Mail: ${form.email}\n\n${form.message}`
-    window.location.href = `mailto:lacitimi2@gmail.com?subject=${encodeURIComponent(`Neue Anfrage: ${productName}`)}&body=${encodeURIComponent(body)}`
+    window.location.href = `mailto:${recipientEmail}?subject=${encodeURIComponent(`Neue Anfrage: ${productName}`)}&body=${encodeURIComponent(body)}`
     onClose()
   }
 

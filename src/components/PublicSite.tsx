@@ -240,7 +240,7 @@ function TrustIcon({ icon }: { icon: string }) {
 
 // ── Contact form ──────────────────────────────────────────────────────────────
 
-function ContactForm() {
+function ContactForm({ recipientEmail }: { recipientEmail: string }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
 
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
@@ -249,7 +249,7 @@ function ContactForm() {
     e.preventDefault()
     const subject = `Kontaktanfrage von ${form.name}`
     const body = `Name: ${form.name}\nE-Mail: ${form.email}\nTelefon: ${form.phone}\n\n${form.message}`
-    window.location.href = `mailto:lacitimi2@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    window.location.href = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   }
 
   return (
@@ -1306,7 +1306,7 @@ export function PublicSite({
                 )}
               </div>
               {contact?.formEnabled && !editMode ? (
-                <ContactForm />
+                <ContactForm recipientEmail={contact.email} />
               ) : (
                 <a href={`mailto:${contact?.email ?? ''}`} className="site-btn-lime-solid">Nachricht senden</a>
               )}
@@ -1408,6 +1408,7 @@ export function PublicSite({
           <InquiryModal
             products={products?.items ?? []}
             preselectedProductId={inquiryProductId}
+            recipientEmail={contact.email}
             onClose={() => { setInquiryOpen(false); setInquiryProductId(undefined) }}
           />
         )}

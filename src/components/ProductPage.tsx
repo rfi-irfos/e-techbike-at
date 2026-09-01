@@ -101,18 +101,23 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
   return (
     <div className="site prodpage" data-theme={theme} style={vars}>
+      <div className="prodpage-utility" aria-label="Servicevorteile">
+        <div><span>Direktimport aus Graz</span><span>Persönliche Beratung</span><span>Herstellergarantie</span></div>
+        <div><a href="#wie-kaufen">Service &amp; Hilfe</a><a href={`mailto:${contact.email}`}>Kontakt</a></div>
+      </div>
       <InfoPageNav nav={nav} theme={theme} setTheme={setTheme} />
 
       {/* Main */}
       <main className="prodpage-main">
-        <button type="button" className="prodpage-back" onClick={goBackToShop}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          Zurück zum Sortiment
-        </button>
+        <nav className="prodpage-breadcrumb" aria-label="Brotkrümelnavigation">
+          <button type="button" onClick={goBackToShop}>Startseite</button><span>›</span>
+          <button type="button" onClick={goBackToShop}>Sortiment</button><span>›</span>
+          <span>{product.category}</span><span>›</span><strong>{product.name}</strong>
+        </nav>
         <div className="prodpage-inner">
 
           {/* Left: images */}
-          <div className="prodpage-gallery">
+          <div className={`prodpage-gallery${allImages.length <= 1 ? ' single' : ''}`}>
             <div className="prodpage-img-wrap">
               {allImages[imgIdx] && (
                 <img key={allImages[imgIdx]} src={allImages[imgIdx]} alt={product.name} className="prodpage-img" loading="eager" decoding="async" />
@@ -123,6 +128,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
                   <button type="button" className="prod-modal-arrow prod-modal-arrow-r" onClick={() => setImgIdx(i => (i + 1) % allImages.length)}>›</button>
                 </>
               )}
+              {allImages.length > 1 && <span className="prodpage-image-count">{imgIdx + 1} / {allImages.length}</span>}
             </div>
             {allImages.length > 1 && (
               <div className="prod-modal-thumbs">
@@ -146,7 +152,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
               <span className="prod-modal-price">{product.price}</span>
               {product.regularPrice && <span className="prod-modal-price-old">{product.regularPrice}</span>}
             </div>
-            {product.regularPrice && <div className="prod-modal-price-note">inkl. MwSt., zzgl. Versand</div>}
+            {product.price !== 'auf Anfrage' && <div className="prod-modal-price-note">inkl. MwSt., zzgl. Versand</div>}
 
             {(product.specs?.length ?? 0) > 0 && (
               <div className="prodpage-specs">
@@ -155,23 +161,6 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
             )}
 
             <div className="prod-modal-desc" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }} />
-
-            {(product.specsTable?.length ?? 0) > 0 && (
-              <Accordion title="Produktinformationen">
-                <div className="prodpage-specs-table-wrap">
-                  <table className="prod-modal-specs-table">
-                    <tbody>
-                      {(product.specsTable ?? []).map((row, i) => (
-                        <tr key={i}>
-                          <td className="prod-specs-label">{row.label}</td>
-                          <td className="prod-specs-value">{row.value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Accordion>
-            )}
 
             {product.variants?.map((v, vi) => (
               (v.options?.length ?? 0) > 0 && (
@@ -187,22 +176,10 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
               )
             ))}
 
-            {product.details && (
-              <Accordion title="Produktdetails">
-                <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.details) }} />
-              </Accordion>
-            )}
-
-            {product.delivery && (
-              <Accordion title="Lieferung & Versand">
-                <div className="prod-accordion-text" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.delivery) }} />
-              </Accordion>
-            )}
-
             <div className="prod-modal-ctas prodpage-ctas">
               <button type="button" className="prodpage-inquiry-btn" onClick={() => setInquiryOpen(true)}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Anfrage senden
+                {product.price === 'auf Anfrage' ? 'Anfrage senden' : 'Kauf anfragen'}
               </button>
               {waHref && (
                 <a href={waHref} target="_blank" rel="noopener noreferrer" className="prod-modal-cta prod-modal-cta-wa">
@@ -227,12 +204,53 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
             </div>
           </div>
         </div>
+
+        <section className="prodpage-information" aria-label="Produktinformationen">
+          <div className="prodpage-detail-column">
+            <h2>Produktdetails</h2>
+            {(product.specsTable?.length ?? 0) > 0 ? (
+              <div className="prodpage-specs-table-wrap">
+                <table className="prod-modal-specs-table">
+                  <tbody>
+                    {(product.specsTable ?? []).map((row, i) => (
+                      <tr key={i}><td className="prod-specs-label">{row.label}</td><td className="prod-specs-value">{row.value}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : product.details ? (
+              <div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.details) }} />
+            ) : (
+              <p className="prodpage-empty-detail">Weitere technische Informationen erhalten Sie direkt von unserem Team.</p>
+            )}
+            {product.details && (product.specsTable?.length ?? 0) > 0 && (
+              <Accordion title="Weitere Produktdetails"><div className="prod-accordion-html" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.details) }} /></Accordion>
+            )}
+            {product.delivery && (
+              <Accordion title="Lieferung & Versand"><div className="prod-accordion-text" dangerouslySetInnerHTML={{ __html: cleanProductHtml(product.delivery) }} /></Accordion>
+            )}
+          </div>
+          <div className="prodpage-support-column">
+            <div className="prodpage-benefits">
+              {(content.trust?.items ?? []).slice(0, 4).map(item => (
+                <div key={item.id}><strong>{item.bold}</strong><span>{item.text}</span></div>
+              ))}
+            </div>
+            <div className="prodpage-compatibility">
+              <span className="prodpage-compatibility-label">Einsatzbereich</span>
+              <h2>{product.subcategory || product.category}</h2>
+              <p>Bitte Fahrzeugmodell, Baujahr und gewünschte Ausführung vor dem Kauf mit unserem Team abgleichen.</p>
+              <button type="button" onClick={() => setInquiryOpen(true)}>Kompatibilität prüfen</button>
+            </div>
+          </div>
+        </section>
       </main>
 
       {inquiryOpen && (
         <InquiryModal
           products={products.length > 0 ? products : [product]}
           preselectedProductId={product.id}
+          recipientEmail={contact.email}
           onClose={() => setInquiryOpen(false)}
         />
       )}
