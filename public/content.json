@@ -4793,8 +4793,23 @@
           }
         ],
         "details": "<p><strong>Technische Eigenschaften faltbares Elektrofahrrad NITRO-16&nbsp; E-Bike:</strong></p><ul><li>Motor: 250-600W</li><li>Batterie: 36V 7,8 Ah&nbsp;</li><li>Reichweite: bis 30 km (1)</li><li>Reifen:&nbsp; KENDA 16” x 1.95&nbsp;</li><li>Rahmen: 16 zoll</li><li>Belastung: Max. 114kg</li><li>Lichter: hinten und vorne</li><li>Einlegebatterie mit Sicherheitsverriegelung</li><li>Stahlrahmen faltbar</li><li>Shimano 6-Gang-Getriebe</li><li>LCD-Anzeige</li><li>Aluminium Kotflügel</li><li>Ergonomische Knöpfe</li><li>Ladezeit: 4-6 h</li><li>Scheibenbremse</li><li>Ausstattung: Gepäcksträger, Licht, Reflektoren, Hupe</li></ul><ol><li>&nbsp;Variiert je nach Straße, Wetter und Nutzungsbedingungen.</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 1.190,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 1.190,00",
+        "variants": [
+          {
+            "label": "Bremse und Preise",
+            "options": [
+              {
+                "value": "Hydraulische Bremse ",
+                "price": "1190€"
+              },
+              {
+                "value": "Mechanische Bremse",
+                "price": "1090€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "elektrofahrrad-e-bike-faltrad-schwarz-shimano-mx25-pro",
