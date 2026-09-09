@@ -5104,8 +5104,23 @@
           }
         ],
         "details": "<p><strong>Technische Merkmale des RKS RV10 Falt-E-Bikes:</strong></p><ul><li>Motor: 250-600W</li><li>Batterie: <strong>HUPO 36V -15 ah</strong></li><li>Reichweite: bis 80 km (1)</li><li>Ladezeit des Akkus: 4-6 Stunden</li><li>Batterie mit Sicherheitsschloss</li><li>Höchstgeschwindigkeit: 25 km / h</li><li>Scheibenbremsen vorne und hinten</li><li>20 Zoll</li><li>Aluminiumrahmen, Kotflügel und Pedale</li><li>Ergonomische Knöpfe</li><li>Ergonomischer Sattel</li><li>Shimano 7-Gang-Schaltgetriebe</li><li>Integriertes LCD-Display</li><li>Reifen 20 * 4,0</li><li>Einstellbare Federgabel</li><li>Ausstattung: Gepäcksträger, Licht, Reflektoren, Hupe</li></ul><ol><li>Variiert je nach Straße, Wetter und Nutzungsbedingungen.</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 1.390,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 1.390,00",
+        "variants": [
+          {
+            "label": "Bremse und Preise",
+            "options": [
+              {
+                "value": "Hydraulische Bremse",
+                "price": "1390€"
+              },
+              {
+                "value": "Mechanische Brmese",
+                "price": "1190€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "e-mobil-futura-two-li",
