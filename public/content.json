@@ -2810,8 +2810,27 @@
           }
         ],
         "details": "<ul><li>Motor: 72V 3000W</li><li>Reichweite: bis 60 Km (1)</li><li>maximale Geschwindigkeit: 45 Km/h</li><li>maximale Belastung: 236 kg</li><li>Gewicht: 95 kg&nbsp;</li><li>Steigung: 20%</li><li>Akkukapazität: 72V 20Ah&nbsp;</li><li>Batterietyp:&nbsp; Li-ion /Blei-gel</li><li>Ladezeit: 6-7 Stunde</li><li>Ladegerät: 72V/ 3A</li><li>Reifen: Vorder- und Hinterrad&nbsp; 12 Zoll Tubeless&nbsp;</li><li>Bremse:Scheibenbremsen</li><li>Ausstattung: 2 Rückspiegel, Alarmanlage&nbsp;</li></ul><h3>sehr günstige Betriebskosten von nur ca. 1 € pro 100 Kilometer&nbsp;</h3><ol><li>Variiert je nach Straße, Wetter und Nutzungsbedingungen.&nbsp;</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 2.990,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 2.990,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "72V 20Ah Bleigel bis: 60Km",
+                "price": "1690€"
+              },
+              {
+                "value": "72V 20Ah Lithium bis: 70Km",
+                "price": "2290€"
+              },
+              {
+                "value": "72V 78Ah Lithium bis: 240Km",
+                "price": "2990€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "bikely-e-scooter-e-moped-e-scooter-e-chopper-hl-6.0-elektroroller-45km-h-3000-watt",
