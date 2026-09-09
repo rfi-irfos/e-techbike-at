@@ -841,8 +841,23 @@
           }
         ],
         "details": "<ul><li>Motorleistung:1000 W</li></ul><ul><li>Batterietyp:VRLA-Gel/Lithium</li></ul><ul><li>Batteriekapazität:60 V 20 Ah</li></ul><ul><li>Reichweite: bis 180km</li></ul><ul><li>Ladezeit:6–8 Stunden</li></ul><ul><li>Höchstgeschwindigkeit: 25 km/h</li></ul><ul><li>Maximale Zuladung: 215 kg</li></ul><ul><li>Bremssystem:Trommelbremse</li></ul><ul><li>Räder: 3.00 - 10</li></ul>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 2.589,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 2.589,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 20Ah Bleigel bis: 40Km",
+                "price": "1799€"
+              },
+              {
+                "value": "60V 78Ah Lithium bis: 180Km",
+                "price": "2789€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "e-mobil-cargocruiser-dach",
