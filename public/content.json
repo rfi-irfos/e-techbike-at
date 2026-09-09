@@ -3830,8 +3830,27 @@
           }
         ],
         "details": "<ul><li>Motor: 48V 1000w</li></ul><ul><li>Reichweite:bis 75 Km (1)</li></ul><ul><li>Maximale Geschwindigkeit: 25 Km/h, Sparmodus: 10 km/h</li><li>Getriebe: Differential</li><li>Vorwärts - Rückwärts</li><li>Steigung: 14%</li><li>Batteriekapazität :60V 20Ah</li><li>Batterietyp: Li-ion,Gell</li><li>Ladezeit: 6 Stunden</li><li>Ladegerät: 48V 4A</li><li>Reifen: 3.00 - 10 schlauchlos vorne / hinten</li><li>Ausstattung: 2 Rückspiegel, Sitz mit Armlehnen, Transport-Box hinten, Hupe,Alarm</li></ul><ol><li>Variiert je nach Straße, Wetter und Nutzungsbedingungen.</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 2.799,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 2.799,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 2Ah Bleigel bis: 50Km",
+                "price": "1999€"
+              },
+              {
+                "value": "60V 20Ah Lithium bis: 50Km",
+                "price": "2390€"
+              },
+              {
+                "value": "60V 30Ah Lithium bis: 75Km",
+                "price": "2799€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "e-seniorenmobil-e-scooter-elektrischer-roller-lektromobil-vita-care-500-li-lithium-akku",
