@@ -3941,8 +3941,23 @@
           }
         ],
         "details": "<ul><li>Motor: 24V 300w</li><li>Reichweite:bis 40 Km (1)</li><li>Maximale Geschwindigkeit: 6 Km/h, Sparmodus: 6 km/h</li><li>Getriebe: Differential</li><li>Zulässiges Gesamtgewicht: 168 kg</li><li>Vorwärts - Rückwärts</li><li>&nbsp;Steigfähigkeit: 10 % bei 120 kg Gesamtgewicht &nbsp;</li><li>&nbsp;Material Rahmen: Stahl</li><li>&nbsp;Batteriekapazität: herausnehmbarer 24V/12Ah-Lithium-Ionen-Akku (Gewicht: 2 kg)</li><li>Batterietyp: Li-ion</li><li>Ladezeit: 6 Stunden</li><li>Ladegerät: 24V 2A</li><li>&nbsp;Felgen: 10 Zoll&nbsp;</li><li>&nbsp;Bremsen: Motorbremse&nbsp;</li><li>Ausstattung: Reflektoren hinten,</li></ul><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Korb</p><ol><li>Variiert je nach Straße, Wetter und Nutzungsbedingungen.</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 1.798,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 1.798,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "24V 12Ah Lithium bis: 20Km",
+                "price": "1299€"
+              },
+              {
+                "value": "2x 24V 12Ah Lithium bis: 40Km",
+                "price": "1798€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "alarmset-gree-08-f52",
