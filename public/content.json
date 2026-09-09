@@ -682,8 +682,27 @@
         "specs": [],
         "specsTable": [],
         "details": "<p>&nbsp;<br><strong>Motor:</strong> 1000W (Max. 3000W) <br><strong>Akku:</strong> 72V 58Ah <br><strong>Höchstgeschwindigkeit:</strong> 25/45 km/h <br><strong>Maximales Drehmoment:</strong> 25,4 Nm <br><strong>Ladespannung:</strong> 110V/220V 50-60 Hz <br><strong>Steigfähigkeit:</strong> 18° <br><strong>Reichweite:</strong> 60–80 km(1)<br><strong>Vordere / Hintere Bremse:</strong> Scheibe <br><strong>Vorderer / Hinterer Reifen:</strong> 3.75-12 66J / 4.00-12 72J <br><strong>Ladezeit:</strong> 6–8 Stunden <br><strong>Energieverbrauch:</strong> 65 Wh/km <br><strong>Länge:</strong> 3100 mm <br><strong>Breite:</strong> 1100 mm <br><strong>Höhe:</strong> 1700 mm <br><strong>Radstand:</strong> 2040 mm <br><strong>Ladefläche (Maße):</strong> 1410 x 920 x 300 mm <br><strong>Eigengewicht:</strong> 270 kg <br><strong>Nutzlast:</strong> 676 kg&nbsp;</p><ol><li>Variiert je nach Straße, Wetter und Nutzungsbedingungen.</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 4.590,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 4.590,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "72V 58Ah Bleigel bis: 80Km",
+                "price": "3290€"
+              },
+              {
+                "value": "72Ah 58Ah + 72V 20Ah bis: 120Km",
+                "price": "4090€"
+              },
+              {
+                "value": "72V 58Ah + 72V 78Ah bis: 200Km",
+                "price": "4590€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "bikely-tuk-mini-elektro-transporter---72v-25-km-h-kompakter-lastentransporter",
