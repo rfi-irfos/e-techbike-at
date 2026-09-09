@@ -3233,7 +3233,7 @@
         "id": "e-scooter-e-moped-elektrischer-roller-rks-ree1500-x3eb-45km-h",
         "name": "E-Scooter, E-Moped Elektrischer Roller RKS REE1500 (X3EB) 45km/h",
         "description": "48V 20Ah : bis 40 Km48V 24Ah : bis 60 Km60V 40Ah : bis 110 Km 48V 78Ah : bis 180 Km",
-        "price": "€ 990,00",
+        "price": "€ 890",
         "image": "uploads/E-Scooter-E-Moped-Elektrischer-Roller-RKS-REE1500--e-scooter-e-moped-el-01.jpg",
         "images": [
           "uploads/E-Scooter-E-Moped-Elektrischer-Roller-RKS-REE1500--e-scooter-e-moped-el-01.jpg",
@@ -3300,9 +3300,28 @@
           }
         ],
         "details": "<ul><li>Motor: 48/60V 1200W&nbsp; (gedrosselt)&nbsp;</li><li>Reichweite:&nbsp;</li></ul><p>48V 20Ah : bis 40 Km<br>48V 24Ah : bis 60 Km<br>60V 40Ah : bis 110 Km&nbsp;<br>48V 78Ah : bis 180 Km</p><p>60V 78Ah : bis 225 Km</p><ul><li>maximale Geschwindigkeit: 45 Km/h (gedrosselt)&nbsp;</li><li>maximale Belastung: 213 kg</li><li>Steigung: 20%</li><li>Batterietyp:&nbsp; Li-ion&nbsp;</li><li>Ladezeit: 4-9 Stunde (Abhängig&nbsp; von Akku-typ)</li><li>Ladegerät: 48V / 60V (Abhängig von Akku-typ)</li><li>Reifen: Vorder- und Hinterrad&nbsp; 3.00-10 Tubeless&nbsp;</li><li>Bremse:Scheibenbremse/Trommelbremsen</li><li>Ausstattung: 2 Rückspiegel, Hupe,USB Port,Hinter Box,Fernbedienung&nbsp;</li></ul><p>(1)Variiert je nach Straße, Wetter und Nutzungsbedingungen.&nbsp;</p>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
         "regularPrice": "€ 1.890,00",
-        "badge": "verfügbar"
+        "badge": "verfügbar",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "48V 24Ah Lithium bis: 60Km",
+                "price": "1390€"
+              },
+              {
+                "value": "48V 78Ah Lithium bis: 180Km",
+                "price": "1690€"
+              },
+              {
+                "value": "60V 78Ah Lithium bis: 225Km",
+                "price": "1980€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "e-scooter-e-moped-elektroroller-roller-e-chopper-x9-plus-m1p-3000-watt-25-45km-h",
