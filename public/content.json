@@ -2918,8 +2918,23 @@
           }
         ],
         "details": "<ul><li>Motor: 60V 3000W</li><li>Reichweite: bis 120 Km (1)</li><li>maximale Geschwindigkeit: 45 Km/h</li><li>maximale Belastung: 149kg</li><li>Gewicht: 96 kg&nbsp;</li><li>Steigung: 20%</li><li>Akkukapazität: 72V 20Ah&nbsp;</li><li>Batterietyp:&nbsp; Li-ion /Blei-gel</li><li>Ladezeit: 6-7 Stunde</li><li>Ladegerät: 60V/ 3A</li><li>Reifen: Reifengröße: Vorderrad 17 Zoll, Hinterrad 13 Zoll tubless</li><li>Bremse:Scheibenbremsen/trommelbremsen</li><li>Ausstattung: 2 Rückspiegel</li></ul><h3>sehr günstige Betriebskosten von nur ca. 1 € pro 100 Kilometer&nbsp;</h3><ol><li>Variiert je nach Straße, Wetter und Nutzungsbedingungen.&nbsp;</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 2.699,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 2.699,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 30Ah Lithium bis: 70Km",
+                "price": "2599€"
+              },
+              {
+                "value": "60V 45Ah Lithium bis: 100Km",
+                "price": "2699€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "bikely-e-scooter-e-moped-elektrischer-roller-blues-45km-h",
