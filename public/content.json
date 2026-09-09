@@ -4875,8 +4875,14 @@
           }
         ],
         "details": "<p><strong>Technische Eigenschaften faltbares Elektrofahrrad MX25 PRO 250W E-Bike:</strong></p><ul><li>Motor: 250-600W</li><li>Batterie: 36V 7,8/10/35 Ah&nbsp;</li><li>Reichweite: 30 bis 240 km (1)</li><li>Reifen: 20 * 1,95 Zoll</li><li>Rahmen: 20 zoll</li><li>Lichter: hinten und vorne</li><li>Einlegebatterie mit Sicherheitsverriegelung</li><li>Stahlrahmen faltbar</li><li>Shimano 6-Gang-Getriebe</li><li>LCD-Anzeige</li><li>Aluminium Kotflügel</li><li>Ergonomische Knöpfe</li><li>Ladezeit: 4-6 h</li><li>Scheibenbremse</li><li>Ausstattung: Gepäcksträger, Licht, Reflektoren, Hupe</li></ul><ol><li>&nbsp;Variiert je nach Straße, Wetter und Nutzungsbedingungen.</li></ol>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 990,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 990,00",
+        "variants": [
+          {
+            "label": "",
+            "options": []
+          }
+        ]
       },
       {
         "id": "elektrofahrrad-falt-e-bike-klapprad-rks-rsiii-shimano",
