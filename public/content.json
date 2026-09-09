@@ -3003,8 +3003,23 @@
           }
         ],
         "details": "<ul><li>Motor: 1200W</li><li>Reichweite:&nbsp;</li></ul><p>60V 40Ah : bis 110 Km&nbsp;<br>60V 78Ah : bis 225 Km</p><ul><li>maximale Geschwindigkeit: 25 Km/h (gedrosselt)&nbsp;</li><li>maximale Belastung: 225 kg</li><li>Steigung: 20%</li><li>Batterietyp:&nbsp; Li-ion&nbsp;</li><li>Ladezeit: 6-8 Stunde (Abhängig&nbsp; von Akku-typ)</li><li>Ladegerät: 60V (Abhängig von Akku-typ)</li><li>Reifen: Vorder- und Hinterrad&nbsp; 3.50-10 Tubeless&nbsp;</li><li>Bremse:Scheibenbremse/Trommelbremsen</li><li>Ausstattung: 2 Rückspiegel, Hupe,USB Port</li></ul><p>(1)Variiert je nach Straße, Wetter und Nutzungsbedingungen.&nbsp;</p>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 1.990,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 1.990,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 40Ah Lithium bis: 110Km",
+                "price": "1690€"
+              },
+              {
+                "value": "60V 78Ah Lithium bis: 225Km",
+                "price": "1990€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "bikely-e-scooter-e-moped-elektrischer-roller-runner-45km-h",
