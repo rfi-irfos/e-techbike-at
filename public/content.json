@@ -647,8 +647,23 @@
           }
         ],
         "details": "<h3>✅ <strong>Technische Daten</strong></h3><ul><li><strong>Motorleistung:</strong>3500 W</li><li><strong>Akkutyp:</strong>VRLA-Gel/lithium&nbsp;</li><li><strong>Akkukapazität:</strong>&nbsp; 72 V 45 Ah</li><li>&nbsp;72 V 78Ah&nbsp;</li><li><strong>Reichweite:</strong>bis &nbsp; 170 km</li><li><strong>Ladezeit:</strong>&nbsp; 7–8 Stunden</li><li><strong>Höchstgeschwindigkeit:</strong> 25 km/h /45 km/h</li><li><strong>Maximale Zuladung:</strong> 275 kg</li><li><strong>Bremssystem:</strong>Trommelbremse/Scheibenbremse</li><li><strong>Räder:</strong>110/90-12</li></ul>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 3.389,00"
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
+        "regularPrice": "€ 3.389,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "72V 45Ah Bleigel bis: 50Km",
+                "price": "1999€"
+              },
+              {
+                "value": "72V 45Ah + 72V 78Ah bis: 170Km",
+                "price": "3389€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "bikely-e-kamyonet---elektrisches-nutzfahrzeug-e-dreirad-transporter-oesterreich",
