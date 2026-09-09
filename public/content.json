@@ -1698,9 +1698,24 @@
           }
         ],
         "details": "<ul><li>Motor: 72/60V 600W</li><li>Reichweite:&nbsp; max bis zur 240KM</li><li>maximale Geschwindigkeit: 25-45 Km/h</li><li>maximale Belastung: 213 kg</li><li>Steigung: 22%</li><li>&nbsp;Akkukapazität:&nbsp; &nbsp; 20-781Ah Li-ion&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</li><li>&nbsp;Lichttechnik: Standlicht, Abblendlicht, &nbsp; Fernlicht vorne und Rücklicht, LED- &nbsp; Frontlicht&nbsp; &nbsp; &nbsp;&nbsp;</li><li>Batterietyp: Li-ion&nbsp; Tragbar</li><li>Ladezeit: 6-8 Stunde</li><li>Reifen: Vorder- und Hinterrad 3.0 x 10 Tubeless</li><li>Bremse: vorne Scheibenbremse hinter&nbsp;</li></ul><p>&nbsp; &nbsp; &nbsp; &nbsp; Trommelbremsen</p><ul><li>Ausstattung: 2 Rückspiegel,&nbsp; hinten, Hupe, USB Port, diebstahl alarm</li></ul><p>&nbsp;(1)Variiert je nach Straße, Wetter und Nutzungsbedingungen.&nbsp;</p>",
-        "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
+        "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
         "regularPrice": "€ 1.899,00",
-        "badge": "verfügbar"
+        "badge": "verfügbar",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "60V 78Ah Lithium bis: 225Km",
+                "price": "1729€"
+              },
+              {
+                "value": "72V 78Ah Lithium bis: 240Km",
+                "price": "1899€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "bikely-e-scooter-e-moped-elektrischer-roller-blues-25km-h",
