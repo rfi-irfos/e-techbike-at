@@ -1598,7 +1598,22 @@
         ],
         "details": "<ul><li>Motor: 72V 500W</li><li>Reichweite:&nbsp;</li></ul><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Lithium Akkus:</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;20Ah 72V bis 70km (1)</p><p>&nbsp;maximale Geschwindigkeit: 25-45 Km/h</p><ul><li>maximale Belastung: 236 kg</li><li>Steigung: 15%</li><li>Batterietyp:Lifepo4 oder Li-ionTragbar</li><li>Ladezeit: 6-8 Stunde</li><li>Ladegerät: 72 V&nbsp;</li><li>Reifen: Vorder- und Hinterrad 12 Zoll&nbsp;</li><li>&nbsp;Tubeless</li><li>Bremse:Scheibenbremse</li><li>Ausstattung: 2 Rückspiegel, Hupe und Alarmanlage</li></ul><p>&nbsp;(1)Variiert je nach Straße, Wetter und Nutzungsbedingungen.&nbsp;</p>",
         "delivery": "Lieferung frei Haus österreichweit. Persönliche Einweisung in Graz.",
-        "regularPrice": "€ 2.990,00"
+        "regularPrice": "€ 2.990,00",
+        "variants": [
+          {
+            "label": "Akkus und Preise",
+            "options": [
+              {
+                "value": "72V 20Ah Bleigel bis: 70KM",
+                "price": "2290€"
+              },
+              {
+                "value": "72V 78Ah Lithium bis: 240Km",
+                "price": "2990€"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "bikely-e-roller-e-scooter-elektrischer-roller-gree08-25km-h",
