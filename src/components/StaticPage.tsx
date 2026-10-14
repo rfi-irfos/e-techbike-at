@@ -8,19 +8,26 @@ interface StaticPageProps {
   phone?: string
   email?: string
   address?: string
+  meta?: SiteContent['meta']
 }
 
 export function InfoPageNav({ nav, theme, setTheme }: { nav: SiteContent['nav']; theme: Theme; setTheme: (theme: Theme) => void }) {
   const [scrolled, setScrolled] = useState(false)
+  const [hash, setHash] = useState(() => window.location.hash)
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+  useEffect(() => {
+    const onHash = () => setHash(window.location.hash)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
   return <header className={`static-page-nav site-nav ${scrolled ? 'is-scrolled' : ''}`}><div className="site-nav-inner">
     <a href="#" className="static-page-brand">{nav.logo ? <img src={nav.logo} alt={nav.brand} className="site-logo-img" /> : nav.brand}</a>
-    <nav className="site-main-nav">{nav.links.map((link, i) => <a key={i} href={link.href}>{link.label}</a>)}</nav>
+    <nav className="site-main-nav">{nav.links.map((link, i) => <a key={i} href={link.href} className={link.href === hash ? 'active' : ''}>{link.label}</a>)}</nav>
     <div className="site-nav-right static-page-nav-right">
       {nav.phone && <a href={`tel:${nav.phone}`} className="site-nav-phone">{nav.phone}</a>}
       <button type="button" className="static-page-theme" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label="Farbschema wechseln">{theme === 'dark' ? '☀' : '◐'}</button>
@@ -28,10 +35,11 @@ export function InfoPageNav({ nav, theme, setTheme }: { nav: SiteContent['nav'];
   </div></header>
 }
 
-function PageLayout({ title, children, nav }: { title: string; children: React.ReactNode; nav: SiteContent['nav'] }) {
+function PageLayout({ title, children, nav, meta }: { title: string; children: React.ReactNode; nav: SiteContent['nav']; meta?: SiteContent['meta'] }) {
   const { theme, setTheme } = useTheme()
+  const vars = meta ? ({ '--primary': meta.primaryColor, '--accent': meta.accentColor, fontFamily: meta.font } as React.CSSProperties) : undefined
   return (
-    <div className="static-page" data-theme={theme}>
+    <div className="site static-page" data-theme={theme} style={vars}>
       <InfoPageNav nav={nav} theme={theme} setTheme={setTheme} />
       <main className="static-page-main">
         <div className="static-page-content">
@@ -43,13 +51,13 @@ function PageLayout({ title, children, nav }: { title: string; children: React.R
   )
 }
 
-export function StaticPage({ pageId, brand, phone, email, address, nav }: StaticPageProps & { nav?: SiteContent['nav'] }) {
+export function StaticPage({ pageId, brand, phone, email, address, nav, meta }: StaticPageProps & { nav?: SiteContent['nav'] }) {
   const pageNav = nav ?? { logo: '', brand: brand ?? 'e-techbike.at', links: [{ label: 'Sortiment', href: '#products' }] }
   useEffect(() => { window.scrollTo(0, 0) }, [pageId])
 
   if (pageId === 'uber-uns') {
     return (
-      <PageLayout title="Über uns" nav={pageNav}>
+      <PageLayout title="Über uns" nav={pageNav} meta={meta}>
         <p className="sp-lead">e-techbike ist ein Einzelhandelsunternehmen für den Direktvertrieb umweltfreundlicher elektrischer Fortbewegungsmittel. Unsere Standorte liegen in Graz und Wien.</p>
         <p>Bei uns finden Sie das für Sie ideale Elektrofahrzeug zu absolut besten Preisen. Wir bieten nach dem Verkauf jeglichen Service rund um Ersatzteile, Zubehör und preiswerte Reparaturen für alle Fahrzeuge aus unserem gesamten Sortiment.</p>
         <p>Wir arbeiten mit kompetenten und vertrauenswürdigen Partnern aus Mitteleuropa und China zusammen, die über langjährige Erfahrung verfügen. Unser Unternehmen greift auf eines der größten Elektrofahrrad-Lager in Europa zu und beliefert neben Österreich Kunden in zahlreichen europäischen Ländern.</p>
@@ -85,7 +93,7 @@ export function StaticPage({ pageId, brand, phone, email, address, nav }: Static
 
   if (pageId === 'wie-kaufen') {
     return (
-      <PageLayout title="Wie kaufen, liefern, zahlen?" nav={pageNav}>
+      <PageLayout title="Wie kaufen, liefern, zahlen?" nav={pageNav} meta={meta}>
         <p className="sp-lead">Bevor Sie bestellen, informieren Sie sich bitte über unseren aktuellen Lagerbestand und Lieferzeiten — telefonisch oder per E-Mail.</p>
         <h2>Bestellung aufgeben</h2>
         <p>Sie können Ihre Bestellung via E-Mail oder SMS einschicken. Unsere Abholstandorte befinden sich in Graz und Wien.</p>
@@ -115,7 +123,7 @@ export function StaticPage({ pageId, brand, phone, email, address, nav }: Static
 
   if (pageId === 'foerderung') {
     return (
-      <PageLayout title="Förderungen" nav={pageNav}>
+      <PageLayout title="Förderungen" nav={pageNav} meta={meta}>
         <p className="sp-lead">Der österreichische Staat fördert den Kauf von Elektrofahrzeugen. Wir helfen Ihnen bei der Antragstellung — kostenlos.</p>
         <h2>Elektro-Kraftwagen-Förderung für Privatpersonen</h2>
         <p>Ziel ist es, durch die Förderung des Ankaufes von neuen Elektrofahrzeugen die Marktentwicklung der Elektromobilität in Österreich zu forcieren und einen Beitrag zur klimafreundlichen Veränderung des Mobilitätsverhaltens zu leisten.</p>
@@ -139,7 +147,7 @@ export function StaticPage({ pageId, brand, phone, email, address, nav }: Static
 
   if (pageId === 'akku-pflege') {
     return (
-      <PageLayout title="Akku-Pflege" nav={pageNav}>
+      <PageLayout title="Akku-Pflege" nav={pageNav} meta={meta}>
         <h2>Bleigel-Akkus — wichtige Hinweise</h2>
         <ul>
           <li>Nur für die geeignete Anwendung einsetzen — Versorgungsbatterie nicht als Starterbatterie verwenden</li>

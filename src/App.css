@@ -106,8 +106,13 @@ button { cursor: pointer; font-family: inherit; }
 .site-logo-img { height: 50px; }
 .site-logo-text { font-size: 20px; font-weight: 900; color: var(--primary); }
 .site-main-nav { display: flex; gap: 26px; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-.site-main-nav a { font-size: 14px; font-weight: 500; color: var(--text-soft); transition: color .2s; }
+.site-main-nav a { position: relative; padding-bottom: 4px; font-size: 14px; font-weight: 500; color: var(--text-soft); transition: color .2s; }
 .site-main-nav a:hover { color: var(--primary); }
+.site-main-nav a.active { color: var(--primary); font-weight: 700; }
+.site-main-nav a.active::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -5px; height: 2px;
+  background: var(--primary); border-radius: 2px;
+}
 .site-nav-right { display: flex; gap: 12px; align-items: center; }
 .site-nav-desktop { display: flex; gap: 12px; align-items: center; }
 .site-nav-phone {

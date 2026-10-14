@@ -91,6 +91,7 @@ export default function App() {
         phone={content.contact?.phone}
         email={content.contact?.email}
         address={content.contact?.address}
+        meta={content.meta}
       />
     )
   }

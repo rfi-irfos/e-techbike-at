@@ -13,8 +13,9 @@ export function DynamicPage({ page, content }: { page: PageItem; content: SiteCo
     return () => { document.title = prev }
   }, [page.id, page.metaTitle, page.title, content.meta?.title])
 
+  const vars = { '--primary': content.meta.primaryColor, '--accent': content.meta.accentColor, fontFamily: content.meta.font } as React.CSSProperties
   return (
-    <div className="static-page" data-theme={theme}>
+    <div className="site static-page" data-theme={theme} style={vars}>
       <InfoPageNav nav={content.nav} theme={theme} setTheme={setTheme} />
       <main className="static-page-main">
         <div className="static-page-content">
