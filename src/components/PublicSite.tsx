@@ -332,6 +332,12 @@ function CategoryBrowser({ categories, products }: {
   const touchStartX = useRef<number>(0)
   const touchStartY = useRef<number>(0)
 
+  useEffect(() => {
+    if (window.location.hash === '#products') {
+      document.getElementById('products')?.scrollIntoView({ behavior: 'instant' as ScrollBehavior, block: 'start' })
+    }
+  }, [])
+
   const activeCat = categories.items.find(c => c.id === activeCatId)
   const subcats = activeCat?.subcategories ?? []
 

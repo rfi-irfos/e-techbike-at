@@ -1882,16 +1882,6 @@ button { cursor: pointer; font-family: inherit; }
 }
 .prodpage-permalink code { font-family: monospace; color: var(--primary, #0099CC); word-break: break-all; }
 
-.prod-accordion { border-bottom: 1px solid var(--border, #e0e0e0); }
-.prod-accordion-head {
-  display: flex; justify-content: space-between; align-items: center;
-  width: 100%; padding: 14px 0; background: none; border: none; cursor: pointer;
-  font-size: 14px; font-weight: 600; color: var(--text, #111);
-}
-.prod-accordion-head:hover { color: var(--primary, #0099CC); }
-.prod-accordion.open .prod-accordion-icon { transform: rotate(45deg); }
-.prod-accordion-icon { transition: transform .2s; flex-shrink: 0; }
-.prod-accordion-body { padding: 0 0 14px; }
 .prod-accordion-html, .prod-accordion-text { font-size: 14px; color: var(--text-soft, #555); line-height: 1.6; }
 
 /* reuse prod-modal-specs-table / prod-specs-label / prod-specs-value from ProductModal */
@@ -3045,6 +3035,7 @@ button { cursor: pointer; font-family: inherit; }
 
 .prodpage-information {
   display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 14px;
+  align-items: start;
   margin-top: 24px; padding: 12px; border: 1px solid var(--border); border-radius: 18px;
   background: color-mix(in srgb, var(--surface-sunken) 58%, var(--surface));
 }

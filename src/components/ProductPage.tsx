@@ -95,8 +95,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
   }
 
   const goBackToShop = () => {
-    if (window.history.length > 1) window.history.back()
-    else window.location.hash = 'products'
+    window.location.hash = 'products'
   }
 
   return (
@@ -109,6 +108,10 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
 
       {/* Main */}
       <main className="prodpage-main">
+        <button type="button" className="prodpage-back" onClick={goBackToShop}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Zurück
+        </button>
         <nav className="prodpage-breadcrumb" aria-label="Brotkrümelnavigation">
           <button type="button" onClick={goBackToShop}>Startseite</button><span>›</span>
           <button type="button" onClick={goBackToShop}>Sortiment</button><span>›</span>
