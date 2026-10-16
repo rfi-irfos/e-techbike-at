@@ -47,6 +47,17 @@ function MCToast({ text }: { text: string }) {
   )
 }
 
+function ErrorToast({ text }: { text: string }) {
+  return (
+    <div className="upload-error-toast" role="alert" aria-live="assertive">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12" y2="16.01"/>
+      </svg>
+      <span>{text}</span>
+    </div>
+  )
+}
+
 function EnderDragon({ onCatch }: { onCatch: () => void }) {
   return (
     <div className="ender-dragon-wrap" style={{ overflow: 'hidden' }} onClick={onCatch} title="psst...">
@@ -201,6 +212,13 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const [uploadTarget, setUploadTarget] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState(false)
+  const [errorToast, setErrorToast] = useState<string | null>(null)
+  useEffect(() => {
+    if (!uploadErrorMsg) return
+    setErrorToast(uploadErrorMsg)
+    const t = setTimeout(() => setErrorToast(null), 5000)
+    return () => clearTimeout(t)
+  }, [uploadErrorMsg])
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
   const [editingCategory, setEditingCategory] = useState<string | null>(null)
@@ -638,6 +656,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
         </div>
       </div>
       {mcAchievement && <MCToast text={mcAchievement} />}
+      {errorToast && <ErrorToast text={errorToast} />}
 
       {/* ── BODY ────────────────────────────────────────────────────────── */}
       <div className="builder-body">
