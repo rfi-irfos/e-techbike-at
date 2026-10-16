@@ -25,7 +25,7 @@ function getRoute(hash: string) {
 }
 
 export default function App() {
-  const { content, loading, saving, save, uploadImage } = useContent()
+  const { content, loading, saving, save, uploadImage, uploadError } = useContent()
   const { user, login, logout } = useAuth()
   const [route, setRoute] = useState(() => getRoute(window.location.hash))
 
@@ -64,6 +64,7 @@ export default function App() {
         saving={saving}
         onSave={save}
         onUpload={uploadImage}
+        uploadErrorMsg={uploadError}
         onLogout={logout}
       />
     )

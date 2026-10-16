@@ -12,6 +12,7 @@ interface Props {
   saving: boolean
   onSave: (c: SiteContent) => Promise<boolean>
   onUpload: (f: File) => Promise<string | null>
+  uploadErrorMsg?: string | null
   onLogout: () => void
 }
 
@@ -193,7 +194,7 @@ const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = 
   { id: 'mobile', label: 'Mobil', icon: <IconMobile /> },
 ]
 
-export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onLogout }: Props) {
+export function AdminPanel({ content, user: _user, saving, onSave, onUpload, uploadErrorMsg, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
   const [saved, setSaved] = useState(false)
@@ -702,7 +703,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           </div>
 
           {/* Panel content */}
-          {uploadError && <div className="panel-saving-error" style={{ padding: '6px 12px' }}>Bild-Upload fehlgeschlagen — bitte nochmal versuchen</div>}
+          {uploadError && <div className="panel-saving-error" style={{ padding: '6px 12px' }}>{uploadErrorMsg || 'Bild-Upload fehlgeschlagen — bitte nochmal versuchen'}</div>}
           <div className="builder-panel-body" ref={panelBodyRef}>
 
             {/* ── PRODUCTS TAB ──────────────────────────────────────────── */}
