@@ -37,7 +37,7 @@
   },
   "hero": {
     "tag": "Direktimporteur · Graz · Österreich",
-    "headline": "Elektro&shy;mobilität.<br><span>Jetzt.</span>",
+    "headline": "Elektro­mobilität.<br><span>Jetzt.&nbsp;</span>",
     "subheadline": "Premium E-Bikes, E-Scooter und E-Motorräder — direkt vom Hersteller, mit voller Garantie und persönlicher Beratung in Graz.",
     "ctaLabel": "Sortiment entdecken",
     "ctaHref": "#products",
@@ -59,7 +59,7 @@
       {
         "id": "t2",
         "icon": "shield",
-        "bold": "2 Jahre",
+        "bold": "1 Jahre",
         "text": "Herstellergarantie"
       },
       {
