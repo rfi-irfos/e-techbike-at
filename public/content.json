@@ -37,13 +37,13 @@
   },
   "hero": {
     "tag": "Direktimporteur · Graz · Österreich",
-    "headline": "Elektro­mobilität.<br><span>Jetzt.&nbsp;</span>",
+    "headline": "Elektro&shy;mobilität.<br><span>Jetzt.</span>",
     "subheadline": "Premium E-Bikes, E-Scooter und E-Motorräder — direkt vom Hersteller, mit voller Garantie und persönlicher Beratung in Graz.",
     "ctaLabel": "Sortiment entdecken",
     "ctaHref": "#products",
     "ctaSecLabel": "Beratung anfragen",
     "ctaSecHref": "#location",
-    "image": "uploads/1795106471623-4a80ed2b-b0f8-4ca3-b044-75f108673711.jpg",
+    "image": "uploads/1795107004443-5405779382--1-.jpg",
     "bgX": 50,
     "bgY": 40,
     "minHeight": 680
@@ -59,7 +59,7 @@
       {
         "id": "t2",
         "icon": "shield",
-        "bold": "1 Jahre",
+        "bold": "2 Jahre",
         "text": "Herstellergarantie"
       },
       {
@@ -9378,7 +9378,7 @@
     ]
   },
   "contact": {
-    "title": "Besuchen Sie uns bei E-Techbike/ Bikely in Graz!",
+    "title": "Besuchen Sie uns in Graz.",
     "subtitle": "Persönliche Beratung, Testfahrten und direkte Abholung. Kein Termin nötig.",
     "email": "lacitimi2@gmail.com",
     "phone": "+43 664 73726965",
@@ -9390,7 +9390,7 @@
     "formEnabled": true,
     "partnerShop": {
       "name": "Bikely",
-      "address": "Gablenzgasse 17, 1150 Wien, +43 650 303 75 66\n",
+      "address": "Gablenzgasse 17, 1150 Wien",
       "mapSrc": "https://maps.google.com/maps?q=Gablenzgasse+17,+1150+Wien,+Austria&output=embed&z=16"
     }
   },
