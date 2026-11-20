@@ -1,5 +1,5 @@
 export interface NavLink { label: string; href: string }
-export interface FeatureItem { id: string; title: string; description: string }
+export interface FeatureItem { id: string; title: string; description: string; icon?: string }
 export interface AboutStat { value: string; label: string }
 export interface CertificateItem { id: string; title: string; subtitle: string; file: string }
 
@@ -113,7 +113,8 @@ export interface SiteContent {
     instagram?: string
     mapSrc?: string
     formEnabled?: boolean
-    partnerShop?: { name: string; address: string; mapSrc?: string }
+    partnerLabel?: string
+  partnerShop?: { name: string; address: string; phone?: string; mapSrc?: string }
   }
   whatsapp: { enabled: boolean; number: string; message: string }
   hiddenSections?: SectionId[]

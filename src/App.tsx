@@ -10,6 +10,7 @@ import { DynamicPage } from './components/DynamicPage'
 import { ProductPage } from './components/ProductPage'
 import { LaziPanel } from './components/LaziPanel'
 import { CrmPanel } from './components/CrmPanel'
+import { getNavLinks } from './lib/navLinks'
 
 function getRoute(hash: string) {
   if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, isLazi: false, isCrm: false, staticPageId: null, pageSlug: null, productId: null }
@@ -88,7 +89,7 @@ export default function App() {
       <StaticPage
         pageId={route.staticPageId}
         brand={content.nav?.brand}
-        nav={content.nav}
+        nav={{ ...content.nav, links: getNavLinks(content) }}
         phone={content.contact?.phone}
         email={content.contact?.email}
         address={content.contact?.address}

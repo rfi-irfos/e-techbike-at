@@ -496,6 +496,20 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
     return { ein, aus, saldo: ein - aus }
   }, [data.transactions])
 
+  const crmTabsEl = (
+    <div className={`crm-tabs ${mcMode ? 'crm-mc-tabs' : 'crm-clean-tabs'}`}>
+      <button className={`crm-tab${crmTab === 'kunden' ? ' active' : ''}`} onClick={() => setCrmTab('kunden')}>Kunden</button>
+      <button className={`crm-tab${crmTab === 'finanzen' ? ' active' : ''}`} onClick={() => setCrmTab('finanzen')}>Kassabuch</button>
+      <button className={`crm-tab${crmTab === 'analytics' ? ' active' : ''}`} onClick={() => setCrmTab('analytics')}>Analytics</button>
+      {mcMode && (
+        <button className={`crm-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
+          Achievements
+          <span className="crm-tab-count">{unlocked.size}/50</span>
+        </button>
+      )}
+    </div>
+  )
+
   return (
     <div className={`crm-panel${mcMode ? ' crm-mc' : ''} crm-shell`}>
 
@@ -516,25 +530,14 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
         {/* ... Rest of existing component ... */}
       {/* ── Topbar with back link ── */}
       <div className="crm-topbar">
-        <a href="#admin" className="crm-back-btn">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-          {mcMode ? 'Zurück zur Workbench' : 'Workbench'}
+        <h1 className="crm-topbar-title">{mcMode ? "Timi's Kundenliste" : 'Kunden und Kasse'}</h1>
+        {!mcMode && crmTabsEl}
+        <a href="#admin" className="crm-back-btn" title="Zurück zum Baukasten" aria-label="Zurück zum Baukasten">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         </a>
-        {mcMode && <span className="crm-mc-badge">Timi's Kundenliste</span>}
       </div>
 
-      {/* ── Tab bar (Always visible, themed if MC mode) ── */}
-      <div className={`crm-tabs ${mcMode ? 'crm-mc-tabs' : 'crm-clean-tabs'}`}>
-        <button className={`crm-tab${crmTab === 'kunden' ? ' active' : ''}`} onClick={() => setCrmTab('kunden')}>Kunden</button>
-        <button className={`crm-tab${crmTab === 'finanzen' ? ' active' : ''}`} onClick={() => setCrmTab('finanzen')}>Finanzen</button>
-        <button className={`crm-tab${crmTab === 'analytics' ? ' active' : ''}`} onClick={() => setCrmTab('analytics')}>Analytics</button>
-        {mcMode && (
-          <button className={`crm-tab${crmTab === 'achievements' ? ' active' : ''}`} onClick={() => setCrmTab('achievements')}>
-            Achievements
-            <span className="crm-tab-count">{unlocked.size}/50</span>
-          </button>
-        )}
-      </div>
+      {mcMode && crmTabsEl}
       {/* ── Finanzen (Professional KMU dashboard) ── */}
       {crmTab === 'finanzen' && (
         <div className="crm-finanzen-wrapper">
@@ -608,8 +611,9 @@ export function CrmPanel({ mcMode = false }: { mcMode?: boolean }) {
             <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0', fontSize: 13 }}>Lade Daten…</div>
           )}
           {!ghTrafficLoading && !ghTrafficData && (
-            <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0', fontSize: 13 }}>
-              Keine Daten. Token braucht push-Rechte.
+            <div className="crm-empty-card">
+              <strong>Besucherzahlen sind noch nicht verbunden</strong>
+              <p>Diese Seite zeigte bisher nur die Zugriffe auf die Code-Ablage bei GitHub, nicht auf deine Website. Sobald ein Besucherzähler eingerichtet ist, siehst du hier Aufrufe, Quellen und beliebteste Seiten.</p>
             </div>
           )}
           {ghTrafficData && (() => {

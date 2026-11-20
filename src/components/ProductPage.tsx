@@ -19,6 +19,7 @@ function cleanProductHtml(html: string | undefined): string {
     .replace(/<h[1-6][^>]*>\s*(?:Produktinformationen|Produktdetails|Lieferung(?:\s*&amp;?|\s+und)?\s*Versand)\s*<\/h[1-6]>/gi, '')
 }
 import { useTheme } from '../hooks/useTheme'
+import { GdprBanner } from './GdprBanner'
 
 function Accordion({ title, children, open: defaultOpen }: { title: string; children: React.ReactNode; open?: boolean }) {
   const [open, setOpen] = useState(defaultOpen ?? false)
@@ -263,6 +264,7 @@ export function ProductPage({ product, content, products = [] }: { product: Prod
           onClose={() => setInquiryOpen(false)}
         />
       )}
+      <GdprBanner />
     </div>
   )
 }

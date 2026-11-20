@@ -3,6 +3,8 @@ import type { SiteContent, PageItem } from '../types/content'
 import { sanitizeHtml } from '../lib/sanitize'
 import { InfoPageNav } from './StaticPage'
 import { useTheme } from '../hooks/useTheme'
+import { getNavLinks } from '../lib/navLinks'
+import { GdprBanner } from './GdprBanner'
 
 export function DynamicPage({ page, content }: { page: PageItem; content: SiteContent }) {
   const { theme, setTheme } = useTheme()
@@ -16,13 +18,14 @@ export function DynamicPage({ page, content }: { page: PageItem; content: SiteCo
   const vars = { '--primary': content.meta.primaryColor, '--accent': content.meta.accentColor, fontFamily: content.meta.font } as React.CSSProperties
   return (
     <div className="site static-page" data-theme={theme} style={vars}>
-      <InfoPageNav nav={content.nav} theme={theme} setTheme={setTheme} />
+      <InfoPageNav nav={{ ...content.nav, links: getNavLinks(content) }} theme={theme} setTheme={setTheme} />
       <main className="static-page-main">
         <div className="static-page-content">
           <h1>{page.title}</h1>
           <div className="dynamic-page-body" dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body) }} />
         </div>
       </main>
+      {page.slug !== 'datenschutz' && page.slug !== 'impressum' && <GdprBanner />}
     </div>
   )
 }

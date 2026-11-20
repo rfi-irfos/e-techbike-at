@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { SiteContent } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
+import { GdprBanner } from './GdprBanner'
 
 interface StaticPageProps {
   pageId: string
@@ -47,6 +48,7 @@ function PageLayout({ title, children, nav, meta }: { title: string; children: R
           {children}
         </div>
       </main>
+      <GdprBanner />
     </div>
   )
 }

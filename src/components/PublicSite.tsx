@@ -5,6 +5,9 @@ import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 import { InquiryModal } from './InquiryModal'
 import { sanitizeHtml } from '../lib/sanitize'
+import { FeatureIcon } from './siteIcons'
+import { getNavLinks } from '../lib/navLinks'
+import { GdprBanner } from './GdprBanner'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
 
@@ -524,40 +527,6 @@ function CategoryBrowser({ categories, products }: {
   )
 }
 
-// ── GDPR Cookie Banner ───────────────────────────────────────────────────────
-
-const GDPR_KEY = 'cookieConsent'
-
-function GdprBanner() {
-  const [visible, setVisible] = useState(() => !localStorage.getItem(GDPR_KEY))
-  if (!visible) return null
-  const accept = () => { localStorage.setItem(GDPR_KEY, 'accepted'); setVisible(false) }
-  const decline = () => { localStorage.setItem(GDPR_KEY, 'declined'); setVisible(false) }
-  return (
-    <div className="gdpr-banner" role="dialog" aria-label="Cookie-Einstellungen">
-      <p className="gdpr-text">
-        Wir verwenden Cookies für eine bessere Nutzererfahrung.{' '}
-        <a href="#p/datenschutz" className="gdpr-link">Datenschutz</a>
-      </p>
-      <div className="gdpr-actions">
-        <button type="button" className="gdpr-btn gdpr-btn-accept" onClick={accept}>Akzeptieren</button>
-        <button type="button" className="gdpr-btn gdpr-btn-decline" onClick={decline}>Ablehnen</button>
-      </div>
-    </div>
-  )
-}
-
-// ── USP Icons ────────────────────────────────────────────────────────────────
-
-const USP_ICONS = [
-  <svg key="u1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>,
-  <svg key="u2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>,
-  <svg key="u3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-  <svg key="u4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg>,
-  <svg key="u5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M14.5 9a3.5 4 0 1 0 0 6"/><line x1="6" y1="10" x2="12" y2="10"/><line x1="6" y1="14" x2="12" y2="14"/></svg>,
-  <svg key="u6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
-]
-
 // ── Language toggle ────────────────────────────────────────────────────────────
 
 const LANG_OPTS: { id: Lang; label: string }[] = [
@@ -664,19 +633,37 @@ function ReviewsSection({ editMode }: { editMode: boolean }) {
   )
 }
 
+// Im Baukasten zeigt die Vorschau nur die ersten Fahrzeuge, sonst wird die Seite endlos lang.
+const EDIT_PRODUCT_PREVIEW = 6
+
 export function PublicSite({
   content, editMode = false, rearrangeMode = false, initPositions = {},
   onTextChange, onImageClick, onUpdate, onProductClick, onProductDblClick, onSectionClick,
   selectedProductId,
 }: Props) {
-  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, pages, about, pricing, certificates } = content
+  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, about, pricing, certificates } = content
   const hiddenSections = content.hiddenSections ?? []
-  const pageNavLinks = (pages ?? []).filter(p => p.showInNav).map(p => ({ label: p.title, href: `#p/${p.slug}` }))
+  // Bereiche blenden beim Scrollen langsam ein (nur auf der echten Seite, nicht im Baukasten)
+  useEffect(() => {
+    if (editMode || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const root = document.querySelector('.site')
+    if (!root) return
+    const targets = Array.from(root.querySelectorAll<HTMLElement>('section:not(.site-hero), .site-trust, footer.site-footer'))
+    targets.forEach(el => el.classList.add('reveal'))
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-revealed'); io.unobserve(en.target) } })
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' })
+    targets.forEach(el => io.observe(el))
+    return () => io.disconnect()
+  }, [editMode])
+
+  const pageNavLinks = getNavLinks(content).slice((nav.links ?? []).length)
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [modalArticle, setModalArticle] = useState<NewsItem | null>(null)
   const [inquiryOpen, setInquiryOpen] = useState(false)
+  const [showAllProducts, setShowAllProducts] = useState(false)
   const [inquiryProductId, setInquiryProductId] = useState<string | undefined>()
   const { t } = useLang()
   const openMenu = () => { history.pushState({ drawer: true }, ''); setMenuOpen(true) }
@@ -802,7 +789,7 @@ export function PublicSite({
         <header className="site-nav" style={{ position: 'sticky', top: 0, zIndex: 200 }}>
           <div className="site-nav-inner">
             {nav.logo ? <img src={nav.logo} alt={nav.brand} className="site-logo-img" /> : <span className="site-logo-text">{nav.brand}</span>}
-            <nav className="site-main-nav">{nav.links.map((l, i) => <a key={i} href={l.href}>{l.label}</a>)}</nav>
+            <nav className="site-main-nav">{getNavLinks(content).map((l, i) => <a key={i} href={l.href}>{l.label}</a>)}</nav>
             <div className="site-nav-right">
               {nav.phone && <span className="site-nav-phone">{nav.phone}</span>}
               {nav.ctaLabel && <a href={nav.ctaHref ?? '#'} className="site-nav-cta">{nav.ctaLabel}</a>}
@@ -1138,8 +1125,8 @@ export function PublicSite({
           <section className="site-section site-browser site-edit-section site-edit-section--cats-real"
             data-cid="categories.title">
             <div className="site-edit-section-badge">Kategorien</div>
-            {categories.eyebrow && <div className="site-eyebrow" data-cid="categories.title">{categories.eyebrow}</div>}
-            <h2 className="site-browser-title" data-cid="categories.title">{categories.title}</h2>
+            {categories.eyebrow && <E field="categories.eyebrow" value={categories.eyebrow} as="div" className="site-eyebrow" />}
+            <E field="categories.title" value={categories.title} as="h2" className="site-browser-title" />
             <div className="site-browser-cat-grid">
               {categories.items.map((c, i) => (
                 <div key={c.id} className="site-browser-cat-tile" data-cid={`categories.items.${i}`}>
@@ -1175,7 +1162,7 @@ export function PublicSite({
               <E field="products.title" value={products.title} as="h2" className="site-products-h2" />
             </div>
             <div className="site-product-grid">
-              {products.items.map((p, i) => (
+              {products.items.map((p, i) => (!showAllProducts && i >= EDIT_PRODUCT_PREVIEW && selectedProductId !== p.id) ? null : (
                 <div
                   key={p.id}
                   className={`site-pcard${selectedProductId === p.id ? ' site-pcard--selected' : ''}${onProductClick ? ' site-pcard--admin' : ''}`}
@@ -1197,6 +1184,11 @@ export function PublicSite({
                 </div>
               ))}
             </div>
+            {products.items.length > EDIT_PRODUCT_PREVIEW && (
+              <button type="button" className="site-edit-more-btn" onClick={(e) => { e.stopPropagation(); setShowAllProducts(v => !v) }}>
+                {showAllProducts ? 'Weniger anzeigen' : `Alle ${products.items.length} Produkte anzeigen`}
+              </button>
+            )}
           </section>
         )}
 
@@ -1204,13 +1196,13 @@ export function PublicSite({
         {!hiddenSections.includes('usp') && (usp?.items?.length ?? 0) > 0 && (
           <section className={`site-section site-section-alt site-usp${editMode ? ' site-edit-section' : ''}`} id="usp"
             onClick={editMode ? (e) => { e.stopPropagation(); onSectionClick?.('usp') } : undefined}>
-            {editMode && <div className="site-edit-section-badge">USPs</div>}
+            {editMode && <div className="site-edit-section-badge">Pluspunkte</div>}
             {usp.eyebrow && <div className="site-eyebrow">{usp.eyebrow}</div>}
             <E field="usp.title" value={usp.title} as="h2" className="site-section-title" />
             <div className="site-usp-grid">
               {usp.items.map((u, i) => (
                 <div key={u.id} className="site-usp-card">
-                  <div className="site-usp-icon">{USP_ICONS[i] ?? null}</div>
+                  <div className="site-usp-icon"><FeatureIcon icon={u.icon} fallbackIndex={i} /></div>
                   <E field={`usp.items.${i}.title`} value={u.title} as="h3" />
                   <E field={`usp.items.${i}.description`} value={u.description} as="p" />
                 </div>
@@ -1319,12 +1311,18 @@ export function PublicSite({
             </div>
             {contact?.partnerShop && (
               <div className="site-location-info site-location-partner">
-                <div className="site-partner-badge">Unser Partner</div>
-                <h2 className="site-location-h2">{contact.partnerShop.name}</h2>
+                <E field="contact.partnerLabel" value={contact.partnerLabel ?? 'Unser Partner'} as="div" className="site-partner-badge" />
+                <E field="contact.partnerShop.name" value={contact.partnerShop.name} as="h2" className="site-location-h2 site-partner-name" />
                 <div className="site-cinfo-list">
+                  {(contact.partnerShop.phone || editMode) && (
+                    <div className="site-cinfo-item">
+                      <IconPhone />
+                      <E field="contact.partnerShop.phone" value={contact.partnerShop.phone ?? ''} as="a" href={`tel:${contact.partnerShop.phone ?? ''}`} />
+                    </div>
+                  )}
                   <div className="site-cinfo-item">
                     <IconLocation />
-                    <span>{contact.partnerShop.address}</span>
+                    <E field="contact.partnerShop.address" value={contact.partnerShop.address} as="span" />
                   </div>
                 </div>
               </div>

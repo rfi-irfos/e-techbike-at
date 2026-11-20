@@ -5,6 +5,7 @@ import { PublicSite } from './PublicSite'
 import { useTestimonials } from '../lib/useTestimonials'
 import type { Testimonial } from '../types/testimonials'
 import { sanitizeHtml } from '../lib/sanitize'
+import { FeatureIcon, ICON_LIBRARY } from './siteIcons'
 
 interface Props {
   content: SiteContent
@@ -20,7 +21,7 @@ type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 
 
 interface ContactInboxItem { name: string; email: string; phone?: string; message: string; ts: string }
 function loadInbox(): ContactInboxItem[] { try { return JSON.parse(localStorage.getItem('rfi_contact_inbox') || '[]') } catch { return [] } }
-type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
+type DeviceView = 'desktop' | 'tablet' | 'mobile'
 
 // ── Minecraft Easter Eggs ──────────────────────────────────────────────────────
 
@@ -183,11 +184,8 @@ function MCTopbarTrees() {
   )
 }
 
-// ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
+// ── Device preview switch (Desktop / Tablet / Mobile) ─────────────────────────
 
-function IconEdit() {
-  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-}
 function IconDesktop() {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
 }
@@ -198,8 +196,358 @@ function IconMobile() {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
 }
 
+// ── Hinzufügen: ein Einstieg für alles ─────────────────────────────────────────
+
+type AddType = 'product' | 'category' | 'news' | 'page' | 'navlink' | 'trust' | 'usp' | 'testimonial' | 'stat' | 'certificate'
+
+const ADD_MENU: Array<Array<{ type: AddType; label: string; hint: string }>> = [
+  [
+    { type: 'product',  label: 'Produkt',   hint: 'Neues Fahrzeug im Sortiment' },
+    { type: 'category', label: 'Kategorie', hint: 'Neue Gruppe auf der Startseite' },
+    { type: 'news',     label: 'Neuigkeit', hint: 'Beitrag unter „Aktuelles“' },
+  ],
+  [
+    { type: 'page',    label: 'Seite',     hint: 'Eigene Unterseite, z. B. Versand' },
+    { type: 'navlink', label: 'Menüpunkt', hint: 'Link oben in der Navigation' },
+  ],
+  [
+    { type: 'trust',       label: 'Vorteil',    hint: 'Kurzer Pluspunkt im dunklen Band' },
+    { type: 'usp',         label: 'Pluspunkt',  hint: 'Karte unter „Was uns unterscheidet“' },
+    { type: 'testimonial', label: 'Bewertung',  hint: 'Stimme eines Kunden' },
+    { type: 'stat',        label: 'Kennzahl',   hint: 'Zahl im Bereich „Über uns“' },
+    { type: 'certificate', label: 'Zertifikat', hint: 'Nachweis oder Siegel' },
+  ],
+]
+
+interface AddField {
+  key: string; label: string
+  kind?: 'text' | 'textarea' | 'select'
+  placeholder?: string; required?: boolean; hint?: string
+  options?: Array<{ value: string; label: string }>
+}
+interface AddFormDef { title: string; hint?: string; submit: string; fields: AddField[] }
+
+const TRUST_ICON_OPTIONS = [
+  { value: 'shield', label: 'Schild' }, { value: 'truck', label: 'Lieferwagen' }, { value: 'star', label: 'Stern' },
+  { value: 'check', label: 'Haken' }, { value: 'phone', label: 'Telefon' }, { value: 'heart', label: 'Herz' },
+  { value: 'bolt', label: 'Blitz' }, { value: 'tag', label: 'Preisschild' }, { value: 'location', label: 'Standort' },
+]
+
+function addFormFor(type: Exclude<AddType, 'product'>, draft: SiteContent): AddFormDef {
+  switch (type) {
+    case 'category': return {
+      title: 'Neue Kategorie', submit: 'Kategorie anlegen',
+      hint: 'Kategorien erscheinen als Kacheln auf der Startseite. Das Bild wählst du danach.',
+      fields: [
+        { key: 'name', label: 'Name', required: true, placeholder: 'z. B. Kinder-E-Bikes' },
+        { key: 'sub', label: 'Untertitel', placeholder: 'z. B. Für die Kleinsten' },
+      ],
+    }
+    case 'news': return {
+      title: 'Neue Neuigkeit', submit: 'Neuigkeit anlegen',
+      fields: [
+        { key: 'title', label: 'Überschrift', required: true, placeholder: 'z. B. Neue Modelle ab Dezember' },
+        { key: 'body', label: 'Text', kind: 'textarea', placeholder: 'Was gibt es Neues?' },
+      ],
+    }
+    case 'page': return {
+      title: 'Neue Seite', submit: 'Seite anlegen',
+      hint: 'Eine eigene Unterseite, zum Beispiel für Versand oder Garantie.',
+      fields: [
+        { key: 'title', label: 'Titel der Seite', required: true, placeholder: 'z. B. Versand und Lieferung' },
+        { key: 'body', label: 'Text', kind: 'textarea', placeholder: 'Der Inhalt der Seite. Absätze mit Leerzeile trennen.' },
+      ],
+    }
+    case 'navlink': return {
+      title: 'Neuer Menüpunkt', submit: 'Menüpunkt anlegen',
+      hint: 'Der Punkt erscheint oben in der Navigation der Website.',
+      fields: [
+        { key: 'label', label: 'Beschriftung', required: true, placeholder: 'z. B. Versand' },
+        {
+          key: 'href', label: 'Führt zu', kind: 'select', options: [
+            { value: '#products', label: 'Sortiment' },
+            { value: '#location', label: 'Standort' },
+            ...(draft.pages ?? []).map(pg => ({ value: `#p/${pg.slug}`, label: `Seite: ${pg.title}` })),
+          ],
+        },
+        { key: 'custom', label: 'Oder eigene Adresse', placeholder: 'https://…', hint: 'Nur ausfüllen, wenn der Punkt auf eine andere Website zeigen soll.' },
+      ],
+    }
+    case 'trust': return {
+      title: 'Neuer Vorteil', submit: 'Vorteil anlegen',
+      hint: 'Vorteile stehen als kurzes Band direkt unter dem Titelbild.',
+      fields: [
+        { key: 'bold', label: 'Fett gedruckt', required: true, placeholder: 'z. B. 2 Jahre' },
+        { key: 'text', label: 'Dazu', placeholder: 'z. B. Garantie' },
+        { key: 'icon', label: 'Symbol', kind: 'select', options: TRUST_ICON_OPTIONS },
+      ],
+    }
+    case 'usp': return {
+      title: 'Neues Verkaufsargument', submit: 'Anlegen',
+      fields: [
+        { key: 'title', label: 'Überschrift', required: true, placeholder: 'z. B. Persönliche Beratung' },
+        { key: 'description', label: 'Text', kind: 'textarea', placeholder: 'Ein bis zwei Sätze.' },
+      ],
+    }
+    case 'testimonial': return {
+      title: 'Neue Bewertung', submit: 'Bewertung anlegen',
+      hint: 'Bewertungen werden sofort gespeichert und erscheinen auf der Website.',
+      fields: [
+        { key: 'name', label: 'Name des Kunden', required: true, placeholder: 'z. B. Maria K.' },
+        { key: 'rating', label: 'Sterne', kind: 'select', options: [5, 4, 3, 2, 1].map(n => ({ value: String(n), label: `${n} von 5` })) },
+        { key: 'text', label: 'Text', kind: 'textarea', required: true, placeholder: 'Was hat die Kundin oder der Kunde gesagt?' },
+        { key: 'date', label: 'Datum', placeholder: 'z. B. Juni 2026' },
+      ],
+    }
+    case 'stat': return {
+      title: 'Neue Kennzahl', submit: 'Kennzahl anlegen',
+      fields: [
+        { key: 'value', label: 'Zahl', required: true, placeholder: 'z. B. 500+' },
+        { key: 'label', label: 'Beschriftung', required: true, placeholder: 'z. B. zufriedene Kunden' },
+      ],
+    }
+    case 'certificate': return {
+      title: 'Neues Zertifikat', submit: 'Zertifikat anlegen',
+      fields: [
+        { key: 'title', label: 'Titel', required: true, placeholder: 'z. B. Händlerzertifikat' },
+        { key: 'subtitle', label: 'Untertitel', placeholder: 'z. B. Bikely Partner Graz' },
+      ],
+    }
+  }
+}
+
+function AddIcon({ type }: { type: AddType }) {
+  const paths: Record<AddType, React.ReactNode> = {
+    product: <><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></>,
+    category: <><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></>,
+    news: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></>,
+    page: <><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></>,
+    navlink: <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>,
+    trust: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>,
+    usp: <polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9"/>,
+    testimonial: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>,
+    stat: <><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></>,
+    certificate: <><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></>,
+  }
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[type]}</svg>
+}
+
+function AddModal({ form, onClose, onSubmit }: { form: AddFormDef; onClose: () => void; onSubmit: (v: Record<string, string>) => void }) {
+  const [values, setValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(form.fields.map(f => [f.key, f.kind === 'select' ? (f.options?.[0]?.value ?? '') : ''])))
+  const [touched, setTouched] = useState(false)
+  const missing = form.fields.filter(f => f.required && !values[f.key]?.trim())
+
+  const submit = () => {
+    setTouched(true)
+    if (missing.length === 0) onSubmit(values)
+  }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  return (
+    <div className="pem-overlay" onClick={onClose}>
+      <div className="pem pem-add" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={form.title}>
+        <div className="pem-header">
+          <span className="pem-title">{form.title}</span>
+          <button className="pem-close" onClick={onClose} title="Schließen">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div className="pem-body pem-add-body">
+          {form.hint && <p className="pem-add-hint">{form.hint}</p>}
+          <div className="pem-fields">
+            {form.fields.map((f, i) => (
+              <div className="pem-field" key={f.key}>
+                <label htmlFor={`add-${f.key}`}>{f.label}{f.required ? ' *' : ''}</label>
+                {f.kind === 'textarea' ? (
+                  <textarea id={`add-${f.key}`} rows={3} placeholder={f.placeholder} value={values[f.key]}
+                    onChange={e => setValues(v => ({ ...v, [f.key]: e.target.value }))} />
+                ) : f.kind === 'select' ? (
+                  <select id={`add-${f.key}`} value={values[f.key]} onChange={e => setValues(v => ({ ...v, [f.key]: e.target.value }))}>
+                    {(f.options ?? []).map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
+                ) : (
+                  <input id={`add-${f.key}`} type="text" autoFocus={i === 0} placeholder={f.placeholder} value={values[f.key]}
+                    onChange={e => setValues(v => ({ ...v, [f.key]: e.target.value }))}
+                    onKeyDown={e => { if (e.key === 'Enter') submit() }} />
+                )}
+                {f.hint && <span className="pem-add-field-hint">{f.hint}</span>}
+                {touched && f.required && !values[f.key]?.trim() && <span className="pem-add-error">Bitte ausfüllen</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="pem-footer">
+          <div className="pem-footer-right">
+            <button className="pem-btn-ghost" onClick={onClose}>Abbrechen</button>
+            <button className="pem-btn-primary pem-btn-green" onClick={submit}>{form.submit}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const slugifyTitle = (t: string) => t.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+  .normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+
+const textToHtml = (t: string) => t.trim()
+  ? t.trim().split(/\n+/).map(line => `<p>${line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`).join('')
+  : '<p>Hier kommt der Seiteninhalt.</p>'
+
+// "1490" -> "€ 1.490,00"; Eingaben, die keine Zahl sind, bleiben unverändert
+const formatPriceEuro = (raw: string) => {
+  const s = raw.replace(/[€\s]/g, '')
+  if (!s) return ''
+  const n = s.includes(',') ? parseFloat(s.replace(/\./g, '').replace(',', '.'))
+    : /^\d{1,3}(\.\d{3})+$/.test(s) ? parseFloat(s.replace(/\./g, ''))
+    : parseFloat(s)
+  return Number.isNaN(n) ? raw.trim() : `€ ${n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
+
+const RAIL_ICON_PATHS: Record<PanelTab, React.ReactNode> = {
+  products:   <><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></>,
+  categories: <><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></>,
+  hero:       <><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></>,
+  about:      <><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.8" r=".6"/></>,
+  trust:      <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></>,
+  usp:        <><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></>,
+  news:       <><path d="M4 4h13a1 1 0 0 1 1 1v14a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2z"/><path d="M18 8h3v11a2 2 0 0 1-2 2"/><line x1="8" y1="8" x2="14" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></>,
+  pricing:    <><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.3"/></>,
+  reviews:    <><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></>,
+  pages:      <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></>,
+  nav:        <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
+  contact:    <><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></>,
+  style:      <><path d="M12 22a10 10 0 1 1 10-10c0 2.5-2 3-4 3h-2a2 2 0 0 0-1.5 3.3c.6.8.2 3.7-2.5 3.7z"/><circle cx="7.5" cy="11" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16.5" cy="11" r="1"/></>,
+  inbox:      <><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></>,
+}
+
+function RailIcon({ id }: { id: PanelTab }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {RAIL_ICON_PATHS[id]}
+    </svg>
+  )
+}
+
+const HERO_LINK_TARGETS = [
+  { href: '#products', label: 'Sortiment (Produktübersicht)' },
+  { href: '#foerderung', label: 'Förderungen' },
+  { href: '#wie-kaufen', label: 'Wie kaufen?' },
+  { href: '#akku-pflege', label: 'Akku-Pflege' },
+  { href: '#uber-uns', label: 'Über uns' },
+]
+const PANEL_HINTS: Record<PanelTab, string> = {
+  products:   'Erscheint im Bereich Sortiment, dort sind alle Fahrzeuge aufgelistet.',
+  categories: 'Erscheint als Kacheln unter „Für jeden das richtige Fahrzeug“, direkt unter dem Titelbild.',
+  hero:       'Das große Titelbild ganz oben mit Überschrift und Knöpfen.',
+  about:      'Eigener Abschnitt direkt unter dem schwarzen Streifen. Erscheint erst, wenn hier Text steht.',
+  trust:      'Der schwarze Streifen direkt unter dem Titelbild.',
+  usp:        'Die Karten „Was uns unterscheidet“, weiter unten nach dem Sortiment.',
+  news:       'Der Bereich Aktuelles, weiter unten auf der Seite.',
+  pricing:    'Der Bereich Preise, weiter unten auf der Seite.',
+  reviews:    'Die Kundenstimmen, weiter unten auf der Seite.',
+  pages:      'Eigene Unterseiten, erreichbar über das Menü oben.',
+  nav:        'Das Menü ganz oben auf der Seite.',
+  contact:    'Der Bereich Standort und Kontakt ganz unten.',
+  style:      'Farben, Schrift und Google-Texte, gelten für die ganze Seite.',
+  inbox:      'Anfragen von Besuchern.',
+}
+function TrashIcon() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+}
+
+// Eine Karte pro Eintrag: Nummer, optional Symbol, Titelfeld und Löschknopf oben, Inhalt darunter.
+function EntryCard({ index, what, lead, head, extra, onDelete, children }: {
+  index: number; what: string; lead?: React.ReactNode; head: React.ReactNode; extra?: React.ReactNode; onDelete: () => void; children?: React.ReactNode
+}) {
+  const [ask, setAsk] = useState(false)
+  return (
+    <div className="entry-card">
+      <div className="entry-card-head">
+        <span className="entry-card-num">{index}</span>
+        {lead}
+        <div className="entry-card-headfield">{head}</div>
+        <button type="button" className="entry-card-trash" title={`${what} entfernen`} aria-label={`${what} entfernen`} onClick={() => setAsk(true)}><TrashIcon /></button>
+      </div>
+      {ask && (
+        <div className="entry-delete-confirm">
+          <span>{what} wirklich entfernen?</span>
+          <button type="button" className="entry-delete-yes" onClick={onDelete}>Ja, entfernen</button>
+          <button type="button" className="entry-delete-no" onClick={() => setAsk(false)}>Abbrechen</button>
+        </div>
+      )}
+      {extra}
+      {children ? <div className="entry-card-body">{children}</div> : null}
+    </div>
+  )
+}
+
+// Pluspunkt-Karte mit wählbarem Symbol (aus der Bibliothek oder eigenes Bild).
+function FeatureCard({ index, item, what, onChange, onUploadIcon, uploading, onDelete }: {
+  index: number; item: FeatureItem; what: string; onChange: (field: keyof FeatureItem, value: string) => void
+  onUploadIcon: () => void; uploading: boolean; onDelete: () => void
+}) {
+  const [pick, setPick] = useState(false)
+  return (
+    <EntryCard
+      index={index} what={what} onDelete={onDelete}
+      lead={
+        <button type="button" className={`icon-picker-btn${pick ? ' open' : ''}`} onClick={() => setPick(v => !v)} title="Symbol ändern" aria-label="Symbol ändern">
+          <span className="icon-picker-glyph"><FeatureIcon icon={item.icon} fallbackIndex={index - 1} /></span>
+          <span className="icon-picker-edit">Ändern</span>
+        </button>
+      }
+      head={<input className="entry-title-input" value={item.title} placeholder="Überschrift der Karte" onChange={e => onChange('title', e.target.value)} />}
+      extra={pick ? (
+        <div className="icon-picker-panel">
+          <div className="icon-picker-grid">
+            {ICON_LIBRARY.map(ic => (
+              <button key={ic.id} type="button" title={ic.label} className={`icon-picker-opt${item.icon === ic.id ? ' selected' : ''}`} onClick={() => { onChange('icon', ic.id); setPick(false) }}>
+                {ic.node}<span>{ic.label}</span>
+              </button>
+            ))}
+          </div>
+          <div className="icon-picker-actions">
+            <button type="button" className="icon-picker-upload" onClick={onUploadIcon} disabled={uploading}>{uploading ? 'Lädt hoch …' : 'Eigenes Bild hochladen'}</button>
+            <button type="button" className="icon-picker-reset" onClick={() => { onChange('icon', ''); setPick(false) }}>Standard</button>
+          </div>
+        </div>
+      ) : null}
+    >
+      <textarea className="entry-desc-input" rows={3} value={item.description} placeholder="Beschreibung" onChange={e => onChange('description', e.target.value)} />
+    </EntryCard>
+  )
+}
+
+const TRUST_ICON_OPTS = [
+  { id: 'shield', label: 'Schild' }, { id: 'truck', label: 'Lieferwagen' }, { id: 'star', label: 'Stern' },
+  { id: 'check', label: 'Haken' }, { id: 'phone', label: 'Telefon' }, { id: 'heart', label: 'Herz' },
+  { id: 'bolt', label: 'Blitz' }, { id: 'tag', label: 'Preisschild' }, { id: 'location', label: 'Standort' },
+]
+// Wo ein Bereich in der Vorschau liegt, damit ein Klick in der Leiste dorthin scrollt.
+const PREVIEW_SECTION: Partial<Record<PanelTab, string>> = {
+  categories: '.site-browser', products: '#products', trust: '#trust', about: '#about',
+  usp: '#usp', news: '#news', contact: '#location', reviews: '#reviews',
+}
+const SOFT_HYPHEN = '\u00AD'
+// Die Hauptüberschrift liegt als HTML vor (Umbruch + farbiges span). Im Feld zeigen wir nur Klartext.
+function splitHeadline(html: string): { line1: string; accent: string } {
+  const plain = (h: string) => h.replace(/&shy;/g, SOFT_HYPHEN).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+  const m = html.match(/^([\s\S]*?)(?:<br\s*\/?>)?\s*<span[^>]*>([\s\S]*?)<\/span>\s*$/i)
+  return m ? { line1: plain(m[1]), accent: plain(m[2]) } : { line1: plain(html), accent: '' }
+}
+function joinHeadline(line1: string, accent: string): string {
+  const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return accent.trim() ? `${esc(line1)}<br><span>${esc(accent)}</span>` : esc(line1)
+}
+
 const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = [
-  { id: 'edit', label: 'Bearbeiten', icon: <IconEdit /> },
   { id: 'desktop', label: 'Web', icon: <IconDesktop /> },
   { id: 'tablet', label: 'Tablet', icon: <IconTablet /> },
   { id: 'mobile', label: 'Mobil', icon: <IconMobile /> },
@@ -208,6 +556,7 @@ const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = 
 export function AdminPanel({ content, user: _user, saving, onSave, onUpload, uploadErrorMsg, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
+  const [panelOpen, setPanelOpen] = useState(true)
   const [saved, setSaved] = useState(false)
   const [uploadTarget, setUploadTarget] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -222,9 +571,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
   const [editingCategory, setEditingCategory] = useState<string | null>(null)
-  const [device, setDevice] = useState<DeviceView>('edit')
+  const [device, setDevice] = useState<DeviceView>('desktop')
   const [productModal, setProductModal] = useState<string | null>(null)
-  const [specsInput, setSpecsInput] = useState('')
+  const [newProductId, setNewProductId] = useState<string | null>(null)
+  const [addModal, setAddModal] = useState<Exclude<AddType, 'product'> | null>(null)
   const [panelWidth, setPanelWidth] = useState(400)
   const [editingPage, setEditingPage] = useState<string | null>(null)
   const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(() => loadInbox())
@@ -234,7 +584,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const { testimonials, saving: testimonialsSaving, saveError: testimonialsSaveError, add: addTestimonial, update: updateTestimonial, remove: removeTestimonial } = useTestimonials()
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null)
   const [testimonialDraft, setTestimonialDraft] = useState<Testimonial | null>(null)
-  const [newTestimonialForm, setNewTestimonialForm] = useState({ name: '', rating: 5, text: '', date: '' })
   const [mcTheme, setMcTheme] = useState(() => localStorage.getItem('mc-theme') !== 'false')
   const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isDirty = JSON.stringify(draft) !== JSON.stringify(content)
@@ -255,7 +604,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const panelBodyRef = useRef<HTMLDivElement>(null)
   const addMenuRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { setSpecsInput('') }, [editingProduct])
   useEffect(() => {
     if (!addMenuOpen) return
     const onDown = (e: MouseEvent) => {
@@ -278,20 +626,36 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     e.preventDefault()
     const startX = e.clientX
     const startW = panelWidth
+    document.body.classList.add('is-resizing-panel')
     const onMove = (ev: MouseEvent) => setPanelWidth(Math.max(240, Math.min(640, startW + startX - ev.clientX)))
-    const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp) }
+    const onUp = () => { document.body.classList.remove('is-resizing-panel'); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp) }
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
+  }
+
+  const scrollPreviewTo = (tab: PanelTab) => {
+    const pane = previewRef.current
+    if (!pane) return
+    const sel = PREVIEW_SECTION[tab]
+    const el = sel ? pane.querySelector<HTMLElement>(sel) : null
+    const top = el ? el.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop - 12 : 0
+    pane.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+    if (el) {
+      el.classList.remove('section-flash'); void el.offsetWidth
+      el.classList.add('section-flash')
+      window.setTimeout(() => el.classList.remove('section-flash'), 1600)
+    }
   }
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Double-click = text selection intent, never navigate
     if (e.detail >= 2) return
     const target = e.target as HTMLElement
-    // Skip if the element is already being actively edited
-    if (target.isContentEditable && document.activeElement === target) return
+    // Kein Schutz gegen aktive Textfelder: der erste Klick fokussiert das Feld,
+    // und das Umschalten der Sidebar soll trotzdem passieren.
     const el = target.closest('[data-cid]') as HTMLElement | null
     if (!el) return
+    setPanelOpen(true)
     const cid = el.dataset.cid ?? ''
     if (cid.startsWith('hero.') || cid.startsWith('nav.')) {
       setActiveTab('hero')
@@ -373,12 +737,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── Product helpers ───────────────────────────────────────────────────────
 
-  const addProduct = () => {
-    const id = `p${Date.now()}`
-    const newProduct: ProductItem = { id, name: 'Neues Produkt', description: '', price: '', image: '', category: 'E-Bikes', specs: [] }
-    update('products.items', [...(draft.products?.items ?? []), newProduct])
-    setEditingProduct(id)
-  }
 
   const deleteProduct = (id: string) => {
     update('products.items', draft.products.items.filter(p => p.id !== id))
@@ -396,13 +754,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── News helpers ──────────────────────────────────────────────────────────
 
-  const addNews = () => {
-    const id = `n${Date.now()}`
-    const today = new Date().toISOString().split('T')[0]
-    const newItem: NewsItem = { id, date: today, title: 'Neue Neuigkeit', body: '', image: '' }
-    update('news.items', [...(draft.news?.items ?? []), newItem])
-    setEditingNews(id)
-  }
 
   const deleteNews = (id: string) => {
     update('news.items', draft.news.items.filter(n => n.id !== id))
@@ -448,12 +799,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── Category helpers ──────────────────────────────────────────────────────
 
-  const addCategory = () => {
-    const id = `c${Date.now()}`
-    const newCat: CategoryItem = { id, name: 'Neue Kategorie', sub: '', image: '' }
-    update('categories.items', [...(draft.categories?.items ?? []), newCat])
-    setEditingCategory(id)
-  }
   const deleteCategory = (id: string) => {
     update('categories.items', draft.categories.items.filter(c => c.id !== id))
     if (editingCategory === id) setEditingCategory(null)
@@ -468,11 +813,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── Trust helpers ─────────────────────────────────────────────────────────
 
-  const addTrustItem = () => {
-    const id = `tr${Date.now()}`
-    const newItem: TrustItem = { id, icon: 'shield', bold: 'Vorteil', text: 'Kurzbeschreibung' }
-    update('trust.items', [...(draft.trust?.items ?? []), newItem])
-  }
   const deleteTrustItem = (id: string) => {
     update('trust.items', draft.trust.items.filter(t => t.id !== id))
   }
@@ -482,11 +822,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── USP helpers ───────────────────────────────────────────────────────────
 
-  const addUspItem = () => {
-    const id = `u${Date.now()}`
-    const newItem: FeatureItem = { id, title: 'Vorteil', description: 'Beschreibung' }
-    update('usp.items', [...(draft.usp?.items ?? []), newItem])
-  }
   const deleteUspItem = (id: string) => {
     update('usp.items', draft.usp.items.filter(u => u.id !== id))
   }
@@ -496,9 +831,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── Nav link helpers ──────────────────────────────────────────────────────
 
-  const addNavLink = () => {
-    update('nav.links', [...(draft.nav?.links ?? []), { label: 'Link', href: '#' }])
-  }
   const deleteNavLink = (i: number) => {
     update('nav.links', draft.nav.links.filter((_, idx) => idx !== i))
   }
@@ -508,13 +840,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── Page helpers ──────────────────────────────────────────────────────────
 
-  const addPage = () => {
-    const id = `pg${Date.now()}`
-    const newPage: PageItem = { id, title: 'Neue Seite', slug: `neue-seite-${id.slice(-4)}`, body: '<p>Hier kommt der Seiteninhalt.</p>', showInNav: false }
-    update('pages', [...(draft.pages ?? []), newPage])
-    setEditingPage(id)
-    setActiveTab('pages')
-  }
   const deletePage = (id: string) => {
     update('pages', (draft.pages ?? []).filter(p => p.id !== id))
     if (editingPage === id) setEditingPage(null)
@@ -530,38 +855,96 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     localStorage.setItem('rfi_contact_inbox', JSON.stringify(next))
   }
 
-  // ── Quick-add handler ─────────────────────────────────────────────────────
+  // ── Hinzufügen: Menü öffnet Maske, angelegt wird erst beim Bestätigen ──────
 
-  const handleQuickAdd = (action: string) => {
+  const handleQuickAdd = (type: AddType) => {
     setAddMenuOpen(false)
-    if (action === 'product') { addProduct(); setActiveTab('products') }
-    else if (action === 'category') { addCategory(); setActiveTab('categories') }
-    else if (action === 'page') { addPage() }
-    else if (action === 'news') { addNews(); setActiveTab('news') }
-    else if (action === 'navlink') { addNavLink(); setActiveTab('nav') }
+    if (type === 'product') {
+      // Neues Produkt: direkt die volle Maske öffnen; erst beim Veröffentlichen bleibt es bestehen
+      const id = `p${Date.now()}`
+      const item: ProductItem = { id, name: '', description: '', price: '', image: '', category: draft.categories?.items?.[0]?.name ?? '', specs: [] }
+      update('products.items', [...(draft.products?.items ?? []), item])
+      setActiveTab('products'); setNewProductId(id); setProductModal(id)
+      return
+    }
+    setAddModal(type)
   }
 
+  const openProduct = (id: string) => {
+    setActiveTab('products')
+    setPanelOpen(true)
+    setEditingProduct(id)
+    setProductModal(id)
+  }
+
+  const closeProductModal = () => {
+    if (productModal && productModal === newProductId) {
+      update('products.items', (draft.products?.items ?? []).filter(p => p.id !== productModal))
+    }
+    setNewProductId(null)
+    setProductModal(null)
+  }
+
+  const createItem = (type: Exclude<AddType, 'product'>, v: Record<string, string>) => {
+    setAddModal(null)
+    const stamp = Date.now()
+    if (type === 'category') {
+      const id = `c${stamp}`
+      update('categories.items', [...(draft.categories?.items ?? []), { id, name: v.name.trim(), sub: v.sub?.trim() ?? '', image: '' } as CategoryItem])
+      setActiveTab('categories'); setEditingCategory(id)
+    } else if (type === 'news') {
+      const id = `n${stamp}`
+      const item: NewsItem = { id, date: new Date().toISOString().split('T')[0], title: v.title.trim(), body: v.body?.trim() ?? '', image: '' }
+      update('news.items', [...(draft.news?.items ?? []), item])
+      setActiveTab('news'); setEditingNews(id)
+    } else if (type === 'page') {
+      const id = `pg${stamp}`
+      const base = slugifyTitle(v.title) || 'seite'
+      const slug = (draft.pages ?? []).some(pg => pg.slug === base) ? `${base}-${id.slice(-4)}` : base
+      const page: PageItem = { id, title: v.title.trim(), slug, body: textToHtml(v.body ?? ''), showInNav: false }
+      update('pages', [...(draft.pages ?? []), page])
+      setActiveTab('pages'); setEditingPage(id)
+    } else if (type === 'navlink') {
+      update('nav.links', [...(draft.nav?.links ?? []), { label: v.label.trim(), href: v.custom?.trim() || v.href || '#' }])
+      setActiveTab('nav')
+    } else if (type === 'trust') {
+      const item: TrustItem = { id: `tr${stamp}`, icon: v.icon || 'shield', bold: v.bold.trim(), text: v.text?.trim() ?? '' }
+      update('trust.items', [...(draft.trust?.items ?? []), item])
+      setActiveTab('trust')
+    } else if (type === 'usp') {
+      const item: FeatureItem = { id: `u${stamp}`, title: v.title.trim(), description: v.description?.trim() ?? '' }
+      update('usp.items', [...(draft.usp?.items ?? []), item])
+      setActiveTab('usp')
+    } else if (type === 'testimonial') {
+      addTestimonial({ name: v.name.trim(), rating: Number(v.rating) || 5, text: v.text.trim(), date: v.date?.trim() ?? '' })
+      setActiveTab('reviews')
+    } else if (type === 'stat') {
+      setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), stats: [...(d.about?.stats ?? []), { value: v.value.trim(), label: v.label.trim() }] } }))
+      setActiveTab('about')
+    } else if (type === 'certificate') {
+      setDraft(d => ({ ...d, certificates: { ...(d.certificates ?? { items: [] }), items: [...(d.certificates?.items ?? []), { id: crypto.randomUUID(), title: v.title.trim(), subtitle: v.subtitle?.trim() ?? '', file: '' }] } }))
+      setActiveTab('pricing')
+    }
+  }
+
+  // Reihenfolge nach Nutzung: erst was man am meisten pflegt (Kategorien, Produkte), dann der Rest
   const tabGroups: Array<{ group: string; tabs: Array<{ id: PanelTab; label: string; badge?: number }> }> = [
-    { group: 'Inhalt', tabs: [
-      { id: 'products',   label: 'Produkte' },
+    { group: 'Seite', tabs: [
       { id: 'categories', label: 'Kategorien' },
-      { id: 'hero',       label: 'Hero' },
+      { id: 'products',   label: 'Produkte' },
+      { id: 'hero',       label: 'Startseite' },
       { id: 'about',      label: 'Über uns' },
       { id: 'trust',      label: 'Vorteile' },
-      { id: 'usp',        label: 'USPs' },
+      { id: 'usp',        label: 'Pluspunkte' },
       { id: 'news',       label: 'Aktuelles' },
-      { id: 'pricing',    label: 'Preise' },
       { id: 'reviews',    label: 'Bewertungen', badge: testimonials.length },
       { id: 'pages',      label: 'Seiten' },
-    ] },
-    { group: 'Website', tabs: [
       { id: 'nav',        label: 'Navigation' },
       { id: 'contact',    label: 'Kontakt' },
       { id: 'style',      label: 'Stil' },
     ] },
   ]
 
-  const editingProd = editingProduct ? draft.products?.items?.find(p => p.id === editingProduct) : null
   const editingNewsItem = editingNews ? draft.news?.items?.find(n => n.id === editingNews) : null
   const editingCat = editingCategory ? draft.categories?.items?.find(c => c.id === editingCategory) : null
 
@@ -585,7 +968,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
               type="button"
               className={`builder-device-btn ${device === d.id ? 'active' : ''}`}
               aria-pressed={device === d.id}
-              title={d.id === 'edit' ? 'Canvas bearbeiten' : `${d.label}-Vorschau`}
+              title={`Ansicht: ${d.label}`}
               onClick={() => setDevice(d.id)}
             >
               {d.icon}
@@ -607,12 +990,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
           <a
             href="#crm"
             className="builder-crm-btn"
-            title="CRM / Kundenverwaltung"
+            title="Kunden"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
-            CRM
+            Kunden
           </a>
           <div className="builder-add-wrap" ref={addMenuRef}>
             <button className="builder-add-btn" onClick={() => setAddMenuOpen(o => !o)}>
@@ -620,34 +1003,21 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
               Hinzufügen
             </button>
             {addMenuOpen && (
-              <div className="builder-add-menu">
-                <button className="builder-add-item" onClick={() => handleQuickAdd('product')}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                  Neues Produkt
-                </button>
-                <button className="builder-add-item" onClick={() => handleQuickAdd('category')}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                  Neue Kategorie
-                </button>
-                <button className="builder-add-item" onClick={() => handleQuickAdd('news')}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  Neue Neuigkeit
-                </button>
-                <div className="builder-add-sep" />
-                <button className="builder-add-item" onClick={() => handleQuickAdd('page')}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-                  Neue Seite
-                </button>
-                <button className="builder-add-item" onClick={() => handleQuickAdd('navlink')}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                  Nav-Link
-                </button>
+              <div className="builder-add-menu" role="menu">
+                {ADD_MENU.map((group, gi) => (
+                  <div key={gi}>
+                    {gi > 0 && <div className="builder-add-sep" />}
+                    {group.map(m => (
+                      <button key={m.type} className="builder-add-item" role="menuitem" onClick={() => handleQuickAdd(m.type)}>
+                        <AddIcon type={m.type} />
+                        <span className="builder-add-text"><strong>{m.label}</strong><small>{m.hint}</small></span>
+                      </button>
+                    ))}
+                  </div>
+                ))}
               </div>
             )}
           </div>
-          <span className={`builder-dirty-state${isDirty ? ' is-dirty' : ''}`} role="status">
-            <i />{isDirty ? 'Ungespeichert' : 'Aktuell'}
-          </span>
           <button className="builder-logout-btn" onClick={handleLogout} title="Abmelden">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
@@ -662,8 +1032,9 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
       <div className="builder-body">
 
         {/* LEFT: Canvas editor OR device preview */}
-        {device === 'edit' ? (
-          <div className="builder-canvas-pane" ref={previewRef} onClick={handleCanvasClick}>
+        <div className="builder-canvas-pane" ref={previewRef} onClick={handleCanvasClick}>
+          <div className="builder-canvas-frame">
+            <div className={`device-frame device-${device}`}>
             <PublicSite
               content={draft}
               editMode={true}
@@ -678,247 +1049,53 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                   panelBodyRef.current?.querySelector('[data-prod-selected]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
                 }, 60)
               }}
-              onProductDblClick={(id: string) => {
-                setEditingProduct(id)
-                setProductModal(id)
-              }}
-              onSectionClick={(tab: string) => setActiveTab(tab as PanelTab)}
+              onProductDblClick={openProduct}
+              onSectionClick={(tab: string) => { setActiveTab(tab as PanelTab); setPanelOpen(true) }}
             />
-          </div>
-        ) : (
-          <div className="builder-device-stage">
-            <div className="device-frame-wrap">
-              <div className={`device-frame device-${device}`}>
-                <PublicSite content={draft} />
-              </div>
-              <div className="device-frame-label">
-                {device === 'desktop' ? 'Web · 1280 px' : device === 'tablet' ? 'Tablet · 834 px' : 'Mobil · 390 px'}
-              </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* RIGHT: Panel */}
-        <aside className="builder-panel" style={{ width: panelWidth }}>
+        {/* RIGHT: zweites Feld (Inhalt des gewählten Bereichs) */}
+        <aside className={`builder-panel builder-flyout${panelOpen ? '' : ' is-closed'}`} style={{ width: panelOpen ? panelWidth : 0, ['--flyout-w' as string]: `${panelWidth}px` }} aria-hidden={!panelOpen}>
           <div className="builder-panel-resize" onMouseDown={startPanelResize} />
-          {/* Tab bar */}
-          <div className="builder-tabs">
-            {tabGroups.map((g, gi) => (
-              <div key={g.group} className="builder-tab-group">
-                {gi > 0 && <span className="builder-tab-divider" aria-hidden="true" />}
-                <span className="builder-tab-group-label">{g.group}</span>
-                <div className="builder-tab-group-row">
-                  {g.tabs.map(t => (
-                    <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)} style={{ position: 'relative' }}>
-                      {t.label}
-                      {(t.badge ?? 0) > 0 && (
-                        <span style={{ position: 'absolute', top: 2, right: 2, background: '#c53030', color: '#fff', borderRadius: '50%', fontSize: 9, fontWeight: 700, minWidth: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 2px' }}>{t.badge}</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div className="builder-flyout-head">
+            <div className="builder-flyout-heading">
+              <span className="builder-flyout-title">{tabGroups.flatMap(g => g.tabs).find(t => t.id === activeTab)?.label}</span>
+              <span className="builder-flyout-hint">{PANEL_HINTS[activeTab]}</span>
+            </div>
+            <button className="builder-flyout-close" onClick={() => setPanelOpen(false)} title="Zuklappen" aria-label="Zuklappen">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
           </div>
 
           {/* Panel content */}
           {uploadError && <div className="panel-saving-error" style={{ padding: '6px 12px' }}>{uploadErrorMsg || 'Bild-Upload fehlgeschlagen — bitte nochmal versuchen'}</div>}
-          <div className="builder-panel-body" ref={panelBodyRef}>
+          <div className="builder-panel-body" ref={panelBodyRef} key={activeTab}>
 
             {/* ── PRODUCTS TAB ──────────────────────────────────────────── */}
             {activeTab === 'products' && (
               <div className="panel-products">
 
-                {editingProd ? (
-                  /* ─ Product edit form ─ */
-                  <div className="panel-product-form">
-                    <button className="panel-back-btn" onClick={() => setEditingProduct(null)}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                      Zur Liste
-                    </button>
-
-                    {/* Image */}
-                    <div className="panel-product-img-area" onClick={() => uploadProductImage(editingProd.id)}>
-                      {editingProd.image
-                        ? <img src={editingProd.image} alt={editingProd.name} />
-                        : <div className="panel-product-img-empty">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                            <span>Bild hochladen</span>
-                          </div>
-                      }
-                      <div className="panel-product-img-overlay">Bild ändern</div>
+                <div className="panel-product-list">
+                  {(draft.products?.items ?? []).map(p => (
+                    <div
+                      key={p.id}
+                      className={`panel-product-row${editingProduct === p.id ? ' panel-product-row--active' : ''}`}
+                      data-prod-selected={editingProduct === p.id ? true : undefined}
+                      onClick={() => openProduct(p.id)}
+                    >
+                      <div className="panel-product-thumb">
+                        {p.image ? <img src={p.image} alt={p.name} /> : <div className="panel-product-thumb-empty" />}
+                      </div>
+                      <div className="panel-product-info">
+                        <div className="panel-product-name">{p.name}</div>
+                        <div className="panel-product-meta">{p.category} &nbsp;·&nbsp; {p.price}</div>
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </div>
-
-                    <Field label="Name">
-                      <input value={editingProd.name} onChange={e => updateProduct(editingProd.id, 'name', e.target.value)} placeholder="Produktname" />
-                    </Field>
-                    <Field label="Preis">
-                      <input value={editingProd.price} onChange={e => updateProduct(editingProd.id, 'price', e.target.value)} placeholder="ab €799" />
-                    </Field>
-                    <Field label="Kategorie">
-                      <select value={editingProd.category} onChange={e => updateProduct(editingProd.id, 'category', e.target.value)}>
-                        {(draft.categories?.items?.map(c => c.name) ?? ['E-Bikes']).map(t => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
-                      </select>
-                    </Field>
-                    {(() => {
-                      const activeCat = draft.categories?.items?.find(c => c.name === editingProd.category)
-                      const subcats = activeCat?.subcategories ?? []
-                      if (subcats.length === 0) return null
-                      return (
-                        <Field label="Unterkategorie">
-                          <select value={editingProd.subcategory ?? ''} onChange={e => updateProduct(editingProd.id, 'subcategory', e.target.value)}>
-                            <option value="">— keine —</option>
-                            {subcats.map(sc => (
-                              <option key={sc.id} value={sc.id}>{sc.name}</option>
-                            ))}
-                          </select>
-                        </Field>
-                      )
-                    })()}
-                    <Field label="Bezeichnung">
-                      <input value={editingProd.badge ?? ''} onChange={e => updateProduct(editingProd.id, 'badge', e.target.value)} placeholder="Bestseller, Beliebt …" />
-                    </Field>
-                    <Field label="Spezifikationen">
-                      <div className="pem-tags" style={{ marginBottom: 6 }}>
-                        {(editingProd.specs ?? []).map((s, i) => (
-                          <span key={i} className="pem-tag">
-                            {s}
-                            <button onClick={() => updateProduct(editingProd.id, 'specs', (editingProd.specs ?? []).filter((_, idx) => idx !== i))} title="Entfernen">
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                      <div className="pem-tag-input-row">
-                        <input
-                          value={specsInput}
-                          onChange={e => setSpecsInput(e.target.value)}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter') { e.preventDefault(); const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } }
-                          }}
-                          placeholder="Spec + Enter"
-                        />
-                        <button className="pem-tag-add" onClick={() => { const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } }}>+</button>
-                      </div>
-                    </Field>
-                    <Field label="Produktinformationen">
-                      <SpecsTableField
-                        rows={editingProd.specsTable ?? []}
-                        onChange={(rows) => updateProduct(editingProd.id, 'specsTable', rows)}
-                      />
-                    </Field>
-                    <Field label="Preise & Akkus">
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <span style={{ fontSize: 11, color: '#888' }}>Sonderausfertigungen &amp; Sonderpreise (z.B. andere Batterie, Farbe — optional mit Aufpreis)</span>
-                        {(editingProd.variants ?? []).map((v, vi) => (
-                          <div key={vi} className="pem-variant-group">
-                            <div className="pem-variant-row">
-                              <input
-                                className="pem-variant-label-input"
-                                value={v.label}
-                                placeholder="Bezeichnung (z.B. Batterie)"
-                                onChange={e => {
-                                  const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, label: e.target.value } : vv)
-                                  updateProduct(editingProd.id, 'variants', updated)
-                                }}
-                              />
-                              <button className="pem-variant-del" onClick={() => updateProduct(editingProd.id, 'variants', (editingProd.variants ?? []).filter((_, i) => i !== vi))} title="Ausführung entfernen">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                              </button>
-                            </div>
-                            {v.options.map((opt, oi) => (
-                              <div key={oi} className="pem-variant-opt-row">
-                                <input
-                                  className="pem-variant-opt-value-input"
-                                  value={opt.value}
-                                  placeholder="z.B. 40Ah"
-                                  onChange={e => {
-                                    const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, value: e.target.value } : oo) } : vv)
-                                    updateProduct(editingProd.id, 'variants', updated)
-                                  }}
-                                />
-                                <input
-                                  className="pem-variant-opt-price-input"
-                                  value={opt.price ?? ''}
-                                  placeholder="Preis (optional, z.B. +150 €)"
-                                  onChange={e => {
-                                    const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, price: e.target.value } : oo) } : vv)
-                                    updateProduct(editingProd.id, 'variants', updated)
-                                  }}
-                                />
-                                <button
-                                  className="pem-variant-del"
-                                  title="Option entfernen"
-                                  onClick={() => {
-                                    const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.filter((_, j) => j !== oi) } : vv)
-                                    updateProduct(editingProd.id, 'variants', updated)
-                                  }}
-                                >
-                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                </button>
-                              </div>
-                            ))}
-                            <button
-                              className="pem-variant-opt-add"
-                              onClick={() => {
-                                const updated = (editingProd.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: [...vv.options, { value: '', price: '' }] } : vv)
-                                updateProduct(editingProd.id, 'variants', updated)
-                              }}
-                            >
-                              + Option hinzufügen
-                            </button>
-                          </div>
-                        ))}
-                        <button className="pem-variant-add" onClick={() => updateProduct(editingProd.id, 'variants', [...(editingProd.variants ?? []), { label: '', options: [] }])}>
-                          + Ausführung hinzufügen
-                        </button>
-                      </div>
-                    </Field>
-                    <Field label="Beschreibung">
-                      <RteField value={editingProd.description} onChange={html => updateProduct(editingProd.id, 'description', html)} />
-                    </Field>
-                    <Field label="Produktdetails">
-                      <RteField value={editingProd.details ?? ''} onChange={html => updateProduct(editingProd.id, 'details', html)} />
-                    </Field>
-                    <Field label="Lieferung & Versand">
-                      <RteField value={editingProd.delivery ?? ''} onChange={html => updateProduct(editingProd.id, 'delivery', html)} />
-                    </Field>
-
-                    <button className="panel-delete-btn" onClick={() => deleteProduct(editingProd.id)}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                      Produkt löschen
-                    </button>
-                  </div>
-                ) : (
-                  /* ─ Product list ─ */
-                  <>
-                    <div className="panel-product-list">
-                      {(draft.products?.items ?? []).map(p => (
-                        <div
-                          key={p.id}
-                          className={`panel-product-row${editingProduct === p.id ? ' panel-product-row--active' : ''}`}
-                          data-prod-selected={editingProduct === p.id ? true : undefined}
-                          onClick={() => setEditingProduct(p.id)}
-                        >
-                          <div className="panel-product-thumb">
-                            {p.image ? <img src={p.image} alt={p.name} /> : <div className="panel-product-thumb-empty" />}
-                          </div>
-                          <div className="panel-product-info">
-                            <div className="panel-product-name">{p.name}</div>
-                            <div className="panel-product-meta">{p.category} &nbsp;·&nbsp; {p.price}</div>
-                          </div>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                        </div>
-                      ))}
-                    </div>
-                    <button className="panel-add-big-btn" onClick={addProduct}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                      Produkt hinzufügen
-                    </button>
-                  </>
-                )}
+                  ))}
+                </div>
               </div>
             )}
 
@@ -928,25 +1105,38 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                 <PanelSection title="Hintergrundbild">
                   <UploadRow src={draft.hero?.image ?? ''} onUpload={() => handleImageClick('hero.image')} uploading={uploading && uploadTarget === 'hero.image'} />
                 </PanelSection>
-                <PanelSection title="Tag (oben)">
-                  <Field label="Tag-Text">
+                <PanelSection title="Kleiner Text über der Überschrift">
+                  <Field label="Text">
                     <input value={draft.hero?.tag ?? ''} onChange={e => update('hero.tag', e.target.value)} placeholder="Direktimporteur · Graz · Österreich" />
                   </Field>
                 </PanelSection>
-                <PanelSection title="Überschrift">
-                  <Field label="H1">
-                    <input value={draft.hero?.headline ?? ''} onChange={e => update('hero.headline', e.target.value)} placeholder="Elektromobilität. Jetzt." />
-                  </Field>
-                  <Field label="Unterzeile">
-                    <textarea rows={2} value={draft.hero?.subheadline ?? ''} onChange={e => update('hero.subheadline', e.target.value)} />
+                <PanelSection title="Hauptüberschrift">
+                  {(() => {
+                    const h = splitHeadline(draft.hero?.headline ?? '')
+                    return (
+                      <>
+                        <Field label="Erste Zeile">
+                          <input value={h.line1} onChange={e => update('hero.headline', joinHeadline(e.target.value, h.accent))} placeholder="Elektromobilität." />
+                        </Field>
+                        <Field label="Zweite Zeile (farbig hervorgehoben)">
+                          <input value={h.accent} onChange={e => update('hero.headline', joinHeadline(h.line1, e.target.value))} placeholder="Jetzt." />
+                        </Field>
+                      </>
+                    )
+                  })()}
+                  <Field label="Text darunter">
+                    <textarea rows={3} value={draft.hero?.subheadline ?? ''} onChange={e => update('hero.subheadline', e.target.value)} />
                   </Field>
                 </PanelSection>
                 <PanelSection title="Buttons">
                   <Field label="Button 1 Text">
                     <input value={draft.hero?.ctaLabel ?? ''} onChange={e => update('hero.ctaLabel', e.target.value)} />
                   </Field>
-                  <Field label="Button 1 Link">
-                    <input value={draft.hero?.ctaHref ?? ''} onChange={e => update('hero.ctaHref', e.target.value)} placeholder="#products" />
+                  <Field label="Button 1 führt zu">
+                    <select value={draft.hero?.ctaHref ?? ''} onChange={e => update('hero.ctaHref', e.target.value)}>
+                      {HERO_LINK_TARGETS.some(t => t.href === (draft.hero?.ctaHref ?? '')) ? null : <option value={draft.hero?.ctaHref ?? ''}>{draft.hero?.ctaHref ? `Eigener Link (${draft.hero.ctaHref})` : 'Bitte wählen'}</option>}
+                      {HERO_LINK_TARGETS.map(t => <option key={t.href} value={t.href}>{t.label}</option>)}
+                    </select>
                   </Field>
                   <Field label="Button 2 Text">
                     <input value={draft.hero?.ctaSecLabel ?? ''} onChange={e => update('hero.ctaSecLabel', e.target.value)} placeholder="optional" />
@@ -1009,10 +1199,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                         </div>
                       ))}
                     </div>
-                    <button className="panel-add-big-btn" onClick={addNews}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                      Neuigkeit hinzufügen
-                    </button>
                   </>
                 )}
               </div>
@@ -1050,7 +1236,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                   </Field>
                 </PanelSection>
                 <PanelSection title="Karte">
-                  <Field label="Google Maps Embed-URL">
+                  <Field label="Google-Maps-Link zum Einbetten">
                     <textarea rows={2} value={draft.contact?.mapSrc ?? ''} onChange={e => update('contact.mapSrc', e.target.value)} placeholder="https://maps.google.com/maps?q=…&output=embed" />
                   </Field>
                   <Field label="">
@@ -1064,10 +1250,13 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                   <Field label="Name">
                     <input value={draft.contact?.partnerShop?.name ?? ''} onChange={e => update('contact.partnerShop', { ...(draft.contact?.partnerShop ?? {}), name: e.target.value })} placeholder="z.B. Bikely Wien" />
                   </Field>
+                  <Field label="Telefon">
+                    <input value={draft.contact?.partnerShop?.phone ?? ''} onChange={e => update('contact.partnerShop', { ...(draft.contact?.partnerShop ?? {}), phone: e.target.value })} placeholder="+43 …" />
+                  </Field>
                   <Field label="Adresse">
                     <textarea rows={2} value={draft.contact?.partnerShop?.address ?? ''} onChange={e => update('contact.partnerShop', { ...(draft.contact?.partnerShop ?? {}), address: e.target.value })} placeholder="Straße Nr, PLZ Ort" />
                   </Field>
-                  <Field label="Google Maps Embed-URL">
+                  <Field label="Google-Maps-Link zum Einbetten">
                     <textarea rows={2} value={draft.contact?.partnerShop?.mapSrc ?? ''} onChange={e => update('contact.partnerShop', { ...(draft.contact?.partnerShop ?? {}), mapSrc: e.target.value })} placeholder="https://maps.google.com/maps?q=…&output=embed" />
                   </Field>
                 </PanelSection>
@@ -1123,10 +1312,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                         </div>
                       ))}
                     </div>
-                    <button className="panel-add-big-btn" onClick={addCategory}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                      Kategorie hinzufügen
-                    </button>
                   </>
                 )}
               </div>
@@ -1136,33 +1321,24 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             {activeTab === 'trust' && (
               <div className="panel-products">
                 <div className="panel-inline-list">
-                  {(draft.trust?.items ?? []).map(t => (
-                    <div key={t.id} className="panel-inline-item">
-                      <div className="panel-inline-item-fields">
-                        <Field label="Fett">
-                          <input value={t.bold} onChange={e => updateTrustItem(t.id, 'bold', e.target.value)} placeholder="Direktimporteur" />
-                        </Field>
-                        <Field label="Text">
-                          <input value={t.text} onChange={e => updateTrustItem(t.id, 'text', e.target.value)} placeholder="seit 2019" />
-                        </Field>
-                        <Field label="Icon">
-                          <select value={t.icon} onChange={e => updateTrustItem(t.id, 'icon', e.target.value)}>
-                            {['shield', 'truck', 'star', 'check', 'phone', 'heart', 'bolt', 'tag'].map(ic => (
-                              <option key={ic} value={ic}>{ic}</option>
-                            ))}
-                          </select>
-                        </Field>
-                      </div>
-                      <button className="panel-inline-delete" onClick={() => deleteTrustItem(t.id)} title="Entfernen">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                      </button>
-                    </div>
+                  {(draft.trust?.items ?? []).map((t, i) => (
+                    <EntryCard
+                      key={t.id} index={i + 1} what="Dieser Vorteil" onDelete={() => deleteTrustItem(t.id)}
+                      head={<input className="entry-title-input" value={t.bold} placeholder="Hervorgehobenes Wort, z. B. 5–7 Tage" onChange={e => updateTrustItem(t.id, 'bold', e.target.value)} />}
+                    >
+                      <Field label="Text dahinter">
+                        <input value={t.text} onChange={e => updateTrustItem(t.id, 'text', e.target.value)} placeholder="Versand österreichweit" />
+                      </Field>
+                      <Field label="Symbol">
+                        <select value={t.icon} onChange={e => updateTrustItem(t.id, 'icon', e.target.value)}>
+                          {TRUST_ICON_OPTS.map(ic => (
+                            <option key={ic.id} value={ic.id}>{ic.label}</option>
+                          ))}
+                        </select>
+                      </Field>
+                    </EntryCard>
                   ))}
                 </div>
-                <button className="panel-add-big-btn" onClick={addTrustItem}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Vorteil hinzufügen
-                </button>
               </div>
             )}
 
@@ -1170,26 +1346,16 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             {activeTab === 'usp' && (
               <div className="panel-products">
                 <div className="panel-inline-list">
-                  {(draft.usp?.items ?? []).map(u => (
-                    <div key={u.id} className="panel-inline-item">
-                      <div className="panel-inline-item-fields">
-                        <Field label="Titel">
-                          <input value={u.title} onChange={e => updateUspItem(u.id, 'title', e.target.value)} />
-                        </Field>
-                        <Field label="Beschreibung">
-                          <textarea rows={2} value={u.description} onChange={e => updateUspItem(u.id, 'description', e.target.value)} />
-                        </Field>
-                      </div>
-                      <button className="panel-inline-delete" onClick={() => deleteUspItem(u.id)} title="Entfernen">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                      </button>
-                    </div>
+                  {(draft.usp?.items ?? []).map((u, i) => (
+                    <FeatureCard
+                      key={u.id} index={i + 1} item={u} what="Dieser Pluspunkt"
+                      onChange={(f, v) => updateUspItem(u.id, f, v)}
+                      onUploadIcon={() => handleImageClick(`usp.items.${i}.icon`)}
+                      uploading={uploading && uploadTarget === `usp.items.${i}.icon`}
+                      onDelete={() => deleteUspItem(u.id)}
+                    />
                   ))}
                 </div>
-                <button className="panel-add-big-btn" onClick={addUspItem}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  USP hinzufügen
-                </button>
               </div>
             )}
 
@@ -1209,30 +1375,21 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                     <input value={draft.nav?.phone ?? ''} onChange={e => update('nav.phone', e.target.value)} placeholder="+43 664 000 0000" />
                   </Field>
                 </PanelSection>
-                <PanelSection title="Navigation Links">
+                <PanelSection title="Menüpunkte">
                   <div className="panel-inline-list">
                     {(draft.nav?.links ?? []).map((l, i) => (
-                      <div key={i} className="panel-inline-item panel-inline-item--compact">
-                        <div className="panel-inline-item-fields">
-                          <Field label="Label">
-                            <input value={l.label} onChange={e => updateNavLink(i, 'label', e.target.value)} placeholder="Startseite" />
-                          </Field>
-                          <Field label="Link">
-                            <input value={l.href} onChange={e => updateNavLink(i, 'href', e.target.value)} placeholder="#products" />
-                          </Field>
-                        </div>
-                        <button className="panel-inline-delete" onClick={() => deleteNavLink(i)} title="Entfernen">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                        </button>
-                      </div>
+                      <EntryCard
+                        key={i} index={i + 1} what="Dieser Menüpunkt" onDelete={() => deleteNavLink(i)}
+                        head={<input className="entry-title-input" value={l.label} placeholder="Name im Menü" onChange={e => updateNavLink(i, 'label', e.target.value)} />}
+                      >
+                        <Field label="Führt zu">
+                          <input value={l.href} onChange={e => updateNavLink(i, 'href', e.target.value)} placeholder="#products" />
+                        </Field>
+                      </EntryCard>
                     ))}
                   </div>
-                  <button className="panel-add-big-btn" style={{ marginTop: 8 }} onClick={addNavLink}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Link hinzufügen
-                  </button>
                 </PanelSection>
-                <PanelSection title="CTA Button">
+                <PanelSection title="Hauptknopf">
                   <Field label="Button Text">
                     <input value={draft.nav?.ctaLabel ?? ''} onChange={e => update('nav.ctaLabel', e.target.value)} placeholder="Jetzt kontaktieren" />
                   </Field>
@@ -1272,7 +1429,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                     </select>
                   </div>
                 </PanelSection>
-                <PanelSection title="SEO / Meta">
+                <PanelSection title="Google-Suche">
                   <Field label="Seitentitel">
                     <input value={draft.meta?.title ?? ''} onChange={e => update('meta.title', e.target.value)} />
                   </Field>
@@ -1285,7 +1442,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                     { id: 'trust' as SectionId, label: 'Vertrauensleiste' },
                     { id: 'categories' as SectionId, label: 'Kategorien' },
                     { id: 'products' as SectionId, label: 'Produkte (Rasteransicht)' },
-                    { id: 'usp' as SectionId, label: 'Vorteile (USPs)' },
+                    { id: 'usp' as SectionId, label: 'Pluspunkte' },
                     { id: 'news' as SectionId, label: 'Aktuelles (News)' },
                     { id: 'location' as SectionId, label: 'Standort & Kontakt' },
                   ] as { id: SectionId; label: string }[]).map(s => {
@@ -1330,7 +1487,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                       <Field label="Titel">
                         <input value={editingPageItem.title} onChange={e => updatePage(editingPageItem.id, 'title', e.target.value)} />
                       </Field>
-                      <Field label="URL-Slug (nach #p/)">
+                      <Field label="Kurzname der Seite (Teil des Links)">
                         <input value={editingPageItem.slug} onChange={e => updatePage(editingPageItem.id, 'slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))} placeholder="meine-seite" />
                       </Field>
                       <Field label="">
@@ -1341,10 +1498,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                       <Field label="">
                         <label className="panel-checkbox">
                           <input type="checkbox" checked={editingPageItem.showInNav ?? false} onChange={e => updatePage(editingPageItem.id, 'showInNav', e.target.checked)} />
-                          In Navigation anzeigen
+                          Im Menü oben anzeigen
                         </label>
                       </Field>
-                      <Field label="SEO-Titel (optional)">
+                      <Field label="Titel in der Google-Suche (optional)">
                         <input value={editingPageItem.metaTitle ?? ''} onChange={e => updatePage(editingPageItem.id, 'metaTitle', e.target.value)} placeholder={`${editingPageItem.title} — ${draft.meta?.title ?? ''}`} />
                       </Field>
                       <Field label="Seiteninhalt">
@@ -1382,10 +1539,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                           </div>
                         ))}
                       </div>
-                      <button className="panel-add-big-btn" onClick={addPage}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Neue Seite hinzufügen
-                      </button>
                     </>
                   )}
                 </div>
@@ -1426,7 +1579,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             {activeTab === 'about' && (
               <div className="panel-sections">
                 <PanelSection title="Text">
-                  <Field label="Eyebrow (klein)">
+                  <Field label="Kleiner Text darüber">
                     <input className="panel-input" value={draft.about?.eyebrow ?? ''} onChange={e => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), eyebrow: e.target.value } }))} />
                   </Field>
                   <Field label="Überschrift">
@@ -1450,7 +1603,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                       <button className="panel-remove-btn" onClick={() => setDraft(d => { const stats = (d.about?.stats ?? []).filter((_: AboutStat, j: number) => j !== i); return { ...d, about: { ...(d.about ?? { headline: '', bio: '' }), stats } } })}>Entf.</button>
                     </div>
                   ))}
-                  <button className="panel-add-btn" onClick={() => setDraft(d => ({ ...d, about: { ...(d.about ?? { headline: '', bio: '' }), stats: [...(d.about?.stats ?? []), { value: '', label: '' }] } }))}>+ Kennzahl</button>
                 </PanelSection>
               </div>
             )}
@@ -1462,8 +1614,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                   <Field label="Überschrift">
                     <input className="panel-input" value={draft.pricing?.title ?? ''} onChange={e => setDraft(d => ({ ...d, pricing: { ...(d.pricing ?? { title: '', body: '' }), title: e.target.value } }))} />
                   </Field>
-                  <Field label="Text / Preistabelle (HTML)">
-                    <textarea className="panel-input panel-textarea" rows={8} value={draft.pricing?.body ?? ''} onChange={e => setDraft(d => ({ ...d, pricing: { ...(d.pricing ?? { title: '', body: '' }), body: e.target.value } }))} />
+                  <Field label="Text / Preistabelle">
+                    <RteField value={draft.pricing?.body ?? ''} onChange={html => setDraft(d => ({ ...d, pricing: { ...(d.pricing ?? { title: '', body: '' }), body: html } }))} />
                   </Field>
                 </PanelSection>
                 <PanelSection title="Zertifikate / Auszeichnungen">
@@ -1476,7 +1628,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                       <button className="panel-remove-btn" onClick={() => setDraft(d => { const items = (d.certificates?.items ?? []).filter((_: CertificateItem, j: number) => j !== i); return { ...d, certificates: { ...(d.certificates ?? { items: [] }), items } } })}>Entf.</button>
                     </div>
                   ))}
-                  <button className="panel-add-btn" onClick={() => setDraft(d => ({ ...d, certificates: { ...(d.certificates ?? { items: [] }), items: [...(d.certificates?.items ?? []), { id: crypto.randomUUID(), title: '', subtitle: '', file: '' }] } }))}>+ Zertifikat</button>
                 </PanelSection>
               </div>
             )}
@@ -1509,47 +1660,56 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                     </div>
                   ))}
                 </PanelSection>
-                <PanelSection title="Neue Bewertung hinzufügen">
-                  <Field label="Name">
-                    <input className="panel-input" value={newTestimonialForm.name} onChange={e => setNewTestimonialForm(f => ({ ...f, name: e.target.value }))} />
-                  </Field>
-                  <Field label="Sterne (1–5)">
-                    <input className="panel-input" type="number" min={1} max={5} value={newTestimonialForm.rating} onChange={e => setNewTestimonialForm(f => ({ ...f, rating: Number(e.target.value) }))} style={{ width: 60 }} />
-                  </Field>
-                  <Field label="Text">
-                    <textarea className="panel-input panel-textarea" rows={3} value={newTestimonialForm.text} onChange={e => setNewTestimonialForm(f => ({ ...f, text: e.target.value }))} />
-                  </Field>
-                  <Field label="Datum">
-                    <input className="panel-input" placeholder="z.B. Juni 2025" value={newTestimonialForm.date} onChange={e => setNewTestimonialForm(f => ({ ...f, date: e.target.value }))} />
-                  </Field>
-                  <button className="panel-add-btn" onClick={() => { if (newTestimonialForm.name && newTestimonialForm.text) { addTestimonial(newTestimonialForm); setNewTestimonialForm({ name: '', rating: 5, text: '', date: '' }) } }}>+ Bewertung hinzufügen</button>
-                </PanelSection>
               </div>
             )}
 
           </div>
 
-          {/* SAVE FOOTER */}
-          <div className="builder-panel-foot">
-            <div className="builder-save-state" aria-live="polite">
-              <strong>{isDirty ? 'Änderungen noch nicht gespeichert' : 'Alle Änderungen gespeichert'}</strong>
-              <span>{saveError ? 'Speichern fehlgeschlagen. Bitte erneut versuchen.' : saved ? 'Gespeichert. Veröffentlichung wurde gestartet.' : 'Die Vorschau zeigt deinen aktuellen Entwurf.'}</span>
-            </div>
-            <div className="builder-panel-actions">
-              <button className="builder-discard-btn" onClick={handleDiscard} disabled={!isDirty || saving}>
-                Verwerfen
-              </button>
-            <button
-              className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''} ${saveError ? 'error' : ''}`}
-              onClick={handleSave}
-              disabled={!isDirty || saving}
-            >
-              {saving ? 'Speichern…' : saved ? 'Gespeichert!' : saveError ? 'Fehler beim Speichern' : 'Speichern'}
-            </button>
-            </div>
-          </div>
         </aside>
+
+        {/* RIGHT: schmale Icon-Leiste wie in einem Betriebssystem */}
+        <nav className="builder-rail" aria-label="Bereiche">
+          {tabGroups.flatMap(g => g.tabs).map(t => (
+            <button
+              key={t.id}
+              className={`builder-rail-item${activeTab === t.id && panelOpen ? ' active' : ''}`}
+              onClick={() => {
+                if (activeTab === t.id && panelOpen) { setPanelOpen(false); return }
+                // "Über uns" liegt als Seite vor: direkt deren Text öffnen statt eines leeren Abschnitts
+                if (t.id === 'about' && !draft.about) {
+                  const pg = (draft.pages ?? []).find(p => p.slug === 'uber-uns')
+                  if (pg) { setEditingPage(pg.id); setActiveTab('pages'); setPanelOpen(true); return }
+                }
+                setActiveTab(t.id); setPanelOpen(true); scrollPreviewTo(t.id)
+              }}
+            >
+              <RailIcon id={t.id} />
+              <span className="builder-rail-label">{t.label}</span>
+              {(t.badge ?? 0) > 0 && <span className="builder-rail-badge">{t.badge}</span>}
+            </button>
+          ))}
+        </nav>
       </div>
+
+      {(isDirty || saved || saveError) && (
+        <div className="builder-savebar" role="status" aria-live="polite">
+          <span className="builder-savebar-text">
+            {saveError ? 'Speichern fehlgeschlagen' : saved && !isDirty ? 'Gespeichert, die Seite wird aktualisiert' : 'Noch nicht gespeichert'}
+          </span>
+          <button className="builder-discard-btn" onClick={handleDiscard} disabled={!isDirty || saving}>Verwerfen</button>
+          <button
+            className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''} ${saveError ? 'error' : ''}`}
+            onClick={handleSave}
+            disabled={!isDirty || saving}
+          >
+            {saving ? 'Speichern …' : saveError ? 'Nochmal versuchen' : 'Speichern'}
+          </button>
+        </div>
+      )}
+
+      {addModal && (
+        <AddModal key={addModal} form={addFormFor(addModal, draft)} onClose={() => setAddModal(null)} onSubmit={v => createItem(addModal, v)} />
+      )}
 
       {/* ── PRODUCT EDIT MODAL ──────────────────────────────────────────── */}
       {productModal && (() => {
@@ -1560,11 +1720,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             product={mp}
             draft={draft}
             saving={saving}
+            isNew={mp.id === newProductId}
             onUpdate={updateProduct}
             onDelete={(id) => { deleteProduct(id); setProductModal(null) }}
             onUpload={uploadProductImage}
-            onClose={() => setProductModal(null)}
-            onPublish={handleSave}
+            onClose={closeProductModal}
+            onPublish={async () => { await handleSave(); setNewProductId(null) }}
           />
         )
       })()}
@@ -1588,9 +1749,9 @@ function RteField({ value, onChange }: { value: string; onChange: (html: string)
     <div className="rte-wrap">
       <div className="rte-toolbar">
         {[
-          { cmd: 'bold', label: 'B', title: 'Fett' },
-          { cmd: 'italic', label: 'I', title: 'Kursiv' },
-          { cmd: 'insertUnorderedList', label: '•—', title: 'Liste' },
+          { cmd: 'bold', label: 'Fett', title: 'Markierten Text fett machen' },
+          { cmd: 'italic', label: 'Kursiv', title: 'Markierten Text kursiv machen' },
+          { cmd: 'insertUnorderedList', label: 'Liste', title: 'Aufzählung mit Punkten' },
         ].map(({ cmd, label, title }) => (
           <button key={cmd} type="button" title={title}
             onMouseDown={e => { e.preventDefault(); document.execCommand(cmd, false) }}
@@ -1709,11 +1870,12 @@ function SpecsTableField({ rows, onChange }: { rows: { label: string; value: str
 // ── Product Edit Modal ─────────────────────────────────────────────────────────
 
 function ProductEditModal({
-  product, draft, saving, onUpdate, onDelete, onUpload, onClose, onPublish,
+  product, draft, saving, isNew, onUpdate, onDelete, onUpload, onClose, onPublish,
 }: {
   product: ProductItem
   draft: SiteContent
   saving: boolean
+  isNew: boolean
   onUpdate: (id: string, field: keyof ProductItem, value: unknown) => void
   onDelete: (id: string) => void
   onUpload: (id: string) => void
@@ -1723,9 +1885,12 @@ function ProductEditModal({
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [publishing, setPublishing] = useState(false)
   const [specsInput, setSpecsInput] = useState('')
+  const [showMissing, setShowMissing] = useState(false)
 
   const categories = draft.categories?.items?.map(c => c.name) ?? []
+  const subcats = draft.categories?.items?.find(c => c.name === product.category)?.subcategories ?? []
   const u = (field: keyof ProductItem, val: unknown) => onUpdate(product.id, field, val)
+  const nameMissing = !product.name.trim()
 
   const addSpec = () => {
     const val = specsInput.trim()
@@ -1739,188 +1904,182 @@ function ProductEditModal({
   }
 
   const handlePublish = async () => {
+    if (nameMissing) { setShowMissing(true); return }
     setPublishing(true)
     await onPublish()
     setPublishing(false)
     onClose()
   }
 
+  const iconX = <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+
   return (
     <div className="pem-overlay" onClick={onClose}>
-      <div className="pem" onClick={e => e.stopPropagation()}>
+      <div className="pem pem-wide" onClick={e => e.stopPropagation()}>
 
-        {/* Header */}
         <div className="pem-header">
-          <span className="pem-title">Produkt bearbeiten</span>
-          <button className="pem-close" onClick={onClose} title="Schliessen">
+          <span className="pem-title">{isNew ? 'Neues Produkt' : 'Produkt bearbeiten'}</span>
+          <button className="pem-close" onClick={onClose} title="Schließen">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
 
-        {/* Body */}
         <div className="pem-body">
 
-          {/* Image */}
-          <div className="pem-img-area">
+          <button type="button" className={`pem-img-drop${product.image ? ' has-img' : ''}`} onClick={() => onUpload(product.id)} title="Bild auswählen">
             {product.image
-              ? <img src={product.image} alt={product.name} className="pem-img" />
-              : <div className="pem-img-placeholder">Kein Bild</div>
-            }
-            <button className="pem-img-btn" onClick={() => onUpload(product.id)}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Bild tauschen
-            </button>
-          </div>
+              ? <img src={product.image} alt={product.name} />
+              : <span className="pem-img-empty">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <strong>Foto hochladen</strong>
+                  <small>Klick, dann Foto auswählen</small>
+                </span>}
+            {product.image && <span className="pem-img-change">Foto ändern</span>}
+          </button>
 
-          {/* Fields */}
           <div className="pem-fields">
-            <div className="pem-field">
-              <label>Name</label>
-              <input value={product.name} onChange={e => u('name', e.target.value)} />
-            </div>
 
-            <div className="pem-row">
+            <section className="pem-section">
               <div className="pem-field">
-                <label>Preis</label>
-                <input value={product.price} onChange={e => u('price', e.target.value)} placeholder="z.B. 1.299 €" />
+                <label>Titel</label>
+                <input
+                  autoFocus={isNew}
+                  className={showMissing && nameMissing ? 'is-invalid' : ''}
+                  value={product.name}
+                  onChange={e => u('name', e.target.value)}
+                  placeholder="z. B. E-Bike City Plus"
+                />
+                {showMissing && nameMissing && <span className="pem-add-error">Bitte einen Titel eingeben</span>}
               </div>
-              <div className="pem-field">
-                <label>Streichpreis</label>
-                <input value={product.regularPrice ?? ''} onChange={e => u('regularPrice', e.target.value)} placeholder="optional" />
+              <div className="pem-row pem-row-2">
+                <div className="pem-field">
+                  <label>Preis</label>
+                  <input value={product.price} onChange={e => u('price', e.target.value)} onBlur={e => u('price', formatPriceEuro(e.target.value))} placeholder="z. B. 1299" />
+                </div>
+                <div className="pem-field">
+                  <label>Statt-Preis (durchgestrichen)</label>
+                  <input value={product.regularPrice ?? ''} onChange={e => u('regularPrice', e.target.value)} onBlur={e => u('regularPrice', formatPriceEuro(e.target.value))} placeholder="nur wenn reduziert" />
+                </div>
               </div>
-              <div className="pem-field">
-                <label>Badge</label>
-                <input value={product.badge ?? ''} onChange={e => u('badge', e.target.value)} placeholder="z.B. NEU" />
-              </div>
-            </div>
-
-            <div className="pem-field">
-              <label>Kategorie</label>
-              <select value={product.category} onChange={e => u('category', e.target.value)}>
-                {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                {!categories.includes(product.category) && (
-                  <option value={product.category}>{product.category}</option>
+              <div className={subcats.length > 0 ? 'pem-row pem-row-2' : ''}>
+                <div className="pem-field">
+                  <label>Kategorie</label>
+                  <select value={product.category} onChange={e => { u('category', e.target.value); u('subcategory', '') }}>
+                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    {!categories.includes(product.category) && (
+                      <option value={product.category}>{product.category}</option>
+                    )}
+                  </select>
+                </div>
+                {subcats.length > 0 && (
+                  <div className="pem-field">
+                    <label>Unterkategorie</label>
+                    <select value={product.subcategory ?? ''} onChange={e => u('subcategory', e.target.value)}>
+                      <option value="">keine</option>
+                      {subcats.map(sc => <option key={sc.id} value={sc.id}>{sc.name}</option>)}
+                    </select>
+                  </div>
                 )}
-              </select>
-            </div>
+              </div>
+              <div className="pem-field">
+                <label>Hinweis auf dem Foto (optional)</label>
+                <input value={product.badge ?? ''} onChange={e => u('badge', e.target.value)} placeholder="z. B. Neu, Bestseller, Aktion" />
+              </div>
+            </section>
 
-            <div className="pem-field">
-              <label>Beschreibung</label>
-              <RteField value={product.description} onChange={html => u('description', html)} />
-            </div>
+            <section className="pem-section">
+              <h4>Beschreibung</h4>
+              <div className="pem-field">
+                <label>Kurzbeschreibung</label>
+                <RteField value={product.description} onChange={html => u('description', html)} />
+              </div>
+              <div className="pem-field">
+                <label>Details</label>
+                <RteField value={product.details ?? ''} onChange={html => u('details', html)} />
+              </div>
+              <div className="pem-field">
+                <label>Lieferung</label>
+                <RteField value={product.delivery ?? ''} onChange={html => u('delivery', html)} />
+              </div>
+            </section>
 
-            <div className="pem-field">
-              <label>Details</label>
-              <RteField value={product.details ?? ''} onChange={html => u('details', html)} />
-            </div>
-
-            <div className="pem-field">
-              <label>Lieferung</label>
-              <RteField value={product.delivery ?? ''} onChange={html => u('delivery', html)} />
-            </div>
-
-            <div className="pem-field">
-              <label>Sonderausführungen <span style={{ fontWeight: 400, color: '#888', fontSize: 11 }}>(z.B. Farben, Batterietypen — optional mit Aufpreis)</span></label>
+            <section className="pem-section">
+              <h4>Ausführungen</h4>
+              <p className="pem-section-hint">Zum Beispiel Farben oder Batterien, auf Wunsch mit Aufpreis.</p>
               {(product.variants ?? []).map((v, vi) => (
                 <div key={vi} className="pem-variant-group">
                   <div className="pem-variant-row">
                     <input
                       className="pem-variant-label-input"
                       value={v.label}
-                      placeholder="Bezeichnung (z.B. Batterie)"
-                      onChange={e => {
-                        const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, label: e.target.value } : vv)
-                        u('variants', updated)
-                      }}
+                      placeholder="Bezeichnung, z. B. Batterie"
+                      onChange={e => u('variants', (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, label: e.target.value } : vv))}
                     />
-                    <button className="pem-variant-del" onClick={() => u('variants', (product.variants ?? []).filter((_, i) => i !== vi))} title="Ausführung entfernen">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
+                    <button type="button" className="pem-variant-del" onClick={() => u('variants', (product.variants ?? []).filter((_, i) => i !== vi))} title="Ausführung entfernen">{iconX}</button>
                   </div>
                   {v.options.map((opt, oi) => (
                     <div key={oi} className="pem-variant-opt-row">
                       <input
                         className="pem-variant-opt-value-input"
                         value={opt.value}
-                        placeholder="z.B. 40Ah"
-                        onChange={e => {
-                          const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, value: e.target.value } : oo) } : vv)
-                          u('variants', updated)
-                        }}
+                        placeholder="z. B. 40Ah"
+                        onChange={e => u('variants', (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, value: e.target.value } : oo) } : vv))}
                       />
                       <input
                         className="pem-variant-opt-price-input"
                         value={opt.price ?? ''}
-                        placeholder="Preis (optional, z.B. +150 €)"
-                        onChange={e => {
-                          const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, price: e.target.value } : oo) } : vv)
-                          u('variants', updated)
-                        }}
+                        placeholder="Aufpreis, z. B. +150 €"
+                        onChange={e => u('variants', (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.map((oo, j) => j === oi ? { ...oo, price: e.target.value } : oo) } : vv))}
                       />
-                      <button
-                        className="pem-variant-del"
-                        title="Option entfernen"
-                        onClick={() => {
-                          const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.filter((_, j) => j !== oi) } : vv)
-                          u('variants', updated)
-                        }}
-                      >
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                      </button>
+                      <button type="button" className="pem-variant-del" title="Option entfernen"
+                        onClick={() => u('variants', (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: vv.options.filter((_, j) => j !== oi) } : vv))}
+                      >{iconX}</button>
                     </div>
                   ))}
-                  <button
-                    className="pem-variant-opt-add"
-                    onClick={() => {
-                      const updated = (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: [...vv.options, { value: '', price: '' }] } : vv)
-                      u('variants', updated)
-                    }}
-                  >
-                    + Option hinzufügen
-                  </button>
+                  <button type="button" className="pem-variant-opt-add"
+                    onClick={() => u('variants', (product.variants ?? []).map((vv, i) => i === vi ? { ...vv, options: [...vv.options, { value: '', price: '' }] } : vv))}
+                  >Option hinzufügen</button>
                 </div>
               ))}
-              <button className="pem-variant-add" onClick={() => u('variants', [...(product.variants ?? []), { label: '', options: [] }])}>
-                + Ausführung hinzufügen
+              <button type="button" className="pem-variant-add" onClick={() => u('variants', [...(product.variants ?? []), { label: '', options: [{ value: '', price: '' }] }])}>
+                Ausführung hinzufügen
               </button>
-            </div>
+            </section>
 
-            <div className="pem-field">
-              <label>Specs (Tags)</label>
-              <div className="pem-tags">
-                {(product.specs ?? []).map((s, i) => (
-                  <span key={i} className="pem-tag">
-                    {s}
-                    <button onClick={() => removeSpec(i)} title="Entfernen">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
-                  </span>
-                ))}
+            <section className="pem-section">
+              <h4>Technische Daten</h4>
+              <div className="pem-field">
+                <label>Kurze Merkmale</label>
+                <div className="pem-tags">
+                  {(product.specs ?? []).map((s, i) => (
+                    <span key={i} className="pem-tag">
+                      {s}
+                      <button type="button" onClick={() => removeSpec(i)} title="Entfernen">{iconX}</button>
+                    </span>
+                  ))}
+                </div>
+                <div className="pem-tag-input-row">
+                  <input
+                    value={specsInput}
+                    onChange={e => setSpecsInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSpec() } }}
+                    placeholder="z. B. 45 km/h, dann Enter"
+                  />
+                  <button type="button" className="pem-tag-add" onClick={addSpec}>+</button>
+                </div>
               </div>
-              <div className="pem-tag-input-row">
-                <input
-                  value={specsInput}
-                  onChange={e => setSpecsInput(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSpec() } }}
-                  placeholder="Spec eingeben + Enter"
-                />
-                <button className="pem-tag-add" onClick={addSpec}>+</button>
+              <div className="pem-field">
+                <label>Tabelle Produktinformationen</label>
+                <SpecsTableField rows={product.specsTable ?? []} onChange={rows => u('specsTable', rows)} />
               </div>
-            </div>
-
-            <div className="pem-field">
-              <label>Produktinformationen</label>
-              <SpecsTableField
-                rows={product.specsTable ?? []}
-                onChange={(rows) => u('specsTable', rows)}
-              />
-            </div>
+            </section>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="pem-footer">
-          {confirmDelete ? (
+          {isNew ? (
+            <button className="pem-btn-ghost" onClick={onClose}>Abbrechen</button>
+          ) : confirmDelete ? (
             <div className="pem-delete-confirm">
               <span>Wirklich löschen?</span>
               <button className="pem-btn-danger" onClick={() => onDelete(product.id)}>Ja, löschen</button>
@@ -1933,9 +2092,9 @@ function ProductEditModal({
             </button>
           )}
           <div className="pem-footer-right">
-            <button className="pem-btn-ghost" onClick={onClose}>Schliessen</button>
-            <button className="pem-btn-primary" onClick={handlePublish} disabled={saving || publishing}>
-              {publishing ? 'Veröffentlichen…' : 'Speichern & Veröffentlichen'}
+            {!isNew && <button className="pem-btn-ghost" onClick={onClose}>Schließen</button>}
+            <button className="pem-btn-primary pem-btn-green" onClick={handlePublish} disabled={saving || publishing}>
+              {publishing ? 'Wird gespeichert …' : isNew ? 'Produkt veröffentlichen' : 'Speichern & veröffentlichen'}
             </button>
           </div>
         </div>
