@@ -17,7 +17,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'nav' | 'style' | 'pages' | 'inbox' | 'about' | 'pricing' | 'reviews'
+type PanelTab = 'products' | 'hero' | 'categories' | 'trust' | 'usp' | 'news' | 'contact' | 'style' | 'pages' | 'inbox' | 'about' | 'pricing' | 'reviews'
 
 interface ContactInboxItem { name: string; email: string; phone?: string; message: string; ts: string }
 function loadInbox(): ContactInboxItem[] { try { return JSON.parse(localStorage.getItem('rfi_contact_inbox') || '[]') } catch { return [] } }
@@ -430,8 +430,7 @@ const RAIL_ICON_PATHS: Record<PanelTab, React.ReactNode> = {
   news:       <><path d="M4 4h13a1 1 0 0 1 1 1v14a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2z"/><path d="M18 8h3v11a2 2 0 0 1-2 2"/><line x1="8" y1="8" x2="14" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></>,
   pricing:    <><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.3"/></>,
   reviews:    <><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></>,
-  pages:      <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></>,
-  nav:        <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
+  pages:      <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
   contact:    <><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></>,
   style:      <><path d="M12 22a10 10 0 1 1 10-10c0 2.5-2 3-4 3h-2a2 2 0 0 0-1.5 3.3c.6.8.2 3.7-2.5 3.7z"/><circle cx="7.5" cy="11" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16.5" cy="11" r="1"/></>,
   inbox:      <><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></>,
@@ -462,8 +461,7 @@ const PANEL_HINTS: Record<PanelTab, string> = {
   news:       'Der Bereich Aktuelles, weiter unten auf der Seite.',
   pricing:    'Der Bereich Preise, weiter unten auf der Seite.',
   reviews:    'Die Reviews, weiter unten auf der Seite. Die Überschrift klickst du direkt in der Vorschau an.',
-  pages:      'Eigene Unterseiten, erreichbar über das Menü oben.',
-  nav:        'Das Menü ganz oben auf der Seite.',
+  pages:      'Das Menü ganz oben und alle Unterseiten. Mit dem Schalter bestimmst du, was im Menü steht.',
   contact:    'Der Bereich Standort und Kontakt ganz unten.',
   style:      'Farben, Schrift und Google-Texte, gelten für die ganze Seite.',
   inbox:      'Anfragen von Besuchern.',
@@ -683,7 +681,9 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     if (!el) return
     setPanelOpen(true)
     const cid = el.dataset.cid ?? ''
-    if (cid.startsWith('hero.') || cid.startsWith('nav.')) {
+    if (cid.startsWith('nav.')) {
+      setActiveTab('pages'); setEditingPage(null)
+    } else if (cid.startsWith('hero.')) {
       setActiveTab('hero')
     } else if (cid.startsWith('products.items.')) {
       const idx = parseInt(cid.split('.')[2])
@@ -867,6 +867,19 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── Page helpers ──────────────────────────────────────────────────────────
 
+  // Eine Seite steht im Menü, wenn sie den Haken hat oder ein frei gepflegter Menüpunkt auf sie zeigt.
+  const pageHrefs = (pg: PageItem) => [`#p/${pg.slug}`, `#${pg.slug}`]
+  const pageInMenu = (pg: PageItem) => !!pg.showInNav || (draft.nav?.links ?? []).some(l => pageHrefs(pg).includes(l.href))
+  const setPageInMenu = (id: string, on: boolean) => {
+    const pg = (draft.pages ?? []).find(x => x.id === id)
+    if (!pg) return
+    setDraft(prev => ({
+      ...prev,
+      pages: (prev.pages ?? []).map(x => x.id === id ? { ...x, showInNav: on } : x),
+      nav: on ? prev.nav : { ...prev.nav, links: (prev.nav?.links ?? []).filter(l => !pageHrefs(pg).includes(l.href)) },
+    }))
+  }
+
   const deletePage = (id: string) => {
     update('pages', (draft.pages ?? []).filter(p => p.id !== id))
     if (editingPage === id) setEditingPage(null)
@@ -933,7 +946,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
       setActiveTab('pages'); setEditingPage(id)
     } else if (type === 'navlink') {
       update('nav.links', [...(draft.nav?.links ?? []), { label: v.label.trim(), href: v.custom?.trim() || v.href || '#' }])
-      setActiveTab('nav')
+      setActiveTab('pages'); setEditingPage(null)
     } else if (type === 'trust') {
       const item: TrustItem = { id: `tr${stamp}`, icon: v.icon || 'shield', bold: v.bold.trim(), text: v.text?.trim() ?? '' }
       update('trust.items', [...(draft.trust?.items ?? []), item])
@@ -960,13 +973,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
       { id: 'categories', label: 'Kategorien' },
       { id: 'products',   label: 'Produkte' },
       { id: 'hero',       label: 'Startseite' },
-      { id: 'about',      label: 'Über uns' },
+      ...(draft.about ? [{ id: 'about' as PanelTab, label: 'Über uns' }] : []),
       { id: 'trust',      label: 'Vorteile' },
       { id: 'usp',        label: 'Pluspunkte' },
       { id: 'news',       label: 'Aktuelles' },
       { id: 'reviews',    label: 'Reviews', badge: testimonials.length },
-      { id: 'pages',      label: 'Seiten' },
-      { id: 'nav',        label: 'Navigation' },
+      { id: 'pages',      label: 'Navigation' },
       { id: 'contact',    label: 'Kontakt' },
       { id: 'style',      label: 'Stil' },
     ] },
@@ -1031,7 +1043,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             </button>
             {addMenuOpen && (
               <div className="builder-add-menu" role="menu">
-                {ADD_MENU.map((group, gi) => (
+                {ADD_MENU.map(g => g.filter(i => i.type !== 'certificate' && (i.type !== 'stat' || !!draft.about))).filter(g => g.length).map((group, gi) => (
                   <div key={gi}>
                     {gi > 0 && <div className="builder-add-sep" />}
                     {group.map(m => (
@@ -1386,58 +1398,6 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
               </div>
             )}
 
-            {/* ── NAV TAB ───────────────────────────────────────────────── */}
-            {activeTab === 'nav' && (
-              <>
-                <PanelSection title="Markenname">
-                  <Field label="Anzeigename">
-                    <input value={draft.nav?.brand ?? ''} onChange={e => update('nav.brand', e.target.value)} />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Logo">
-                  <UploadRow src={draft.nav?.logo ?? ''} onUpload={() => handleImageClick('nav.logo')} uploading={uploading && uploadTarget === 'nav.logo'} />
-                </PanelSection>
-                <PanelSection title="Telefonnummer (Nav)">
-                  <Field label="Nummer">
-                    <input value={draft.nav?.phone ?? ''} onChange={e => update('nav.phone', e.target.value)} placeholder="+43 664 000 0000" />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Menüpunkte">
-                  <div className="panel-inline-list">
-                    {(draft.nav?.links ?? []).map((l, i) => (
-                      <EntryCard
-                        key={i} index={i + 1} what="Dieser Menüpunkt" onDelete={() => deleteNavLink(i)}
-                        head={<input className="entry-title-input" value={l.label} placeholder="Name im Menü" onChange={e => updateNavLink(i, 'label', e.target.value)} />}
-                      >
-                        <Field label="Führt zu">
-                          <input value={l.href} onChange={e => updateNavLink(i, 'href', e.target.value)} placeholder="#products" />
-                        </Field>
-                      </EntryCard>
-                    ))}
-                  </div>
-                </PanelSection>
-                <PanelSection title="Hauptknopf">
-                  <Field label="Button Text">
-                    <input value={draft.nav?.ctaLabel ?? ''} onChange={e => update('nav.ctaLabel', e.target.value)} placeholder="Jetzt kontaktieren" />
-                  </Field>
-                  <Field label="Button Link">
-                    <input value={draft.nav?.ctaHref ?? ''} onChange={e => update('nav.ctaHref', e.target.value)} placeholder="#contact" />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Footer">
-                  <Field label="Copyright">
-                    <input value={draft.footer?.copyright ?? ''} onChange={e => update('footer.copyright', e.target.value)} />
-                  </Field>
-                  <Field label="Tagline">
-                    <input value={draft.footer?.tagline ?? ''} onChange={e => update('footer.tagline', e.target.value)} />
-                  </Field>
-                  <Field label="Beschreibung">
-                    <textarea rows={2} value={draft.footer?.description ?? ''} onChange={e => update('footer.description', e.target.value)} />
-                  </Field>
-                </PanelSection>
-              </>
-            )}
-
             {/* ── STYLE TAB ─────────────────────────────────────────────── */}
             {activeTab === 'style' && (
               <>
@@ -1524,7 +1484,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                       </Field>
                       <Field label="">
                         <label className="panel-checkbox">
-                          <input type="checkbox" checked={editingPageItem.showInNav ?? false} onChange={e => updatePage(editingPageItem.id, 'showInNav', e.target.checked)} />
+                          <input type="checkbox" checked={pageInMenu(editingPageItem)} onChange={e => setPageInMenu(editingPageItem.id, e.target.checked)} />
                           Im Menü oben anzeigen
                         </label>
                       </Field>
@@ -1541,31 +1501,77 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                     </div>
                   ) : (
                     <>
-                      <div style={{ padding: '10px 14px 4px', fontSize: 12, color: '#666', lineHeight: 1.5 }}>
-                        Hier sehen Sie alle bearbeitbaren Seiten — auch die Nav-Seiten wie <strong>Förderungen</strong>, <strong>Wie kaufen</strong> und <strong>Akku-Pflege</strong>. Seiten mit <strong>Nav</strong>-Badge erscheinen in der Navigation.
-                      </div>
-                      <div style={{ padding: '4px 14px 8px' }}>
-                        <button className="panel-add-big-btn" style={{ fontSize: 12, padding: '6px 12px' }} onClick={() => setActiveTab('nav')}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                          Zum Nav-Tab (Links verwalten)
-                        </button>
-                      </div>
-                      <div className="panel-product-list">
-                        {(draft.pages ?? []).length === 0 && (
-                          <div style={{ padding: '20px 16px', color: '#aaa', fontSize: 13, textAlign: 'center' }}>
-                            Noch keine Seiten vorhanden.
-                          </div>
-                        )}
-                        {(draft.pages ?? []).map(p => (
-                          <div key={p.id} className="panel-product-row" onClick={() => setEditingPage(p.id)}>
-                            <div className="panel-product-info">
-                              <div className="panel-product-name">{p.title}</div>
-                              <div className="panel-product-meta">#p/{p.slug}{p.showInNav ? ' · Nav' : ''}</div>
+                      <p className="pages-intro">Das sind alle Unterseiten deiner Website. Mit dem Schalter bestimmst du, ob eine Seite im Menü oben steht. Zum Bearbeiten tippst du sie an.</p>
+                      <div className="panel-inline-list">
+                        {(draft.pages ?? []).map(pg => {
+                          const inMenu = pageInMenu(pg)
+                          return (
+                            <div key={pg.id} className="page-row" role="button" tabIndex={0}
+                              onClick={() => setEditingPage(pg.id)}
+                              onKeyDown={e => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setEditingPage(pg.id) } }}>
+                              <div className="page-row-info">
+                                <span className="page-row-title">{pg.title}</span>
+                                <span className="page-row-sub">{inMenu ? 'Steht im Menü oben' : 'Nicht im Menü'}</span>
+                              </div>
+                              <label className="menu-switch" title="Im Menü oben anzeigen" onClick={e => e.stopPropagation()}>
+                                <input type="checkbox" checked={inMenu} onChange={e => setPageInMenu(pg.id, e.target.checked)} aria-label={`${pg.title} im Menü anzeigen`} />
+                                <span className="menu-switch-track" />
+                              </label>
+                              <svg className="page-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                             </div>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
+                      <button type="button" className="review-add-btn" onClick={() => setAddModal('page')}>+ Seite hinzufügen</button>
+
+                      <PanelSection title="Weitere Menüpunkte">
+                        <p className="pages-intro pages-intro--tight">Links im Menü, die auf einen Bereich der Startseite oder auf eine andere Adresse zeigen.</p>
+                        <div className="panel-inline-list">
+                          {(draft.nav?.links ?? []).map((l, i) => ({ l, i })).filter(({ l }) => !(draft.pages ?? []).some(pg => pageHrefs(pg).includes(l.href))).map(({ l, i }) => (
+                            <EntryCard
+                              key={i} index={i + 1} what="Dieser Menüpunkt" onDelete={() => deleteNavLink(i)}
+                              head={<input className="entry-title-input" value={l.label} placeholder="Name im Menü" onChange={e => updateNavLink(i, 'label', e.target.value)} />}
+                            >
+                              <Field label="Führt zu">
+                                <input value={l.href} onChange={e => updateNavLink(i, 'href', e.target.value)} placeholder="#products" />
+                              </Field>
+                            </EntryCard>
+                          ))}
+                        </div>
+                        <button type="button" className="review-add-btn" onClick={() => setAddModal('navlink')}>+ Menüpunkt hinzufügen</button>
+                      </PanelSection>
+                <PanelSection title="Name oben links">
+                  <Field label="Anzeigename">
+                    <input value={draft.nav?.brand ?? ''} onChange={e => update('nav.brand', e.target.value)} />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Logo">
+                  <UploadRow src={draft.nav?.logo ?? ''} onUpload={() => handleImageClick('nav.logo')} uploading={uploading && uploadTarget === 'nav.logo'} />
+                </PanelSection>
+                <PanelSection title="Telefonnummer oben">
+                  <Field label="Nummer">
+                    <input value={draft.nav?.phone ?? ''} onChange={e => update('nav.phone', e.target.value)} placeholder="+43 664 000 0000" />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Hauptknopf">
+                  <Field label="Button Text">
+                    <input value={draft.nav?.ctaLabel ?? ''} onChange={e => update('nav.ctaLabel', e.target.value)} placeholder="Jetzt kontaktieren" />
+                  </Field>
+                  <Field label="Button Link">
+                    <input value={draft.nav?.ctaHref ?? ''} onChange={e => update('nav.ctaHref', e.target.value)} placeholder="#contact" />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Footer">
+                  <Field label="Copyright">
+                    <input value={draft.footer?.copyright ?? ''} onChange={e => update('footer.copyright', e.target.value)} />
+                  </Field>
+                  <Field label="Tagline">
+                    <input value={draft.footer?.tagline ?? ''} onChange={e => update('footer.tagline', e.target.value)} />
+                  </Field>
+                  <Field label="Beschreibung">
+                    <textarea rows={2} value={draft.footer?.description ?? ''} onChange={e => update('footer.description', e.target.value)} />
+                  </Field>
+                </PanelSection>
                     </>
                   )}
                 </div>
@@ -1692,11 +1698,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
               className={`builder-rail-item${activeTab === t.id && panelOpen ? ' active' : ''}`}
               onClick={() => {
                 if (activeTab === t.id && panelOpen) { setPanelOpen(false); return }
-                // "Über uns" liegt als Seite vor: direkt deren Text öffnen statt eines leeren Abschnitts
-                if (t.id === 'about' && !draft.about) {
-                  const pg = (draft.pages ?? []).find(p => p.slug === 'uber-uns')
-                  if (pg) { setEditingPage(pg.id); setActiveTab('pages'); setPanelOpen(true); return }
-                }
+                if (t.id === 'pages') setEditingPage(null)
                 setActiveTab(t.id); setPanelOpen(true); scrollPreviewTo(t.id)
               }}
             >
