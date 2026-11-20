@@ -4164,3 +4164,14 @@ body.is-resizing-panel .builder-flyout { transition: none; }
   100% { opacity: 0; border-color: rgba(78,154,42,0); box-shadow: 0 0 0 14px rgba(78,154,42,0), 0 0 40px 10px rgba(78,154,42,0), inset 0 0 0 rgba(78,154,42,0); }
 }
 @media (prefers-reduced-motion: reduce) { .preview-glow { animation-duration: 1.6s; } }
+
+/* Galerie-Fotos: sanfter Schimmer, bis das Bild da ist */
+.gallery-img { position: relative; display: block; width: 100%; height: 100%; }
+.gallery-img img { opacity: 0; transition: opacity .3s ease; }
+.gallery-img.is-loaded img { opacity: 1; }
+.gallery-img:not(.is-loaded)::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, #eef2f4 30%, #f8fafb 50%, #eef2f4 70%); background-size: 200% 100%;
+  animation: gallery-shimmer 1.2s linear infinite;
+}
+@keyframes gallery-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }

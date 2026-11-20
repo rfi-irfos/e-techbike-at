@@ -2026,6 +2026,19 @@ function SpecsTableField({ rows, onChange }: { rows: { label: string; value: str
 
 // ── Product Edit Modal ─────────────────────────────────────────────────────────
 
+// Foto mit Schimmer bis es geladen ist. Frisch hochgeladene Fotos liegen erst nach dem nächsten
+// Deploy auf der Website, bis dahin kommen sie direkt von GitHub.
+function GalleryImg({ src, alt }: { src: string; alt: string }) {
+  const [url, setUrl] = useState(src)
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <span className={`gallery-img${loaded ? ' is-loaded' : ''}`}>
+      <img src={url} alt={alt} decoding="async" onLoad={() => setLoaded(true)}
+        onError={() => { if (!url.startsWith('http')) setUrl(`https://raw.githubusercontent.com/rfi-irfos/e-techbike-at/main/public/${src}`) }} />
+    </span>
+  )
+}
+
 function ProductEditModal({
   product, draft, saving, isNew, onUpdate, onDelete, onUpload, onDropFiles, onSetImages, uploading, onClose, onPublish,
 }: {
@@ -2042,7 +2055,8 @@ function ProductEditModal({
   onClose: () => void
   onPublish: () => Promise<void>
 }) {
-  const gallery = product.images?.length ? product.images : (product.image ? [product.image] : [])
+  // Doppelte Fotos nur einmal zeigen
+  const gallery = [...new Set(product.images?.length ? product.images : (product.image ? [product.image] : []))]
   const [shown, setShown] = useState(0)
   const [dropHover, setDropHover] = useState(false)
   const mainImg = gallery[Math.min(shown, gallery.length - 1)] ?? ''
@@ -2101,7 +2115,7 @@ function ProductEditModal({
             <button type="button" className={`pem-img-drop${mainImg ? ' has-img' : ''}${dropHover ? ' is-drop' : ''}`} {...dropProps}
               onClick={() => onUpload(product.id)} title="Fotos hinzufügen">
               {mainImg
-                ? <img src={mainImg} alt={product.name} />
+                ? <GalleryImg key={mainImg} src={mainImg} alt={product.name} />
                 : <span className="pem-img-empty">
                     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     <strong>Fotos hochladen</strong>
@@ -2114,7 +2128,7 @@ function ProductEditModal({
               <div className="pem-thumbs" {...dropProps}>
                 {gallery.map((src, i) => (
                   <div key={src + i} className={`pem-thumb${i === shown ? ' is-shown' : ''}`} onMouseEnter={() => setShown(i)}>
-                    <img src={src} alt="" />
+                    <GalleryImg src={src} alt="" />
                     {i === 0
                       ? <span className="pem-thumb-main">Hauptbild</span>
                       : <button type="button" className="pem-thumb-make" onClick={() => makeMain(i)}>Als Hauptbild</button>}
