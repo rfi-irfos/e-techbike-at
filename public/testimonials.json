@@ -1,0 +1,65 @@
+[
+  {
+    "id": "google-1",
+    "name": "Sebastian C.",
+    "rating": 5,
+    "text": "Top Service nette Verkäuferin",
+    "date": "Google, 2024"
+  },
+  {
+    "id": "google-2",
+    "name": "Stefan W.",
+    "rating": 5,
+    "text": "Super Mechaniker, super Service!!!",
+    "date": "Google, 2024"
+  },
+  {
+    "id": "google-3",
+    "name": "Robert M.",
+    "rating": 5,
+    "text": "Top Bedienung und Beratung.",
+    "date": "Google, 2021"
+  },
+  {
+    "id": "google-4",
+    "name": "Donata",
+    "rating": 5,
+    "text": "Sehr nette und hilfsbereite Person",
+    "date": "Google, 2021"
+  },
+  {
+    "id": "google-5",
+    "name": "Harald K.",
+    "rating": 5,
+    "text": "Danke das du mir das Ladegerät geschickt hast...Vielen DANK jetzt kann ich wieder fahren",
+    "date": "Google, 2022"
+  },
+  {
+    "id": "google-6",
+    "name": "Melanie J.",
+    "rating": 5,
+    "text": "Top Bedienung und Beratung sehr freundlicher Inhaber. Sehr empfehlenswert !!!",
+    "date": "Google, 2022"
+  },
+  {
+    "id": "google-7",
+    "name": "Dakgemers D.",
+    "rating": 5,
+    "text": "Habe gestern ein e-Moped gekauft top alles ich würde nur empfehlen",
+    "date": "Google, 2023"
+  },
+  {
+    "id": "google-8",
+    "name": "Sebastian K.",
+    "rating": 5,
+    "text": "Sehr tolles Geschäft. Kompetente Beratung und sehr freundlich",
+    "date": "Google, 2021"
+  },
+  {
+    "id": "google-9",
+    "name": "Nina G.",
+    "rating": 4,
+    "text": "Wir haben das E-bike geliefert bekommen, netter Verkäufer... man muss öfters anrufen um sicher zu stellen, dass alles klappt. Einfacher ist es vor Ort. Bis jetzt geht es ohne Probleme... haben noch keine Mängel gehabt.",
+    "date": "Google, 2022"
+  }
+]

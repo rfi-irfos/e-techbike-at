@@ -602,7 +602,9 @@ function Stars({ rating }: { rating: number }) {
   )
 }
 
-function ReviewsSection({ editMode }: { editMode: boolean }) {
+function ReviewsSection({ editMode, heading }: { editMode: boolean; heading?: { eyebrow?: string; title?: string } }) {
+  const eyebrow = heading?.eyebrow ?? 'Kundenstimmen'
+  const title = heading?.title ?? 'Das sagen unsere Kunden'
   const [testimonials, setTestimonials] = React.useState<Testimonial[]>([])
   React.useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}testimonials.json`, { cache: 'no-store' })
@@ -612,13 +614,17 @@ function ReviewsSection({ editMode }: { editMode: boolean }) {
   }, [])
   if (editMode) return (
     <section className="site-section site-reviews site-edit-section" id="reviews">
-      <div className="site-edit-section-badge">Bewertungen</div>
-      <div className="site-reviews-placeholder">Kundenbewertungen werden hier angezeigt</div>
+      <div className="site-edit-section-badge">Reviews</div>
+      <E field="reviews.eyebrow" value={eyebrow} as="div" className="site-eyebrow" />
+      <E field="reviews.title" value={title} as="h2" className="site-section-title" />
+      <div className="site-reviews-placeholder">Die Reviews erscheinen hier auf der Seite</div>
     </section>
   )
   if (testimonials.length === 0) return null
   return (
     <section className="site-section site-reviews" id="reviews">
+      <div className="site-eyebrow">{eyebrow}</div>
+      <h2 className="site-section-title">{title}</h2>
       <div className="site-reviews-grid">
         {testimonials.map(r => (
           <div key={r.id} className="site-review-card">
@@ -1211,7 +1217,7 @@ export function PublicSite({
           </section>
         )}
 
-        <ReviewsSection editMode={editMode} />
+        <ReviewsSection editMode={editMode} heading={content.reviews} />
 
         {/* ── NEWS ─────────────────────────────────────────────────────── */}
         {!hiddenSections.includes('news') && (news?.items?.length ?? 0) > 0 && (

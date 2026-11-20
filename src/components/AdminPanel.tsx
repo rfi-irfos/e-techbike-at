@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import type { SiteContent, SectionId, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem, AboutStat, CertificateItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
@@ -213,7 +213,7 @@ const ADD_MENU: Array<Array<{ type: AddType; label: string; hint: string }>> = [
   [
     { type: 'trust',       label: 'Vorteil',    hint: 'Kurzer Pluspunkt im dunklen Band' },
     { type: 'usp',         label: 'Pluspunkt',  hint: 'Karte unter „Was uns unterscheidet“' },
-    { type: 'testimonial', label: 'Bewertung',  hint: 'Stimme eines Kunden' },
+    { type: 'testimonial', label: 'Review',  hint: 'Stimme eines Kunden' },
     { type: 'stat',        label: 'Kennzahl',   hint: 'Zahl im Bereich „Über uns“' },
     { type: 'certificate', label: 'Zertifikat', hint: 'Nachweis oder Siegel' },
   ],
@@ -290,8 +290,8 @@ function addFormFor(type: Exclude<AddType, 'product'>, draft: SiteContent): AddF
       ],
     }
     case 'testimonial': return {
-      title: 'Neue Bewertung', submit: 'Bewertung anlegen',
-      hint: 'Bewertungen werden sofort gespeichert und erscheinen auf der Website.',
+      title: 'Neue Review', submit: 'Review anlegen',
+      hint: 'Reviews werden sofort gespeichert und erscheinen auf der Website.',
       fields: [
         { key: 'name', label: 'Name des Kunden', required: true, placeholder: 'z. B. Maria K.' },
         { key: 'rating', label: 'Sterne', kind: 'select', options: [5, 4, 3, 2, 1].map(n => ({ value: String(n), label: `${n} von 5` })) },
@@ -324,17 +324,18 @@ function AddIcon({ type }: { type: AddType }) {
     page: <><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></>,
     navlink: <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>,
     trust: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>,
-    usp: <polygon points="12 2 15 9 22 9 16 14 18 21 12 17 6 21 8 14 2 9 9 9"/>,
-    testimonial: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>,
+    usp: <><circle cx="12" cy="12" r="9"/><polyline points="8 12 11 15 16 9"/></>,
+    testimonial: <polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/>,
     stat: <><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></>,
     certificate: <><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></>,
   }
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[type]}</svg>
 }
 
-function AddModal({ form, onClose, onSubmit }: { form: AddFormDef; onClose: () => void; onSubmit: (v: Record<string, string>) => void }) {
+function AddModal({ form, onClose, onSubmit, initial, onDelete, deleteWhat }: { form: AddFormDef; onClose: () => void; onSubmit: (v: Record<string, string>) => void; initial?: Record<string, string>; onDelete?: () => void; deleteWhat?: string }) {
   const [values, setValues] = useState<Record<string, string>>(() =>
-    Object.fromEntries(form.fields.map(f => [f.key, f.kind === 'select' ? (f.options?.[0]?.value ?? '') : ''])))
+    Object.fromEntries(form.fields.map(f => [f.key, initial?.[f.key] ?? (f.kind === 'select' ? (f.options?.[0]?.value ?? '') : '')])))
+  const [askDelete, setAskDelete] = useState(false)
   const [touched, setTouched] = useState(false)
   const missing = form.fields.filter(f => f.required && !values[f.key]?.trim())
 
@@ -383,6 +384,15 @@ function AddModal({ form, onClose, onSubmit }: { form: AddFormDef; onClose: () =
           </div>
         </div>
         <div className="pem-footer">
+          {onDelete && (askDelete ? (
+            <div className="entry-delete-confirm pem-delete-confirm">
+              <span>{deleteWhat ?? 'Eintrag'} wirklich entfernen?</span>
+              <button type="button" className="entry-delete-yes" onClick={onDelete}>Ja, entfernen</button>
+              <button type="button" className="entry-delete-no" onClick={() => setAskDelete(false)}>Abbrechen</button>
+            </div>
+          ) : (
+            <button type="button" className="pem-delete-btn" onClick={() => setAskDelete(true)}>Entfernen</button>
+          ))}
           <div className="pem-footer-right">
             <button className="pem-btn-ghost" onClick={onClose}>Abbrechen</button>
             <button className="pem-btn-primary pem-btn-green" onClick={submit}>{form.submit}</button>
@@ -416,10 +426,10 @@ const RAIL_ICON_PATHS: Record<PanelTab, React.ReactNode> = {
   hero:       <><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></>,
   about:      <><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.8" r=".6"/></>,
   trust:      <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></>,
-  usp:        <><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></>,
+  usp:        <><circle cx="12" cy="12" r="9"/><polyline points="8 12 11 15 16 9"/></>,
   news:       <><path d="M4 4h13a1 1 0 0 1 1 1v14a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2z"/><path d="M18 8h3v11a2 2 0 0 1-2 2"/><line x1="8" y1="8" x2="14" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></>,
   pricing:    <><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.3"/></>,
-  reviews:    <><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></>,
+  reviews:    <><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/></>,
   pages:      <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></>,
   nav:        <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
   contact:    <><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></>,
@@ -451,7 +461,7 @@ const PANEL_HINTS: Record<PanelTab, string> = {
   usp:        'Die Karten „Was uns unterscheidet“, weiter unten nach dem Sortiment.',
   news:       'Der Bereich Aktuelles, weiter unten auf der Seite.',
   pricing:    'Der Bereich Preise, weiter unten auf der Seite.',
-  reviews:    'Die Kundenstimmen, weiter unten auf der Seite.',
+  reviews:    'Die Reviews, weiter unten auf der Seite. Die Überschrift klickst du direkt in der Vorschau an.',
   pages:      'Eigene Unterseiten, erreichbar über das Menü oben.',
   nav:        'Das Menü ganz oben auf der Seite.',
   contact:    'Der Bereich Standort und Kontakt ganz unten.',
@@ -582,8 +592,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
   const [saveError, setSaveError] = useState(false)
   const { testimonials, saving: testimonialsSaving, saveError: testimonialsSaveError, add: addTestimonial, update: updateTestimonial, remove: removeTestimonial } = useTestimonials()
-  const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null)
-  const [testimonialDraft, setTestimonialDraft] = useState<Testimonial | null>(null)
+  const [editReview, setEditReview] = useState<Testimonial | null>(null)
   const [mcTheme, setMcTheme] = useState(() => localStorage.getItem('mc-theme') !== 'false')
   const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isDirty = JSON.stringify(draft) !== JSON.stringify(content)
@@ -632,6 +641,23 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
   }
+
+  // Gleitendes Glas-Highlight: wandert sanft zum aktiven Eintrag der Leiste
+  const railRef = useRef<HTMLElement | null>(null)
+  useLayoutEffect(() => {
+    const rail = railRef.current
+    if (!rail) return
+    const place = () => {
+      const el = rail.querySelector<HTMLElement>('.builder-rail-item.active')
+      rail.style.setProperty('--pill-on', el ? '1' : '0')
+      if (!el) return
+      rail.style.setProperty('--pill-y', `${el.offsetTop}px`)
+      rail.style.setProperty('--pill-h', `${el.offsetHeight}px`)
+    }
+    place()
+    window.addEventListener('resize', place)
+    return () => window.removeEventListener('resize', place)
+  }, [activeTab, panelOpen])
 
   const scrollPreviewTo = (tab: PanelTab) => {
     const pane = previewRef.current
@@ -693,6 +719,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
       const next = structuredClone(prev) as unknown as Record<string, unknown>
       let cur = next
       for (let i = 0; i < keys.length - 1; i++) {
+        if (cur[keys[i]] == null) cur[keys[i]] = {}
         cur = cur[keys[i]] as Record<string, unknown>
       }
       cur[keys[keys.length - 1]] = value
@@ -937,7 +964,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
       { id: 'trust',      label: 'Vorteile' },
       { id: 'usp',        label: 'Pluspunkte' },
       { id: 'news',       label: 'Aktuelles' },
-      { id: 'reviews',    label: 'Bewertungen', badge: testimonials.length },
+      { id: 'reviews',    label: 'Reviews', badge: testimonials.length },
       { id: 'pages',      label: 'Seiten' },
       { id: 'nav',        label: 'Navigation' },
       { id: 'contact',    label: 'Kontakt' },
@@ -1057,7 +1084,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
         </div>
 
         {/* RIGHT: zweites Feld (Inhalt des gewählten Bereichs) */}
-        <aside className={`builder-panel builder-flyout${panelOpen ? '' : ' is-closed'}`} style={{ width: panelOpen ? panelWidth : 0, ['--flyout-w' as string]: `${panelWidth}px` }} aria-hidden={!panelOpen}>
+        <aside className={`builder-panel builder-flyout${panelOpen ? '' : ' is-closed'}`} style={{ width: panelOpen ? panelWidth : 0, ['--flyout-w' as string]: `${panelWidth}px` }} aria-hidden={!panelOpen} inert={!panelOpen}>
           <div className="builder-panel-resize" onMouseDown={startPanelResize} />
           <div className="builder-flyout-head">
             <div className="builder-flyout-heading">
@@ -1634,32 +1661,21 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
             {/* ── REVIEWS TAB ───────────────────────────────────────────── */}
             {activeTab === 'reviews' && (
-              <div className="panel-sections">
-                <PanelSection title={`Kundenbewertungen (${testimonials.length})`}>
-                  {testimonialsSaving && <div className="panel-saving">Speichert…</div>}
-                  {testimonialsSaveError && <div className="panel-saving panel-saving-error">Fehler beim Speichern — bitte nochmal versuchen</div>}
+              <div className="panel-products">
+                {testimonialsSaving && <div className="panel-saving">Speichert…</div>}
+                {testimonialsSaveError && <div className="panel-saving panel-saving-error">Fehler beim Speichern — bitte nochmal versuchen</div>}
+                {testimonials.length === 0 && <p className="review-empty">Noch keine Reviews. Mit dem grünen Knopf legst du die erste an.</p>}
+                <div className="panel-inline-list">
                   {testimonials.map(r => (
-                    <div key={r.id} className="panel-cert-row">
-                      {editingTestimonial?.id === r.id && testimonialDraft ? (
-                        <>
-                          <input className="panel-input" placeholder="Name" value={testimonialDraft.name} onChange={e => setTestimonialDraft(t => t ? { ...t, name: e.target.value } : t)} />
-                          <input className="panel-input" type="number" min={1} max={5} placeholder="Sterne" value={testimonialDraft.rating} onChange={e => setTestimonialDraft(t => t ? { ...t, rating: Number(e.target.value) } : t)} style={{ width: 60 }} />
-                          <textarea className="panel-input panel-textarea" rows={3} placeholder="Text" value={testimonialDraft.text} onChange={e => setTestimonialDraft(t => t ? { ...t, text: e.target.value } : t)} />
-                          <div className="panel-row-inline">
-                            <button className="panel-add-btn" onClick={() => { if (testimonialDraft) { updateTestimonial(testimonialDraft); setEditingTestimonial(null); setTestimonialDraft(null) } }}>Speichern</button>
-                            <button className="panel-remove-btn" onClick={() => { setEditingTestimonial(null); setTestimonialDraft(null) }}>Abbrechen</button>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="panel-row-inline">
-                          <span style={{ flex: 1 }}><strong>{r.name}</strong> — {'★'.repeat(r.rating)} — {r.text.slice(0, 60)}{r.text.length > 60 ? '…' : ''}</span>
-                          <button className="panel-add-btn" onClick={() => { setEditingTestimonial(r); setTestimonialDraft({ ...r }) }}>Bearb.</button>
-                          <button className="panel-remove-btn" onClick={() => removeTestimonial(r.id)}>Entf.</button>
-                        </div>
-                      )}
-                    </div>
+                    <button key={r.id} type="button" className="review-row" onClick={() => setEditReview(r)} title="Zum Bearbeiten anklicken">
+                      <span className="review-row-stars" aria-label={`${r.rating} von 5 Sternen`}>{'★'.repeat(r.rating)}<i>{'★'.repeat(5 - r.rating)}</i></span>
+                      <span className="review-row-name">{r.name}</span>
+                      <span className="review-row-text">{r.text}</span>
+                      <span className="review-row-edit">Bearbeiten</span>
+                    </button>
                   ))}
-                </PanelSection>
+                </div>
+                <button type="button" className="review-add-btn" onClick={() => setAddModal('testimonial')}>+ Review hinzufügen</button>
               </div>
             )}
 
@@ -1668,7 +1684,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
         </aside>
 
         {/* RIGHT: schmale Icon-Leiste wie in einem Betriebssystem */}
-        <nav className="builder-rail" aria-label="Bereiche">
+        <nav className="builder-rail" aria-label="Bereiche" ref={railRef}>
+          <span className="builder-rail-pill" aria-hidden="true" />
           {tabGroups.flatMap(g => g.tabs).map(t => (
             <button
               key={t.id}
@@ -1707,6 +1724,17 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
         </div>
       )}
 
+      {editReview && (
+        <AddModal
+          key={`review-${editReview.id}`}
+          form={{ ...addFormFor('testimonial', draft), title: 'Review bearbeiten', submit: 'Speichern', hint: 'Änderungen werden sofort gespeichert und erscheinen auf der Website.' }}
+          initial={{ name: editReview.name, rating: String(editReview.rating), text: editReview.text, date: editReview.date }}
+          deleteWhat="Diese Review"
+          onClose={() => setEditReview(null)}
+          onDelete={() => { removeTestimonial(editReview.id); setEditReview(null) }}
+          onSubmit={v => { updateTestimonial({ ...editReview, name: v.name.trim(), rating: Number(v.rating) || 5, text: v.text.trim(), date: v.date?.trim() ?? '' }); setEditReview(null) }}
+        />
+      )}
       {addModal && (
         <AddModal key={addModal} form={addFormFor(addModal, draft)} onClose={() => setAddModal(null)} onSubmit={v => createItem(addModal, v)} />
       )}

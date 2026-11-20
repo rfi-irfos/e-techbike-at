@@ -67,6 +67,7 @@ export const DEFAULT_SECTION_ORDER: SectionId[] = ['trust', 'categories', 'produ
 export interface CanvasPos { x: number; y: number }
 
 export interface SiteContent {
+  reviews?: { eyebrow?: string; title?: string }
   sectionOrder?: SectionId[]
   positions?: Record<string, CanvasPos>
   meta: {
