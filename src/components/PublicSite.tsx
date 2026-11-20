@@ -627,7 +627,7 @@ function ReviewsSection({ editMode, heading }: { editMode: boolean; heading?: { 
       <h2 className="site-section-title">{title}</h2>
       {/* Langsames Laufband: die Liste steht zweimal hintereinander, damit der Übergang nahtlos ist */}
       <div className="site-reviews-marquee">
-        <div className="site-reviews-track" style={{ animationDuration: `${Math.max(30, testimonials.length * 7)}s` }}>
+        <div className="site-reviews-track" style={{ animationDuration: `${Math.max(60, testimonials.length * 12)}s` }}>
           {[...testimonials, ...testimonials].map((r, i) => (
             <div key={`${r.id}-${i}`} className="site-review-card" aria-hidden={i >= testimonials.length || undefined}>
               <Stars rating={r.rating} />

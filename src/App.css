@@ -4109,3 +4109,12 @@ body.is-resizing-panel .builder-flyout { transition: none; }
 .site-reviews-track { align-items: stretch; }
 .site-reviews-track .site-review-card { display: flex; flex-direction: column; }
 .site-reviews-track .site-review-text { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+
+/* Reviews schlanker: niedrige Karten, schwarze Schrift */
+.site-reviews { padding: 48px 24px 40px; }
+.site-reviews-track { align-items: flex-start; padding: 6px 0 10px; }
+.site-reviews-track .site-review-card { padding: 16px 20px; }
+.site-reviews-track .site-review-stars { margin-bottom: 8px; }
+.site-reviews-track .site-review-text { flex: none; -webkit-line-clamp: 3; margin: 0 0 10px; color: #1b1b1b; font-size: 14px; line-height: 1.55; }
+.site-reviews-track .site-review-name { color: #1b1b1b; }
+.site-reviews-track .site-review-date { color: #3b4a52; }
