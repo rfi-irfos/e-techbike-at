@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { getNavLinks } from '../lib/navLinks'
 import type { SiteContent, SectionId, ProductItem, NewsItem, CategoryItem, TrustItem, FeatureItem, PageItem, AboutStat, CertificateItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
@@ -461,7 +462,7 @@ const PANEL_HINTS: Record<PanelTab, string> = {
   news:       'Der Bereich Aktuelles, weiter unten auf der Seite.',
   pricing:    'Der Bereich Preise, weiter unten auf der Seite.',
   reviews:    'Die Reviews, weiter unten auf der Seite. Die Überschrift klickst du direkt in der Vorschau an.',
-  pages:      'Das Menü ganz oben und alle Unterseiten. Mit dem Schalter bestimmst du, was im Menü steht.',
+  pages:      'Das Menü ganz oben. Zum Sortieren am Griff ziehen, der Pfeil öffnet die Seite.',
   contact:    'Der Bereich Standort und Kontakt ganz unten.',
   style:      'Farben, Schrift und Google-Texte, gelten für die ganze Seite.',
   inbox:      'Anfragen von Besuchern.',
@@ -585,6 +586,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const [addModal, setAddModal] = useState<Exclude<AddType, 'product'> | null>(null)
   const [panelWidth, setPanelWidth] = useState(400)
   const [editingPage, setEditingPage] = useState<string | null>(null)
+  const [menuDrag, setMenuDrag] = useState<{ from: number; over: number } | null>(null)
+  const menuListRef = useRef<HTMLDivElement>(null)
   const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(() => loadInbox())
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
@@ -675,6 +678,19 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     // Double-click = text selection intent, never navigate
     if (e.detail >= 2) return
     const target = e.target as HTMLElement
+    // Menüpunkte in der Vorschau führen nicht aus dem Baukasten hinaus, sondern öffnen rechts ihre Detailansicht
+    const navA = target.closest('.site-nav a[href^="#"], .site-mobile-drawer a[href^="#"]') as HTMLAnchorElement | null
+    if (navA) {
+      const href = navA.getAttribute('href') ?? ''
+      const pg = pageOfHref(href)
+      e.preventDefault()
+      setPanelOpen(true)
+      if (pg) { setEditingPage(pg.id); setActiveTab('pages') }
+      else if (href === '#products') { setActiveTab('products'); scrollPreviewTo('products') }
+      else if (href === '#location' || href === '#contact') { setActiveTab('contact'); scrollPreviewTo('contact') }
+      else { setEditingPage(null); setActiveTab('pages') }
+      return
+    }
     // Kein Schutz gegen aktive Textfelder: der erste Klick fokussiert das Feld,
     // und das Umschalten der Sidebar soll trotzdem passieren.
     const el = target.closest('[data-cid]') as HTMLElement | null
@@ -858,33 +874,74 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   // ── Nav link helpers ──────────────────────────────────────────────────────
 
-  const deleteNavLink = (i: number) => {
-    update('nav.links', draft.nav.links.filter((_, idx) => idx !== i))
-  }
-  const updateNavLink = (i: number, field: 'label' | 'href', value: string) => {
-    update('nav.links', draft.nav.links.map((l, idx) => idx === i ? { ...l, [field]: value } : l))
-  }
-
   // ── Page helpers ──────────────────────────────────────────────────────────
 
-  // Eine Seite steht im Menü, wenn sie den Haken hat oder ein frei gepflegter Menüpunkt auf sie zeigt.
+  // Das Menü ist eine einzige geordnete Liste (nav.links). Seiten stehen darin als #p/kurzname.
   const pageHrefs = (pg: PageItem) => [`#p/${pg.slug}`, `#${pg.slug}`]
-  const pageInMenu = (pg: PageItem) => !!pg.showInNav || (draft.nav?.links ?? []).some(l => pageHrefs(pg).includes(l.href))
+  const menuItems = getNavLinks(draft)
+  const pageOfHref = (href: string) => (draft.pages ?? []).find(pg => pageHrefs(pg).includes(href))
+  const pageInMenu = (pg: PageItem) => menuItems.some(l => pageHrefs(pg).includes(l.href))
+  const writeMenu = (items: { label: string; href: string }[]) => {
+    setDraft(prev => ({
+      ...prev,
+      nav: { ...prev.nav, links: items },
+      pages: (prev.pages ?? []).map(x => x.showInNav ? { ...x, showInNav: false } : x),
+    }))
+  }
+  // Eine Liste für alles: über der Trennlinie steht im Menü, darunter nicht
+  type NavEntry = { kind: 'item'; label: string; href: string; page?: PageItem } | { kind: 'divider' }
+  const navEntries: NavEntry[] = [
+    ...menuItems.map(l => ({ kind: 'item' as const, label: l.label, href: l.href, page: pageOfHref(l.href) })),
+    { kind: 'divider' as const },
+    ...(draft.nav?.hiddenLinks ?? []).map(l => ({ kind: 'item' as const, label: l.label, href: l.href, page: pageOfHref(l.href) })),
+    ...(draft.pages ?? []).filter(pg => !pageInMenu(pg) && !(draft.nav?.hiddenLinks ?? []).some(l => pageHrefs(pg).includes(l.href)))
+      .map(pg => ({ kind: 'item' as const, label: pg.title, href: `#p/${pg.slug}`, page: pg })),
+  ]
+  const reorderNav = (from: number, to: number) => {
+    if (from === to) return
+    const next = [...navEntries]
+    const [moved] = next.splice(from, 1)
+    next.splice(to, 0, moved)
+    const cut = next.findIndex(e => e.kind === 'divider')
+    const pick = (list: NavEntry[]) => list.flatMap(e => e.kind === 'item' ? [{ label: e.label, href: e.href }] : [])
+    const above = pick(next.slice(0, cut))
+    // Seiten unter der Linie brauchen keinen Eintrag, sie sind ohnehin da; nur reine Links werden aufgehoben
+    const below = next.slice(cut + 1).flatMap(e => e.kind === 'item' && !e.page ? [{ label: e.label, href: e.href }] : [])
+    setDraft(prev => ({
+      ...prev,
+      nav: { ...prev.nav, links: above, hiddenLinks: below },
+      pages: (prev.pages ?? []).map(x => x.showInNav ? { ...x, showInNav: false } : x),
+    }))
+  }
+  const navDragRef = useRef<{ from: number; over: number } | null>(null)
+  const navOverAt = (clientY: number, from: number) => {
+    const rows = [...(menuListRef.current?.querySelectorAll<HTMLElement>(':scope > [data-nav-row]') ?? [])]
+    let k = rows.findIndex(r => { const b = r.getBoundingClientRect(); return clientY < b.top + b.height / 2 })
+    if (k === -1) k = rows.length
+    return Math.max(0, Math.min(rows.length - 1, k > from ? k - 1 : k))
+  }
+  const renameMenuItem = (i: number, label: string) => writeMenu(menuItems.map((l, idx) => idx === i ? { ...l, label } : l))
+  const addPageToMenu = (pg: PageItem) => writeMenu([...menuItems, { label: pg.title, href: `#p/${pg.slug}` }])
   const setPageInMenu = (id: string, on: boolean) => {
     const pg = (draft.pages ?? []).find(x => x.id === id)
     if (!pg) return
-    setDraft(prev => ({
-      ...prev,
-      pages: (prev.pages ?? []).map(x => x.id === id ? { ...x, showInNav: on } : x),
-      nav: on ? prev.nav : { ...prev.nav, links: (prev.nav?.links ?? []).filter(l => !pageHrefs(pg).includes(l.href)) },
-    }))
+    if (on) addPageToMenu(pg)
+    else writeMenu(menuItems.filter(l => !pageHrefs(pg).includes(l.href)))
   }
+
+  // ── Page helpers ──────────────────────────────────────────────────────────
 
   const deletePage = (id: string) => {
     update('pages', (draft.pages ?? []).filter(p => p.id !== id))
     if (editingPage === id) setEditingPage(null)
   }
   const updatePage = (id: string, field: keyof PageItem, value: unknown) => {
+    const old = (draft.pages ?? []).find(p => p.id === id)
+    if (field === 'title' && old) {
+      // Steht die Seite unter ihrem Titel im Menü, zieht der Menüname mit
+      const links = (draft.nav?.links ?? []).map(l => pageHrefs(old).includes(l.href) && l.label === old.title ? { ...l, label: String(value) } : l)
+      update('nav.links', links)
+    }
     update('pages', (draft.pages ?? []).map(p => p.id === id ? { ...p, [field]: value } : p))
   }
 
@@ -1474,6 +1531,18 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                       <Field label="Titel">
                         <input value={editingPageItem.title} onChange={e => updatePage(editingPageItem.id, 'title', e.target.value)} />
                       </Field>
+                      <label className="menu-switch-row">
+                        <span>Im Menü oben anzeigen</span>
+                        <span className="menu-switch">
+                          <input type="checkbox" checked={pageInMenu(editingPageItem)} onChange={e => setPageInMenu(editingPageItem.id, e.target.checked)} />
+                          <span className="menu-switch-track" />
+                        </span>
+                      </label>
+                      <Field label="Seiteninhalt">
+                        <RteField value={editingPageItem.body} onChange={html => updatePage(editingPageItem.id, 'body', html)} />
+                      </Field>
+                      <details className="nav-more">
+                        <summary>Erweitert: Kurzname und Google-Titel</summary>
                       <Field label="Kurzname der Seite (Teil des Links)">
                         <input value={editingPageItem.slug} onChange={e => updatePage(editingPageItem.id, 'slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))} placeholder="meine-seite" />
                       </Field>
@@ -1482,18 +1551,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                           Link: <strong>#p/{editingPageItem.slug}</strong>
                         </div>
                       </Field>
-                      <Field label="">
-                        <label className="panel-checkbox">
-                          <input type="checkbox" checked={pageInMenu(editingPageItem)} onChange={e => setPageInMenu(editingPageItem.id, e.target.checked)} />
-                          Im Menü oben anzeigen
-                        </label>
-                      </Field>
                       <Field label="Titel in der Google-Suche (optional)">
                         <input value={editingPageItem.metaTitle ?? ''} onChange={e => updatePage(editingPageItem.id, 'metaTitle', e.target.value)} placeholder={`${editingPageItem.title} — ${draft.meta?.title ?? ''}`} />
                       </Field>
-                      <Field label="Seiteninhalt">
-                        <RteField value={editingPageItem.body} onChange={html => updatePage(editingPageItem.id, 'body', html)} />
-                      </Field>
+                      </details>
                       <button className="panel-delete-btn" onClick={() => deletePage(editingPageItem.id)}>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                         Seite löschen
@@ -1501,45 +1562,56 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                     </div>
                   ) : (
                     <>
-                      <p className="pages-intro">Das sind alle Unterseiten deiner Website. Mit dem Schalter bestimmst du, ob eine Seite im Menü oben steht. Zum Bearbeiten tippst du sie an.</p>
-                      <div className="panel-inline-list">
-                        {(draft.pages ?? []).map(pg => {
-                          const inMenu = pageInMenu(pg)
+                      <div className={`menu-list${menuDrag ? ' is-sorting' : ''}`} ref={menuListRef}>
+                        {navEntries.map((en, i) => {
+                          const dragging = menuDrag?.from === i
+                          const shift = menuDrag && !dragging
+                            ? (menuDrag.from < i && i <= menuDrag.over ? -1 : menuDrag.over <= i && i < menuDrag.from ? 1 : 0)
+                            : 0
+                          const style = shift ? { transform: `translateY(${shift * 100}%) translateY(${shift * 8}px)` } : undefined
+                          if (en.kind === 'divider') return (
+                            <div key="divider" data-nav-row className="menu-divider" style={style}><span>Nicht im Menü</span></div>
+                          )
+                          const inMenu = i < navEntries.findIndex(e => e.kind === 'divider')
                           return (
-                            <div key={pg.id} className="page-row" role="button" tabIndex={0}
-                              onClick={() => setEditingPage(pg.id)}
-                              onKeyDown={e => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setEditingPage(pg.id) } }}>
-                              <div className="page-row-info">
-                                <span className="page-row-title">{pg.title}</span>
-                                <span className="page-row-sub">{inMenu ? 'Steht im Menü oben' : 'Nicht im Menü'}</span>
-                              </div>
-                              <label className="menu-switch" title="Im Menü oben anzeigen" onClick={e => e.stopPropagation()}>
-                                <input type="checkbox" checked={inMenu} onChange={e => setPageInMenu(pg.id, e.target.checked)} aria-label={`${pg.title} im Menü anzeigen`} />
-                                <span className="menu-switch-track" />
-                              </label>
-                              <svg className="page-row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                            <div key={en.href + i} data-nav-row className={`menu-row${inMenu ? '' : ' menu-row--idle'}${dragging ? ' is-dragging' : ''}`} style={style}>
+                              <span
+                                className="menu-grip" title="Ziehen zum Verschieben" aria-hidden="true"
+                                onPointerDown={e => {
+                                  e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId)
+                                  navDragRef.current = { from: i, over: i }; setMenuDrag({ from: i, over: i })
+                                }}
+                                onPointerMove={e => {
+                                  const d = navDragRef.current; if (!d) return
+                                  const over = navOverAt(e.clientY, d.from)
+                                  if (over !== d.over) { navDragRef.current = { ...d, over }; setMenuDrag({ ...d, over }) }
+                                }}
+                                onPointerUp={e => {
+                                  const d = navDragRef.current; navDragRef.current = null; setMenuDrag(null)
+                                  if (d) reorderNav(d.from, navOverAt(e.clientY, d.from))
+                                }}
+                                onPointerCancel={() => { navDragRef.current = null; setMenuDrag(null) }}
+                              >
+                                <svg width="12" height="18" viewBox="0 0 12 18" fill="currentColor"><circle cx="3" cy="3" r="1.6"/><circle cx="9" cy="3" r="1.6"/><circle cx="3" cy="9" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="3" cy="15" r="1.6"/><circle cx="9" cy="15" r="1.6"/></svg>
+                              </span>
+                              {inMenu
+                                ? <input className="menu-row-name" value={en.label} placeholder="Name im Menü" onChange={e => renameMenuItem(i, e.target.value)} aria-label="Name im Menü" />
+                                : <span className="menu-row-name menu-row-name--static">{en.label}</span>}
+                              {en.page && (
+                                <button type="button" className="menu-row-edit" onClick={() => setEditingPage(en.page!.id)} aria-label={`${en.label} bearbeiten`} title="Seite bearbeiten">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                                </button>
+                              )}
                             </div>
                           )
                         })}
                       </div>
-                      <button type="button" className="review-add-btn" onClick={() => setAddModal('page')}>+ Seite hinzufügen</button>
+                      <div className="menu-actions">
+                        <button type="button" className="review-add-btn" onClick={() => setAddModal('page')}>+ Neue Seite</button>
+                      </div>
 
-                      <PanelSection title="Weitere Menüpunkte">
-                        <p className="pages-intro pages-intro--tight">Links im Menü, die auf einen Bereich der Startseite oder auf eine andere Adresse zeigen.</p>
-                        <div className="panel-inline-list">
-                          {(draft.nav?.links ?? []).map((l, i) => ({ l, i })).filter(({ l }) => !(draft.pages ?? []).some(pg => pageHrefs(pg).includes(l.href))).map(({ l, i }) => (
-                            <EntryCard
-                              key={i} index={i + 1} what="Dieser Menüpunkt" onDelete={() => deleteNavLink(i)}
-                              head={<input className="entry-title-input" value={l.label} placeholder="Name im Menü" onChange={e => updateNavLink(i, 'label', e.target.value)} />}
-                            >
-                              <Field label="Führt zu">
-                                <input value={l.href} onChange={e => updateNavLink(i, 'href', e.target.value)} placeholder="#products" />
-                              </Field>
-                            </EntryCard>
-                          ))}
-                        </div>
-                        <button type="button" className="review-add-btn" onClick={() => setAddModal('navlink')}>+ Menüpunkt hinzufügen</button>
-                      </PanelSection>
+                      <details className="nav-more">
+                        <summary>Logo, Telefon, Knopf und Fußzeile</summary>
                 <PanelSection title="Name oben links">
                   <Field label="Anzeigename">
                     <input value={draft.nav?.brand ?? ''} onChange={e => update('nav.brand', e.target.value)} />
@@ -1572,6 +1644,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
                     <textarea rows={2} value={draft.footer?.description ?? ''} onChange={e => update('footer.description', e.target.value)} />
                   </Field>
                 </PanelSection>
+                      </details>
                     </>
                   )}
                 </div>

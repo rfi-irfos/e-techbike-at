@@ -81,6 +81,7 @@ export interface SiteContent {
     logo: string
     brand: string
     links: NavLink[]
+    hiddenLinks?: NavLink[]
     phone?: string
     ctaLabel?: string
     ctaHref?: string
