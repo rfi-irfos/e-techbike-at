@@ -625,15 +625,18 @@ function ReviewsSection({ editMode, heading }: { editMode: boolean; heading?: { 
     <section className="site-section site-reviews" id="reviews">
       <div className="site-eyebrow">{eyebrow}</div>
       <h2 className="site-section-title">{title}</h2>
-      <div className="site-reviews-grid">
-        {testimonials.map(r => (
-          <div key={r.id} className="site-review-card">
-            <Stars rating={r.rating} />
-            <p className="site-review-text">{r.text}</p>
-            <div className="site-review-name">{r.name}</div>
-            {r.date && <div className="site-review-date">{r.date}</div>}
-          </div>
-        ))}
+      {/* Langsames Laufband: die Liste steht zweimal hintereinander, damit der Übergang nahtlos ist */}
+      <div className="site-reviews-marquee">
+        <div className="site-reviews-track" style={{ animationDuration: `${Math.max(30, testimonials.length * 7)}s` }}>
+          {[...testimonials, ...testimonials].map((r, i) => (
+            <div key={`${r.id}-${i}`} className="site-review-card" aria-hidden={i >= testimonials.length || undefined}>
+              <Stars rating={r.rating} />
+              <p className="site-review-text">{r.text}</p>
+              <div className="site-review-name">{r.name}</div>
+              {r.date && <div className="site-review-date">{r.date}</div>}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

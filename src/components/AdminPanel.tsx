@@ -592,7 +592,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [mcAchievement, setMcAchievement] = useState<string | null>(null)
   const [saveError, setSaveError] = useState(false)
-  const { testimonials, saving: testimonialsSaving, saveError: testimonialsSaveError, add: addTestimonial, update: updateTestimonial, remove: removeTestimonial } = useTestimonials()
+  const { testimonials, saving: testimonialsSaving, saveError: testimonialsSaveError, justSaved: testimonialsJustSaved, add: addTestimonial, update: updateTestimonial, remove: removeTestimonial } = useTestimonials()
   const [editReview, setEditReview] = useState<Testimonial | null>(null)
   const [mcTheme, setMcTheme] = useState(() => localStorage.getItem('mc-theme') !== 'false')
   const mcTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -1741,8 +1741,9 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             {/* ── REVIEWS TAB ───────────────────────────────────────────── */}
             {activeTab === 'reviews' && (
               <div className="panel-products">
-                {testimonialsSaving && <div className="panel-saving">Speichert…</div>}
-                {testimonialsSaveError && <div className="panel-saving panel-saving-error">Fehler beim Speichern — bitte nochmal versuchen</div>}
+                {testimonialsSaving && <div className="review-status review-status--busy">Speichert…</div>}
+                {testimonialsSaveError && <div className="review-status review-status--error">Speichern hat nicht geklappt. Bitte gleich nochmal versuchen.</div>}
+                {testimonialsJustSaved && !testimonialsSaving && !testimonialsSaveError && <div className="review-status">Gespeichert. In etwa zwei Minuten steht es auf der Website.</div>}
                 {testimonials.length === 0 && <p className="review-empty">Noch keine Reviews. Mit dem grünen Knopf legst du die erste an.</p>}
                 <div className="panel-inline-list">
                   {testimonials.map(r => (
