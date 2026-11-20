@@ -9400,7 +9400,8 @@
     "partnerShop": {
       "name": "Bikely",
       "address": "Gablenzgasse 17, 1150 Wien",
-      "mapSrc": "https://maps.google.com/maps?q=Gablenzgasse+17,+1150+Wien,+Austria&output=embed&z=16"
+      "mapSrc": "https://maps.google.com/maps?q=Gablenzgasse+17,+1150+Wien,+Austria&output=embed&z=16",
+      "phone": "+43 650 3037566 "
     }
   },
   "whatsapp": {
