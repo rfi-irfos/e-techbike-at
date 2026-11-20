@@ -221,13 +221,13 @@ function IconShield() {
 function IconTag() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7" strokeWidth="2.5"/></svg>
 }
-function IconLocation() {
+export function IconLocation() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
 }
-function IconPhone() {
+export function IconPhone() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.1-.45c.908.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
 }
-function IconMail() {
+export function IconMail() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
 }
 
@@ -654,6 +654,14 @@ export function PublicSite({
 }: Props) {
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, about, pricing, certificates } = content
   const hiddenSections = content.hiddenSections ?? []
+  // Von einer Unterseite kommend (#location, #products …) zum Abschnitt springen, sobald er gerendert ist
+  useEffect(() => {
+    if (editMode) return
+    const id = window.location.hash.slice(1)
+    if (!id || id.includes('/')) return
+    const t = window.setTimeout(() => document.getElementById(id)?.scrollIntoView(), 60)
+    return () => window.clearTimeout(t)
+  }, [editMode])
   // Bereiche blenden beim Scrollen langsam ein (nur auf der echten Seite, nicht im Baukasten)
   useEffect(() => {
     if (editMode || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return

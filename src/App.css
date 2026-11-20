@@ -4118,3 +4118,16 @@ body.is-resizing-panel .builder-flyout { transition: none; }
 .site-reviews-track .site-review-text { flex: none; -webkit-line-clamp: 3; margin: 0 0 10px; color: #1b1b1b; font-size: 14px; line-height: 1.55; }
 .site-reviews-track .site-review-name { color: #1b1b1b; }
 .site-reviews-track .site-review-date { color: #3b4a52; }
+
+/* Über uns: Standort-Karte unter dem Text */
+.page-location { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border, #e5e7eb); scroll-margin-top: 80px; }
+.page-location h2 { margin: 0 0 18px; }
+.page-location-map { border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+.page-location-map iframe { display: block; width: 100%; height: 320px; border: 0; }
+.page-location-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
+.page-location-card { background: var(--surface, #fff); border: 1px solid var(--border, #e5e7eb); border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+.page-location-label { font-weight: 800; font-size: 15px; color: var(--text, #1a1a1a); }
+.page-location-row { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--text, #1a1a1a); }
+.page-location-row svg { flex-shrink: 0; color: var(--primary, #0099CC); }
+.page-location-row a { color: inherit; text-decoration: none; }
+.page-location-row a:hover { text-decoration: underline; }
