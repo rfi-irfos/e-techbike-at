@@ -665,13 +665,23 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     if (!pane) return
     const sel = PREVIEW_SECTION[tab]
     const el = sel ? pane.querySelector<HTMLElement>(sel) : null
-    const top = el ? el.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop - 12 : 0
+    if (!el) { pane.scrollTo({ top: 0, behavior: 'smooth' }); return }
+    // Bereich mittig in die Vorschau holen; ist er höher als die Vorschau, oben mit etwas Luft
+    const rect = el.getBoundingClientRect()
+    const paneRect = pane.getBoundingClientRect()
+    const elTop = rect.top - paneRect.top + pane.scrollTop
+    const top = rect.height < pane.clientHeight - 40 ? elTop - (pane.clientHeight - rect.height) / 2 : elTop - 24
     pane.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
-    if (el) {
-      el.classList.remove('section-flash'); void el.offsetWidth
-      el.classList.add('section-flash')
-      window.setTimeout(() => el.classList.remove('section-flash'), 1600)
-    }
+    // Weiches Leuchten als eigene Ebene über dem Bereich, damit der Rahmen rundum sichtbar bleibt
+    pane.querySelectorAll('.preview-glow').forEach(g => g.remove())
+    const glow = document.createElement('div')
+    glow.className = 'preview-glow'
+    glow.style.top = `${elTop + 4}px`
+    glow.style.left = `${rect.left - paneRect.left + 6}px`
+    glow.style.width = `${rect.width - 12}px`
+    glow.style.height = `${rect.height - 8}px`
+    pane.appendChild(glow)
+    window.setTimeout(() => glow.remove(), 3300)
   }
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -790,6 +800,40 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     update('products.items', draft.products.items.map(p => p.id === id ? { ...p, [field]: value } : p))
   }
 
+  // Galerie und Hauptbild in einem Schritt setzen; das erste Bild ist immer das Hauptbild
+  const setProductImages = (id: string, images: string[]) => {
+    setDraft(prev => ({
+      ...prev,
+      products: { ...prev.products, items: prev.products.items.map(p => p.id === id ? { ...p, images, image: images[0] ?? '' } : p) },
+    }))
+  }
+
+  const addProductImages = async (id: string, files: File[]) => {
+    const imgs = files.filter(f => f.type.startsWith('image/'))
+    if (imgs.length === 0) return
+    setUploading(true)
+    const urls: string[] = []
+    for (const f of imgs) {
+      const url = await onUpload(f)
+      if (url) urls.push(url)
+    }
+    setUploading(false)
+    setUploadError(urls.length < imgs.length)
+    if (urls.length === 0) return
+    setDraft(prev => ({
+      ...prev,
+      products: {
+        ...prev.products,
+        items: prev.products.items.map(p => {
+          if (p.id !== id) return p
+          const current = p.images?.length ? p.images : (p.image ? [p.image] : [])
+          const images = [...current, ...urls]
+          return { ...p, images, image: images[0] }
+        }),
+      },
+    }))
+  }
+
   const uploadProductImage = async (id: string) => {
     setUploadTarget(`product:${id}`)
     fileRef.current?.click()
@@ -811,14 +855,19 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
   const handleFileChangeAll = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !uploadTarget) return
+    if (uploadTarget.startsWith('product:')) {
+      const files = Array.from(e.target.files ?? [])
+      e.target.value = ''
+      const pid = uploadTarget.replace('product:', '')
+      setUploadTarget(null)
+      await addProductImages(pid, files)
+      return
+    }
     setUploading(true)
     const url = await onUpload(file)
     if (url) {
       setUploadError(false)
-      if (uploadTarget.startsWith('product:')) {
-        const pid = uploadTarget.replace('product:', '')
-        updateProduct(pid, 'image', url)
-      } else if (uploadTarget.startsWith('category:')) {
+      if (uploadTarget.startsWith('category:')) {
         const cid = uploadTarget.replace('category:', '')
         updateCategory(cid, 'image', url)
       } else if (uploadTarget.startsWith('news:')) {
@@ -1046,7 +1095,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
 
   return (
     <div className={`builder${mcTheme ? ' mc-theme' : ''}`}>
-      <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChangeAll} />
+      <input ref={fileRef} type="file" accept="image/*" multiple={!!uploadTarget?.startsWith('product:')} style={{ display: 'none' }} onChange={handleFileChangeAll} />
 
       {/* ── TOPBAR ──────────────────────────────────────────────────────── */}
       <div className="builder-topbar">
@@ -1829,6 +1878,9 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             onUpdate={updateProduct}
             onDelete={(id) => { deleteProduct(id); setProductModal(null) }}
             onUpload={uploadProductImage}
+            onDropFiles={addProductImages}
+            onSetImages={setProductImages}
+            uploading={uploading}
             onClose={closeProductModal}
             onPublish={async () => { await handleSave(); setNewProductId(null) }}
           />
@@ -1975,7 +2027,7 @@ function SpecsTableField({ rows, onChange }: { rows: { label: string; value: str
 // ── Product Edit Modal ─────────────────────────────────────────────────────────
 
 function ProductEditModal({
-  product, draft, saving, isNew, onUpdate, onDelete, onUpload, onClose, onPublish,
+  product, draft, saving, isNew, onUpdate, onDelete, onUpload, onDropFiles, onSetImages, uploading, onClose, onPublish,
 }: {
   product: ProductItem
   draft: SiteContent
@@ -1984,9 +2036,23 @@ function ProductEditModal({
   onUpdate: (id: string, field: keyof ProductItem, value: unknown) => void
   onDelete: (id: string) => void
   onUpload: (id: string) => void
+  onDropFiles: (id: string, files: File[]) => void
+  onSetImages: (id: string, images: string[]) => void
+  uploading: boolean
   onClose: () => void
   onPublish: () => Promise<void>
 }) {
+  const gallery = product.images?.length ? product.images : (product.image ? [product.image] : [])
+  const [shown, setShown] = useState(0)
+  const [dropHover, setDropHover] = useState(false)
+  const mainImg = gallery[Math.min(shown, gallery.length - 1)] ?? ''
+  const dropProps = {
+    onDragOver: (e: React.DragEvent) => { e.preventDefault(); setDropHover(true) },
+    onDragLeave: () => setDropHover(false),
+    onDrop: (e: React.DragEvent) => { e.preventDefault(); setDropHover(false); onDropFiles(product.id, Array.from(e.dataTransfer.files)) },
+  }
+  const makeMain = (i: number) => { onSetImages(product.id, [gallery[i], ...gallery.filter((_, j) => j !== i)]); setShown(0) }
+  const removeImg = (i: number) => { onSetImages(product.id, gallery.filter((_, j) => j !== i)); setShown(0) }
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [publishing, setPublishing] = useState(false)
   const [specsInput, setSpecsInput] = useState('')
@@ -2031,16 +2097,34 @@ function ProductEditModal({
 
         <div className="pem-body">
 
-          <button type="button" className={`pem-img-drop${product.image ? ' has-img' : ''}`} onClick={() => onUpload(product.id)} title="Bild auswählen">
-            {product.image
-              ? <img src={product.image} alt={product.name} />
-              : <span className="pem-img-empty">
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  <strong>Foto hochladen</strong>
-                  <small>Klick, dann Foto auswählen</small>
-                </span>}
-            {product.image && <span className="pem-img-change">Foto ändern</span>}
-          </button>
+          <div className="pem-gallery">
+            <button type="button" className={`pem-img-drop${mainImg ? ' has-img' : ''}${dropHover ? ' is-drop' : ''}`} {...dropProps}
+              onClick={() => onUpload(product.id)} title="Fotos hinzufügen">
+              {mainImg
+                ? <img src={mainImg} alt={product.name} />
+                : <span className="pem-img-empty">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <strong>Fotos hochladen</strong>
+                    <small>Klicken oder Fotos hierher ziehen, auch mehrere auf einmal</small>
+                  </span>}
+              {uploading && <span className="pem-img-busy">Lädt hoch…</span>}
+              {mainImg && !uploading && <span className="pem-img-change">Weitere Fotos hinzufügen</span>}
+            </button>
+            {gallery.length > 0 && (
+              <div className="pem-thumbs" {...dropProps}>
+                {gallery.map((src, i) => (
+                  <div key={src + i} className={`pem-thumb${i === shown ? ' is-shown' : ''}`} onMouseEnter={() => setShown(i)}>
+                    <img src={src} alt="" />
+                    {i === 0
+                      ? <span className="pem-thumb-main">Hauptbild</span>
+                      : <button type="button" className="pem-thumb-make" onClick={() => makeMain(i)}>Als Hauptbild</button>}
+                    <button type="button" className="pem-thumb-del" onClick={() => removeImg(i)} title="Foto entfernen" aria-label="Foto entfernen">{iconX}</button>
+                  </div>
+                ))}
+                <button type="button" className="pem-thumb pem-thumb-add" onClick={() => onUpload(product.id)} title="Fotos hinzufügen">+</button>
+              </div>
+            )}
+          </div>
 
           <div className="pem-fields">
 
