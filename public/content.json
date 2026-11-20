@@ -59,7 +59,7 @@
       {
         "id": "t2",
         "icon": "shield",
-        "bold": "2 Jahre",
+        "bold": "1 Jahr",
         "text": "Herstellergarantie"
       },
       {
@@ -9314,6 +9314,15 @@
         "delivery": "50€ / 100Km hin und zurück, Österreichweit.",
         "regularPrice": "€ 1.450,00",
         "badge": "nicht verfügbar"
+      },
+      {
+        "id": "p1795156665954",
+        "name": "Neues Produkt",
+        "description": "",
+        "price": "",
+        "image": "",
+        "category": "E-Bikes",
+        "specs": []
       }
     ]
   },
