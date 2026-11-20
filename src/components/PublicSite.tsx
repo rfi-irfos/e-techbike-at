@@ -577,6 +577,7 @@ function CategoryIcon({ category }: { category: string }) {
 interface Props {
   content: SiteContent
   editMode?: boolean
+  reviews?: Testimonial[]
   rearrangeMode?: boolean
   initPositions?: Record<string, CanvasPos>
   onTextChange?: (field: string, value: string) => void
@@ -602,42 +603,43 @@ function Stars({ rating }: { rating: number }) {
   )
 }
 
-function ReviewsSection({ editMode, heading }: { editMode: boolean; heading?: { eyebrow?: string; title?: string } }) {
+function ReviewsSection({ editMode, heading, items }: { editMode: boolean; heading?: { eyebrow?: string; title?: string }; items?: Testimonial[] }) {
   const eyebrow = heading?.eyebrow ?? 'Kundenstimmen'
   const title = heading?.title ?? 'Das sagen unsere Kunden'
-  const [testimonials, setTestimonials] = React.useState<Testimonial[]>([])
+  const [loaded, setLoaded] = React.useState<Testimonial[]>([])
   React.useEffect(() => {
+    if (items) return
     fetch(`${import.meta.env.BASE_URL}testimonials.json`, { cache: 'no-store' })
       .then(r => r.ok ? r.json() : [])
-      .then(setTestimonials)
-      .catch(() => setTestimonials([]))
-  }, [])
-  if (editMode) return (
-    <section className="site-section site-reviews site-edit-section" id="reviews">
-      <div className="site-edit-section-badge">Reviews</div>
-      <E field="reviews.eyebrow" value={eyebrow} as="div" className="site-eyebrow" />
-      <E field="reviews.title" value={title} as="h2" className="site-section-title" />
-      <div className="site-reviews-placeholder">Die Reviews erscheinen hier auf der Seite</div>
-    </section>
-  )
-  if (testimonials.length === 0) return null
+      .then(setLoaded)
+      .catch(() => setLoaded([]))
+  }, [items])
+  // Im Baukasten kommen die Reviews direkt aus dem Editor, damit neue sofort in der Vorschau stehen
+  const testimonials = items ?? loaded
+  if (!editMode && testimonials.length === 0) return null
   return (
-    <section className="site-section site-reviews" id="reviews">
-      <div className="site-eyebrow">{eyebrow}</div>
-      <h2 className="site-section-title">{title}</h2>
-      {/* Langsames Laufband: die Liste steht zweimal hintereinander, damit der Übergang nahtlos ist */}
-      <div className="site-reviews-marquee">
-        <div className="site-reviews-track" style={{ animationDuration: `${Math.max(60, testimonials.length * 12)}s` }}>
-          {[...testimonials, ...testimonials].map((r, i) => (
-            <div key={`${r.id}-${i}`} className="site-review-card" aria-hidden={i >= testimonials.length || undefined}>
-              <Stars rating={r.rating} />
-              <p className="site-review-text">{r.text}</p>
-              <div className="site-review-name">{r.name}</div>
-              {r.date && <div className="site-review-date">{r.date}</div>}
+    <section className={`site-section site-reviews${editMode ? ' site-edit-section' : ''}`} id="reviews">
+      {editMode && <div className="site-edit-section-badge">Reviews</div>}
+      {editMode
+        ? <><E field="reviews.eyebrow" value={eyebrow} as="div" className="site-eyebrow" /><E field="reviews.title" value={title} as="h2" className="site-section-title" /></>
+        : <><div className="site-eyebrow">{eyebrow}</div><h2 className="site-section-title">{title}</h2></>}
+      {testimonials.length === 0
+        ? <div className="site-reviews-placeholder">Noch keine Reviews</div>
+        : (
+          /* Langsames Laufband: die Liste steht zweimal hintereinander, damit der Übergang nahtlos ist */
+          <div className="site-reviews-marquee">
+            <div className="site-reviews-track" style={{ animationDuration: `${Math.max(60, testimonials.length * 12)}s` }}>
+              {[...testimonials, ...testimonials].map((r, i) => (
+                <div key={`${r.id}-${i}`} className="site-review-card" aria-hidden={i >= testimonials.length || undefined}>
+                  <Stars rating={r.rating} />
+                  <p className="site-review-text">{r.text}</p>
+                  <div className="site-review-name">{r.name}</div>
+                  {r.date && <div className="site-review-date">{r.date}</div>}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        )}
     </section>
   )
 }
@@ -648,7 +650,7 @@ const EDIT_PRODUCT_PREVIEW = 6
 export function PublicSite({
   content, editMode = false, rearrangeMode = false, initPositions = {},
   onTextChange, onImageClick, onUpdate, onProductClick, onProductDblClick, onSectionClick,
-  selectedProductId,
+  selectedProductId, reviews,
 }: Props) {
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, about, pricing, certificates } = content
   const hiddenSections = content.hiddenSections ?? []
@@ -1220,7 +1222,7 @@ export function PublicSite({
           </section>
         )}
 
-        <ReviewsSection editMode={editMode} heading={content.reviews} />
+        <ReviewsSection editMode={editMode} heading={content.reviews} items={reviews} />
 
         {/* ── NEWS ─────────────────────────────────────────────────────── */}
         {!hiddenSections.includes('news') && (news?.items?.length ?? 0) > 0 && (

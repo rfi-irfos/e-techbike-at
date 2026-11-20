@@ -1034,7 +1034,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
       { id: 'trust',      label: 'Vorteile' },
       { id: 'usp',        label: 'Pluspunkte' },
       { id: 'news',       label: 'Aktuelles' },
-      { id: 'reviews',    label: 'Reviews', badge: testimonials.length },
+      { id: 'reviews',    label: 'Reviews' },
       { id: 'pages',      label: 'Navigation' },
       { id: 'contact',    label: 'Kontakt' },
       { id: 'style',      label: 'Stil' },
@@ -1134,6 +1134,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
             <PublicSite
               content={draft}
               editMode={true}
+              reviews={testimonials}
               onTextChange={(field, value) => update(field, value)}
               onImageClick={handleImageClick}
               onUpdate={(field, value) => update(field, value)}
