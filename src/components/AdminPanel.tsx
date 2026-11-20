@@ -750,7 +750,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, upl
     if (ok) {
       setSaved(true)
       setTimeout(() => setSaved(false), 2500)
-      triggerAchievement('Website gespeichert — Veröffentlichung läuft')
+      if (mcTheme) triggerAchievement('Website gespeichert — Veröffentlichung läuft')
     } else {
       setSaveError(true)
       setTimeout(() => setSaveError(false), 3500)
